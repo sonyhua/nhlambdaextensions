@@ -1,0 +1,90 @@
+<?xml version="1.0"?>
+<project    name="NhLambdaExtensions"
+            default="build"
+            xsi:schemaLocation="http://nant.sf.net/nightly/2008-08-18-0.86/nant.xsd SDKs\nant-0.86\schema\nant.xsd"
+            xmlns="http://nant.sf.net/nightly/2008-08-18-0.86/nant.xsd"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <property name="nant.settings.currentframework" value="net-3.5" />
+  <echo message="Using '${nant.settings.currentframework}' framework on '${platform::get-name()}' platform." />
+
+  <!-- debug build by default -->
+  <call target="debug" />
+
+  <target name="debug" description="Setup a 'debug' build">
+    <property name="optimize" value="false" />
+    <property name="project.config" value="debug" />
+    <property name="build.debug" value="true" />
+    <property name="build.dir" value="${project::get-base-directory()}/build/${project.config}" />
+  </target>
+
+  <target name="release" description="Setup a 'release' build">
+    <property name="optimize" value="true" />
+    <property name="project.config" value="release" />
+    <property name="build.debug" value="false" />
+    <property name="build.dir" value="${project::get-base-directory()}/build/${project.config}" />
+  </target>
+
+  <target name="build">
+
+    <mkdir dir="${build.dir}"/>
+    <copy todir="${build.dir}">
+      <fileset basedir="SDKs\NHibernate\bin\net-2.0">
+        <include name="*.*" />
+      </fileset>
+    </copy>
+    <copy todir="${build.dir}">
+      <fileset basedir="SDKs\nant-0.86\bin\lib\common\2.0\">
+        <include name="nunit.framework.dll" />
+      </fileset>
+    </copy>
+
+    <csc target="library"
+         debug="${build.debug}"
+         optimize="${optimize}"
+         output="${build.dir}\NHibernate.LambdaExtensions.dll"
+         doc="${build.dir}\NHibernate.LambdaExtensions.xml"
+         warnaserror="true">
+
+      <references>
+        <include name="${build.dir}\nhibernate.dll" />
+      </references>
+      <sources>
+        <include name="Source\*.cs" />
+      </sources>
+    </csc>
+
+    <csc target="library"
+         debug="${build.debug}"
+         optimize="${optimize}"
+         output="${build.dir}\NHibernate.LambdaExtensions.Test.dll"
+         warnaserror="true">
+
+      <references>
+        <include name="${build.dir}\nhibernate.dll" />
+        <include name="${build.dir}\NHibernate.LambdaExtensions.dll" />
+        <include name="${build.dir}\nunit.framework.dll" />
+      </references>
+
+      <sources>
+        <include name="Source\Test\*.cs" />
+      </sources>
+
+    </csc>
+
+    <nunit2>
+      <formatter type="Plain"/>
+      <formatter type="Xml" usefile="true" extension=".xml"/>
+      <test>
+        <assemblies>
+          <include name="${build.dir}\NHibernate.LambdaExtensions.Test.dll"/>
+        </assemblies>
+      </test>
+    </nunit2>
+
+  </target>
+
+  <target name="clean">
+  </target>
+
+</project>
