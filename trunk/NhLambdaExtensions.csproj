@@ -12,7 +12,7 @@
   <ItemGroup>
     <None Include="**\*.build" />
     <None Include="**\*.taskdef" />
-    <Compile Include="**\*.cs"/>
+    <Compile Include="**\*.cs" />
     <Compile Include="**\*.svc" />
     <Compile Include="**\*.js" />
     <Compile Include="**\*.xaml" />
@@ -71,6 +71,7 @@
         <Message>$1: $2</Message>
       </Error>
     </ExecParseConfiguration>
+    <ProjectGuid>{263BDCE5-2110-422E-AACA-7CD47D0C91A5}</ProjectGuid>
   </PropertyGroup>
   <Target Name="NAntBuild">
     <Message Text="Start NAnt debug build ..." />
