@@ -11,6 +11,8 @@
   <!-- debug build by default -->
   <call target="debug" />
 
+  <property name="project.version" value="1.0.0.0" overwrite="false" />
+
   <target name="debug" description="Setup a 'debug' build">
     <property name="optimize" value="false" />
     <property name="project.config" value="debug" />
@@ -38,6 +40,23 @@
         <include name="nunit.framework.dll" />
       </fileset>
     </copy>
+
+    <asminfo output="Source/AssemblyInfo.cs" language="CSharp">
+      <imports>
+        <import namespace="System.Reflection" />
+      </imports>
+      <attributes>
+        <attribute type="AssemblyTitleAttribute" value="NHibernate Lambda Extensions" />
+        <attribute type="AssemblyDescriptionAttribute" value="NHibernate Lambda Extensions" />
+        <attribute type="AssemblyConfigurationAttribute" value="" />
+        <attribute type="AssemblyCompanyAttribute" value="broloco" />
+        <attribute type="AssemblyProductAttribute" value="broloco" />
+        <attribute type="AssemblyCopyrightAttribute" value="" />
+        <attribute type="AssemblyTrademarkAttribute" value="" />
+        <attribute type="AssemblyVersionAttribute" value="${project.version}" />
+        <attribute type="AssemblyDelaySignAttribute" value="false" />
+      </attributes>
+    </asminfo>
 
     <csc target="library"
          debug="${build.debug}"
@@ -67,6 +86,7 @@
       </references>
 
       <sources>
+        <include name="Source\AssemblyInfo.cs" />
         <include name="Source\Test\*.cs" />
       </sources>
 
