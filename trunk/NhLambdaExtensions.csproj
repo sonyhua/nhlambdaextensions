@@ -1,0 +1,89 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="NAntBuild" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <OutputPath>build\debug</OutputPath>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+    <ErrorReport>prompt</ErrorReport>
+    <OutputType>Library</OutputType>
+    <StartAction>Program</StartAction>
+    <StartProgram>$(MSBuildProjectDirectory)\SDKs\nant-0.86\bin\lib\common\2.0\nunit-gui.exe</StartProgram>
+    <StartArguments>$(MSBuildProjectDirectory)\build\debug\NHibernate.LambdaExtensions.Test.dll</StartArguments>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="**\*.build" />
+    <None Include="**\*.taskdef" />
+    <Compile Include="**\*.cs"/>
+    <Compile Include="**\*.svc" />
+    <Compile Include="**\*.js" />
+    <Compile Include="**\*.xaml" />
+    <Compile Include="**\*.html" />
+    <Compile Include="**\*.asax" />
+    <Compile Include="**\*.master" />
+    <Compile Include="**\*.css" />
+    <Compile Include="**\*.ddl" />
+    <Compile Include="**\*.dml" />
+    <Compile Include="**\*.aspx">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <None Include="**\*.config" />
+    <None Include="**\*.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="NHibernate" />
+    <Reference Include="nunit.framework">
+      <HintPath>SDKs\nant-0.86\bin\lib\common\2.0\nunit.framework.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
+  <UsingTask AssemblyFile="SDKs\ExecParse\ExecParse.dll" TaskName="ExecParse.ExecParse" />
+  <PropertyGroup>
+    <ExecParseConfiguration>
+      <!-- catches csc errors -->
+      <Error>
+        <Search>\[csc\] (.*?)\((\d+),(\d+)\): error ([^:]*): (.*?)[\n\r]</Search>
+        <File>$1</File>
+        <LineNumber>$2</LineNumber>
+        <ColumnNumber>$3</ColumnNumber>
+        <Subcategory>$4</Subcategory>
+        <Message>$5</Message>
+      </Error>
+      <!-- catches NUnit failures -->
+      <Error>
+        <Search>\[nunit2\] \d+\) [\s\S]*?(?=[^\n\r]*?\[nunit2\] ( *[\n\r]|\d|\*))</Search>
+        <ReplaceSearch>\[nunit2\] \d+\) .*?\.([^.]*?) : ([\s\S]*? in (.*?):line (\d+))\s*$</ReplaceSearch>
+        <Message>Test Failed: $1: $2</Message>
+        <File>$3</File>
+        <LineNumber>$4</LineNumber>
+      </Error>
+      <!-- catches Build failures -->
+      <Error>
+        <Search>[\s\n\r](\S.*?\.build)\((\d+),(\d+)\):.*?[\n\r]\s*(.*?)[\n\r]</Search>
+        <Message>Build Failed: $4</Message>
+        <File>$1</File>
+        <LineNumber>$2</LineNumber>
+        <ColumnNumber>$3</ColumnNumber>
+      </Error>
+      <!-- catches coverage failures -->
+      <Error>
+        <Search>-- Loading file: .*\\(.*?)\.xml\.\.\.[\s\S]*\[ncoverexplorer\] \[FAIL\] - (.*)[\n\r]</Search>
+        <Message>$1: $2</Message>
+      </Error>
+    </ExecParseConfiguration>
+  </PropertyGroup>
+  <Target Name="NAntBuild">
+    <Message Text="Start NAnt debug build ..." />
+    <ExecParse Command="SDKs\nant-0.86\bin\NAnt.exe" Configuration="$(ExecParseConfiguration)" />
+    <Message Text="NAnt complete" />
+  </Target>
+  <Target Name="Clean">
+    <Message Text="Start NAnt debug clean ..." />
+    <ExecParse Command="SDKs\nant-0.86\bin\NAnt.exe clean" Configuration="$(ExecParseConfiguration)" />
+    <Message Text="NAnt complete" />
+  </Target>
+  <Target Name="Rebuild">
+    <CallTarget Targets="Clean" />
+    <CallTarget Targets="NAntBuild" />
+  </Target>
+</Project>
