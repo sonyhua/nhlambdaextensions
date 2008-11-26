@@ -123,7 +123,7 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
-        public void TestOrderAsc()
+        public void TestOrderString()
         {
             ICriteria expected =
                 CreateCriteria<Person>()
@@ -132,6 +132,20 @@ namespace NHibernate.LambdaExtensions.Test
             ICriteria actual =
                 CreateCriteria<Person>()
                     .AddOrder<Person>(p => p.Name, Order.Desc);
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
+        [Test]
+        public void TestOrderInt32()
+        {
+            ICriteria expected =
+                CreateCriteria<Person>()
+                    .AddOrder(Order.Asc("Age"));
+
+            ICriteria actual =
+                CreateCriteria<Person>()
+                    .AddOrder<Person>(p => p.Age, Order.Asc);
 
             AssertCriteriaAreEqual(expected, actual);
         }
