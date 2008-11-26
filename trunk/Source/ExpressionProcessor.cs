@@ -22,12 +22,20 @@ namespace NHibernate.LambdaExtensions
         {
             _simpleExpressionCreators = new Dictionary<ExpressionType, Func<string, object, ICriterion>>();
             _simpleExpressionCreators[ExpressionType.Equal] = Eq;
+            _simpleExpressionCreators[ExpressionType.NotEqual] = Ne;
             _simpleExpressionCreators[ExpressionType.GreaterThan] = Gt;
         }
 
         private static ICriterion Eq(string propertyName, object value)
         {
             return NHibernate.Criterion.Expression.Eq(propertyName, value);
+        }
+        
+        private static ICriterion Ne(string propertyName, object value)
+        {
+            return
+                NHibernate.Criterion.Expression.Not(
+                    NHibernate.Criterion.Expression.Eq(propertyName, value));
         }
         
         private static ICriterion Gt(string propertyName, object value)
@@ -48,6 +56,9 @@ namespace NHibernate.LambdaExtensions
 
             var valueExpression = System.Linq.Expressions.Expression.Lambda(be.Right).Compile();
             var value = valueExpression.DynamicInvoke();
+
+            if (!_simpleExpressionCreators.ContainsKey(be.NodeType))
+                throw new Exception("Unhandled expression type: " + be.NodeType);
 
             Func<string, object, ICriterion> simpleExpressionCreator = _simpleExpressionCreators[be.NodeType];
             ICriterion criterion = simpleExpressionCreator(me.Member.Name, value);
