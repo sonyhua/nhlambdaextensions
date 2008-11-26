@@ -81,6 +81,20 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
+        public void TestGe()
+        {
+            ICriteria expected =
+                CreateCriteria<Person>()
+                    .Add(Expression.Ge("Age", 10));
+
+            ICriteria actual =
+                CreateCriteria<Person>()
+                    .Add<Person>(p => p.Age >= 10);
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
+        [Test]
         public void TestOrderAsc()
         {
             ICriteria expected =

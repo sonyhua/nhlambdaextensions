@@ -24,6 +24,7 @@ namespace NHibernate.LambdaExtensions
             _simpleExpressionCreators[ExpressionType.Equal] = Eq;
             _simpleExpressionCreators[ExpressionType.NotEqual] = Ne;
             _simpleExpressionCreators[ExpressionType.GreaterThan] = Gt;
+            _simpleExpressionCreators[ExpressionType.GreaterThanOrEqual] = Ge;
         }
 
         private static ICriterion Eq(string propertyName, object value)
@@ -41,6 +42,11 @@ namespace NHibernate.LambdaExtensions
         private static ICriterion Gt(string propertyName, object value)
         {
             return NHibernate.Criterion.Expression.Gt(propertyName, value);
+        }
+
+        private static ICriterion Ge(string propertyName, object value)
+        {
+            return NHibernate.Criterion.Expression.Ge(propertyName, value);
         }
 
         /// <summary>
