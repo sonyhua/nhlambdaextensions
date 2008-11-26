@@ -62,6 +62,28 @@ namespace NHibernate.LambdaExtensions
         }
 
         /// <summary>
+        /// Retrieves the MemberExpression from the expression
+        /// </summary>
+        /// <param name="expression">An expression tree that can contain either a member, or a conversion from a member</param>
+        /// <returns>The appropriate MemberExpression</returns>
+        public static MemberExpression FindMemberExpression(System.Linq.Expressions.Expression expression)
+        {
+            if (expression is MemberExpression)
+                return (MemberExpression)expression;
+
+            if (expression is UnaryExpression)
+            {
+                UnaryExpression unaryExpression = (UnaryExpression)expression;
+
+                if (unaryExpression.NodeType != ExpressionType.Convert)
+                    throw new Exception("Cannot interpret member from " + expression.ToString());
+
+                return (MemberExpression)unaryExpression.Operand;
+            }
+            throw new Exception("Could not determine member from " + expression.ToString());
+        }
+
+        /// <summary>
         /// Convert a lambda expression to NHibernate ICriterion
         /// </summary>
         /// <typeparam name="T">The type of the lambda expression</typeparam>
@@ -70,7 +92,7 @@ namespace NHibernate.LambdaExtensions
         public static ICriterion ProcessExpression<T>(Expression<Func<T, bool>> expression)
         {
             BinaryExpression be = (BinaryExpression)expression.Body;
-            MemberExpression me = (MemberExpression)be.Left;
+            MemberExpression me = FindMemberExpression(be.Left);
 
             var valueExpression = System.Linq.Expressions.Expression.Lambda(be.Right).Compile();
             var value = valueExpression.DynamicInvoke();
@@ -93,7 +115,7 @@ namespace NHibernate.LambdaExtensions
         public static Order ProcessOrder<T>(Expression<Func<T, object>> expression,
                                             Func<string, Order>         orderDelegate)
         {
-            MemberExpression me = (MemberExpression)expression.Body;
+            MemberExpression me = FindMemberExpression(expression.Body);
             Order order = orderDelegate(me.Member.Name);
             return order;
         }
