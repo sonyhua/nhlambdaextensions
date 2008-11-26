@@ -13,6 +13,11 @@ namespace NHibernate.LambdaExtensions.Test
     public class TestCriteria : TestBase
     {
 
+        private void AssertCriteriaAreEqual(ICriteria expected, ICriteria actual)
+        {
+            Assert.AreEqual(expected.ToString(), actual.ToString());
+        }
+
         private ICriteria CreateCriteria<T>()
         {
             return new NHibernate.Impl.CriteriaImpl(typeof(T), null);
