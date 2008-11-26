@@ -55,7 +55,8 @@ namespace NHibernate.LambdaExtensions.Test
 
             DetachedCriteria actual =
                 DetachedCriteria.For<Person>()
-                    .Add<Person>(p => p.Name == "test name");
+                    .Add<Person>(p => p.Name == "test name")
+                    .AddOrder<Person>(p => p.Name, Order.Desc);
 
             AssertCriteriaAreEqual(expected, actual);
         }

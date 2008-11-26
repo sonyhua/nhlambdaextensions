@@ -106,6 +106,8 @@
   </target>
 
   <target name="clean">
+    <delete file="Source/AssemblyInfo.cs" />
+    <delete dir="${build.dir}" />
   </target>
 
 </project>
