@@ -16,25 +16,6 @@ namespace NHibernate.LambdaExtensions
     public static class ICriteriaExtensions
     {
 
-        private readonly static IDictionary<ExpressionType, Func<string, object, ICriterion>> _simpleExpressionCreators = null;
-
-        static ICriteriaExtensions()
-        {
-            _simpleExpressionCreators = new Dictionary<ExpressionType, Func<string, object, ICriterion>>();
-            _simpleExpressionCreators[ExpressionType.Equal] = Eq;
-            _simpleExpressionCreators[ExpressionType.GreaterThan] = Gt;
-        }
-
-        private static ICriterion Eq(string propertyName, object value)
-        {
-            return NHibernate.Criterion.Expression.Eq(propertyName, value);
-        }
-        
-        private static ICriterion Gt(string propertyName, object value)
-        {
-            return NHibernate.Criterion.Expression.Gt(propertyName, value);
-        }
-        
         /// <summary>
         /// Add criterion expressed as a lambda expression
         /// </summary>
@@ -45,14 +26,7 @@ namespace NHibernate.LambdaExtensions
         public static ICriteria Add<T>( this ICriteria              criteria,
                                         Expression<Func<T, bool>>   expression)
         {
-            BinaryExpression be = (BinaryExpression)expression.Body;
-            MemberExpression me = (MemberExpression)be.Left;
-
-            var valueExpression = System.Linq.Expressions.Expression.Lambda(be.Right).Compile();
-            var value = valueExpression.DynamicInvoke();
-
-            Func<string, object, ICriterion> simpleExpressionCreator = _simpleExpressionCreators[be.NodeType];
-            ICriterion criterion = simpleExpressionCreator(me.Member.Name, value);
+            ICriterion criterion = ExpressionProcessor.ProcessExpression<T>(expression);
             criteria.Add(criterion);
             return criteria;
         }
@@ -63,14 +37,14 @@ namespace NHibernate.LambdaExtensions
         /// <typeparam name="T">Type (same as criteria type)</typeparam>
         /// <param name="criteria">criteria instance</param>
         /// <param name="expression">Lamba expression</param>
-        /// <param name="order">Order delegate</param>
+        /// <param name="orderDelegate">Order delegate (direction)</param>
         /// <returns>criteria instance</returns>
         public static ICriteria AddOrder<T>(this ICriteria              criteria,
                                             Expression<Func<T, object>> expression,
-                                            Func<string, Order>         order)
+                                            Func<string, Order>         orderDelegate)
         {
-            MemberExpression me = (MemberExpression)expression.Body;
-            criteria.AddOrder(order(me.Member.Name));
+            Order order = ExpressionProcessor.ProcessOrder<T>(expression, orderDelegate);
+            criteria.AddOrder(order);
             return criteria;
         }
 
