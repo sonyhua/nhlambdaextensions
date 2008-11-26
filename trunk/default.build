@@ -105,6 +105,14 @@
 
   </target>
 
+  <target name="exportResults">
+    <copy todir="build">
+      <fileset basedir="${build.dir}">
+        <include name="*-results.xml" />
+      </fileset>
+    </copy>
+  </target>
+
   <target name="clean">
     <delete file="Source/AssemblyInfo.cs" />
     <delete dir="${build.dir}" />
