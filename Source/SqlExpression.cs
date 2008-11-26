@@ -16,7 +16,7 @@ namespace NHibernate.LambdaExtensions
     /// <remarks>
     /// cannot inherit from NHibernate.Criterion.Expression cos it's sealed
     /// </remarks>
-    public class LExpression
+    public class SqlExpression
     {
 
         /// <summary>
