@@ -67,6 +67,20 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
+        public void TestSimpleNe()
+        {
+            ICriteria expected =
+                CreateCriteria<Person>()
+                    .Add(Expression.Not(Expression.Eq("Name", "test name")));
+
+            ICriteria actual =
+                CreateCriteria<Person>()
+                    .Add<Person>(p => p.Name != "test name");
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
+        [Test]
         public void TestOrderAsc()
         {
             ICriteria expected =
