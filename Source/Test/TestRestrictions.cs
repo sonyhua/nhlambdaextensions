@@ -102,6 +102,20 @@ namespace NHibernate.LambdaExtensions.Test
             AssertCriteriaAreEqual(expected, actual);
         }
 
+        [Test]
+        public void Test_In()
+        {
+            DetachedCriteria expected =
+                DetachedCriteria.For<Person>()
+                    .Add(Restrictions.In("Name", new string[] { "name1", "name2", "name3" }));
+
+            DetachedCriteria actual =
+                DetachedCriteria.For<Person>()
+                    .Add(Restrictions<Person>.In(p => p.Name, new string[] { "name1", "name2", "name3" }));
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
     }
 
 }

@@ -92,6 +92,19 @@ namespace NHibernate.LambdaExtensions
             return Restrictions.IsNotEmpty(me.Member.Name);
         }
 
+        /// <summary>
+        /// Apply an "in" constraint to the named property
+        /// </summary>
+        /// <param name="expression">lambda expression returning type's property</param>
+        /// <param name="values">An ICollection of values.</param>
+        /// <returns>An NHibernate.Criterion.InExpression.</returns>
+        public static ICriterion In(Expression<Func<T, object>> expression,
+                                    ICollection                 values)
+        {
+            MemberExpression me = ExpressionProcessor.FindMemberExpression(expression.Body);
+            return Restrictions.In(me.Member.Name, values);
+        }
+
     }
 
 }
