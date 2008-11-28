@@ -19,7 +19,7 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
-        public void TestBetween()
+        public void Test_Between()
         {
             DetachedCriteria expected =
                 DetachedCriteria.For<Person>()
@@ -28,6 +28,20 @@ namespace NHibernate.LambdaExtensions.Test
             DetachedCriteria actual =
                 DetachedCriteria.For<Person>()
                     .Add(Restrictions<Person>.Between(p => p.Age, 5, 10));
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
+        [Test]
+        public void Test_Like()
+        {
+            DetachedCriteria expected =
+                DetachedCriteria.For<Person>()
+                    .Add(Restrictions.Like("Name", "%test%"));
+
+            DetachedCriteria actual =
+                DetachedCriteria.For<Person>()
+                    .Add(Restrictions<Person>.Like(p => p.Name, "%test%"));
 
             AssertCriteriaAreEqual(expected, actual);
         }

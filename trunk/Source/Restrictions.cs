@@ -20,18 +20,31 @@ namespace NHibernate.LambdaExtensions
     {
 
         /// <summary>
-        /// lamda expression for between
+        /// Apply a "between" constraint to the named property
         /// </summary>
-        /// <param name="expression">expression returning type's property</param>
+        /// <param name="expression">lambda expression returning type's property</param>
         /// <param name="lo">low value of between</param>
         /// <param name="hi">high value of between</param>
-        /// <returns></returns>
+        /// <returns>A NHibernate.Criterion.BetweenExpression.</returns>
         public static ICriterion Between(   Expression<Func<T, object>> expression,
                                             object                      lo,
                                             object                      hi)
         {
             MemberExpression me = ExpressionProcessor.FindMemberExpression(expression.Body);
             return Restrictions.Between(me.Member.Name, lo, hi);
+        }
+
+        /// <summary>
+        /// Apply a "like" constraint to the named property
+        /// </summary>
+        /// <param name="expression">lambda expression returning type's property</param>
+        /// <param name="value">The value for the Property.</param>
+        /// <returns>A NHibernate.Criterion.LikeExpression.</returns>
+        public static ICriterion Like(  Expression<Func<T, object>> expression,
+                                        object                      value)
+        {
+            MemberExpression me = ExpressionProcessor.FindMemberExpression(expression.Body);
+            return Restrictions.Like(me.Member.Name, value);
         }
         
     }

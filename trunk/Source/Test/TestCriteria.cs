@@ -24,7 +24,7 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
-        public void TestEq()
+        public void Test_Eq()
         {
             ICriteria expected =
                 CreateCriteria<Person>()
@@ -38,7 +38,7 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
-        public void TestSimpleEqWithMemberExpression()
+        public void Test_EqWithMemberExpression()
         {
             ICriteria expected =
                 CreateCriteria<Person>()
@@ -53,7 +53,7 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
-        public void TestSimpleGt()
+        public void Test_Gt()
         {
             ICriteria expected =
                 CreateCriteria<Person>()
@@ -67,7 +67,7 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
-        public void TestSimpleNe()
+        public void Test_Ne()
         {
             ICriteria expected =
                 CreateCriteria<Person>()
@@ -81,7 +81,7 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
-        public void TestGe()
+        public void Test_Ge()
         {
             ICriteria expected =
                 CreateCriteria<Person>()
@@ -95,7 +95,7 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
-        public void TestLt()
+        public void Test_Lt()
         {
             ICriteria expected =
                 CreateCriteria<Person>()
@@ -109,7 +109,7 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
-        public void TestLe()
+        public void Test_Le()
         {
             ICriteria expected =
                 CreateCriteria<Person>()
@@ -123,7 +123,7 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
-        public void TestOrderString()
+        public void Test_OrderByStringProperty()
         {
             ICriteria expected =
                 CreateCriteria<Person>()
@@ -137,7 +137,7 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
-        public void TestOrderInt32()
+        public void Test_OrderByInt32Property()
         {
             ICriteria expected =
                 CreateCriteria<Person>()
