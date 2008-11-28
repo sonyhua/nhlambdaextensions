@@ -28,7 +28,7 @@ namespace NHibernate.LambdaExtensions.Test
         {
             ICriteria expected =
                 CreateCriteria<Person>()
-                    .Add(Expression.Eq("Name", "test name"));
+                    .Add(Restrictions.Eq("Name", "test name"));
 
             ICriteria actual =
                 CreateCriteria<Person>()
@@ -42,7 +42,7 @@ namespace NHibernate.LambdaExtensions.Test
         {
             ICriteria expected =
                 CreateCriteria<Person>()
-                    .Add(Expression.Eq("Name", "test name"));
+                    .Add(Restrictions.Eq("Name", "test name"));
 
             string name = "test name";
             ICriteria actual =
@@ -57,7 +57,7 @@ namespace NHibernate.LambdaExtensions.Test
         {
             ICriteria expected =
                 CreateCriteria<Person>()
-                    .Add(Expression.Gt("Age", 10));
+                    .Add(Restrictions.Gt("Age", 10));
 
             ICriteria actual =
                 CreateCriteria<Person>()
@@ -71,7 +71,7 @@ namespace NHibernate.LambdaExtensions.Test
         {
             ICriteria expected =
                 CreateCriteria<Person>()
-                    .Add(Expression.Not(Expression.Eq("Name", "test name")));
+                    .Add(Restrictions.Not(Restrictions.Eq("Name", "test name")));
 
             ICriteria actual =
                 CreateCriteria<Person>()
@@ -85,7 +85,7 @@ namespace NHibernate.LambdaExtensions.Test
         {
             ICriteria expected =
                 CreateCriteria<Person>()
-                    .Add(Expression.Ge("Age", 10));
+                    .Add(Restrictions.Ge("Age", 10));
 
             ICriteria actual =
                 CreateCriteria<Person>()
@@ -99,7 +99,7 @@ namespace NHibernate.LambdaExtensions.Test
         {
             ICriteria expected =
                 CreateCriteria<Person>()
-                    .Add(Expression.Lt("Age", 10));
+                    .Add(Restrictions.Lt("Age", 10));
 
             ICriteria actual =
                 CreateCriteria<Person>()
@@ -113,7 +113,7 @@ namespace NHibernate.LambdaExtensions.Test
         {
             ICriteria expected =
                 CreateCriteria<Person>()
-                    .Add(Expression.Le("Age", 10));
+                    .Add(Restrictions.Le("Age", 10));
 
             ICriteria actual =
                 CreateCriteria<Person>()
