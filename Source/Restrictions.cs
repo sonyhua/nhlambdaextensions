@@ -1,5 +1,6 @@
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -67,6 +68,28 @@ namespace NHibernate.LambdaExtensions
         {
             MemberExpression me = ExpressionProcessor.FindMemberExpression(expression.Body);
             return Restrictions.IsNotNull(me.Member.Name);
+        }
+
+        /// <summary>
+        /// Apply an "is empty" constraint to the named property
+        /// </summary>
+        /// <param name="expression">lambda expression returning type's property</param>
+        /// <returns>A NHibernate.Criterion.IsEmptyExpression.</returns>
+        public static ICriterion IsEmpty(Expression<Func<T, IEnumerable>> expression)
+        {
+            MemberExpression me = ExpressionProcessor.FindMemberExpression(expression.Body);
+            return Restrictions.IsEmpty(me.Member.Name);
+        }
+
+        /// <summary>
+        /// Apply an "is not empty" constraint to the named property
+        /// </summary>
+        /// <param name="expression">lambda expression returning type's property</param>
+        /// <returns>A NHibernate.Criterion.IsNotEmptyExpression.</returns>
+        public static ICriterion IsNotEmpty(Expression<Func<T, IEnumerable>> expression)
+        {
+            MemberExpression me = ExpressionProcessor.FindMemberExpression(expression.Body);
+            return Restrictions.IsNotEmpty(me.Member.Name);
         }
 
     }
