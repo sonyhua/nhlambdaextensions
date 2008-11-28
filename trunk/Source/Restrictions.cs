@@ -105,6 +105,20 @@ namespace NHibernate.LambdaExtensions
             return Restrictions.In(me.Member.Name, values);
         }
 
+        /// <summary>
+        /// Apply an "in" constraint to the named property.
+        /// </summary>
+        /// <typeparam name="U">Generic type</typeparam>
+        /// <param name="expression">lambda expression returning type's property</param>
+        /// <param name="values">An System.Collections.Generic.ICollection&lt;U> of values.</param>
+        /// <returns>An NHibernate.Criterion.InExpression.</returns>
+        public static ICriterion In<U>( Expression<Func<T, U>>  expression,
+                                        ICollection<U>          values)
+        {
+            MemberExpression me = ExpressionProcessor.FindMemberExpression(expression.Body);
+            return Restrictions.InG<U>(me.Member.Name, values);
+        }
+
     }
 
 }
