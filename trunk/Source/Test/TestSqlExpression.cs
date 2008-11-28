@@ -23,7 +23,7 @@ namespace NHibernate.LambdaExtensions.Test
         {
             DetachedCriteria expected =
                 DetachedCriteria.For<Person>()
-                    .Add(Expression.Between("Age", 5, 10));
+                    .Add(Restrictions.Between("Age", 5, 10));
 
             DetachedCriteria actual =
                 DetachedCriteria.For<Person>()

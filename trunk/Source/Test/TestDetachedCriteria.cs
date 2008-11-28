@@ -22,7 +22,7 @@ namespace NHibernate.LambdaExtensions.Test
         {
             DetachedCriteria expected =
                 DetachedCriteria.For<Person>()
-                    .Add(Expression.Eq("Name", "test name"));
+                    .Add(Restrictions.Eq("Name", "test name"));
 
             DetachedCriteria actual =
                 DetachedCriteria.For<Person>()
@@ -50,7 +50,7 @@ namespace NHibernate.LambdaExtensions.Test
         {
             DetachedCriteria expected =
                 DetachedCriteria.For<Person>()
-                    .Add(Expression.Eq("Name", "test name"))
+                    .Add(Restrictions.Eq("Name", "test name"))
                     .AddOrder(Order.Desc("Name"));
 
             DetachedCriteria actual =
