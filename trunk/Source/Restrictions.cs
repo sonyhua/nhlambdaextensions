@@ -14,20 +14,19 @@ namespace NHibernate.LambdaExtensions
     /// Provides extra Expression factory methods
     /// </summary>
     /// <remarks>
-    /// cannot inherit from NHibernate.Criterion.Expression cos it's sealed
+    /// cannot inherit from NHibernate.Criterion.Restrictions cos it's constructor is internal
     /// </remarks>
-    public class SqlExpression
+    public class Restrictions<T>
     {
 
         /// <summary>
         /// lamda expression for between
         /// </summary>
-        /// <typeparam name="T">type of expression</typeparam>
         /// <param name="expression">expression returning type's property</param>
         /// <param name="lo">low value of between</param>
         /// <param name="hi">high value of between</param>
         /// <returns></returns>
-        public static ICriterion Between<T>(Expression<Func<T, object>> expression,
+        public static ICriterion Between(   Expression<Func<T, object>> expression,
                                             object                      lo,
                                             object                      hi)
         {
