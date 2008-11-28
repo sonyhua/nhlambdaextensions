@@ -31,34 +31,34 @@ namespace NHibernate.LambdaExtensions
 
         private static ICriterion Eq(string propertyName, object value)
         {
-            return NHibernate.Criterion.Expression.Eq(propertyName, value);
+            return Restrictions.Eq(propertyName, value);
         }
         
         private static ICriterion Ne(string propertyName, object value)
         {
             return
-                NHibernate.Criterion.Expression.Not(
-                    NHibernate.Criterion.Expression.Eq(propertyName, value));
+                NHibernate.Criterion.Restrictions.Not(
+                    NHibernate.Criterion.Restrictions.Eq(propertyName, value));
         }
         
         private static ICriterion Gt(string propertyName, object value)
         {
-            return NHibernate.Criterion.Expression.Gt(propertyName, value);
+            return NHibernate.Criterion.Restrictions.Gt(propertyName, value);
         }
 
         private static ICriterion Ge(string propertyName, object value)
         {
-            return NHibernate.Criterion.Expression.Ge(propertyName, value);
+            return NHibernate.Criterion.Restrictions.Ge(propertyName, value);
         }
 
         private static ICriterion Lt(string propertyName, object value)
         {
-            return NHibernate.Criterion.Expression.Lt(propertyName, value);
+            return NHibernate.Criterion.Restrictions.Lt(propertyName, value);
         }
 
         private static ICriterion Le(string propertyName, object value)
         {
-            return NHibernate.Criterion.Expression.Le(propertyName, value);
+            return NHibernate.Criterion.Restrictions.Le(propertyName, value);
         }
 
         /// <summary>

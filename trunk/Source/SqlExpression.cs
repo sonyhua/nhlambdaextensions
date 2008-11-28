@@ -32,7 +32,7 @@ namespace NHibernate.LambdaExtensions
                                             object                      hi)
         {
             MemberExpression me = ExpressionProcessor.FindMemberExpression(expression.Body);
-            return NHibernate.Criterion.Expression.Between(me.Member.Name, lo, hi);
+            return Restrictions.Between(me.Member.Name, lo, hi);
         }
         
     }
