@@ -10,7 +10,7 @@ namespace NHibernate.LambdaExtensions.Test
 {
 
     [TestFixture]
-    public class TestLExtension : TestBase
+    public class TestRestrictions : TestBase
     {
 
         private void AssertCriteriaAreEqual(DetachedCriteria expected, DetachedCriteria actual)
@@ -112,6 +112,20 @@ namespace NHibernate.LambdaExtensions.Test
             DetachedCriteria actual =
                 DetachedCriteria.For<Person>()
                     .Add(Restrictions<Person>.In(p => p.Name, new string[] { "name1", "name2", "name3" }));
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
+        [Test]
+        public void Test_GenericIn()
+        {
+            DetachedCriteria expected =
+                DetachedCriteria.For<Person>()
+                    .Add(Restrictions.InG<int>("Age", new int[] { 1, 2, 3 }));
+
+            DetachedCriteria actual =
+                DetachedCriteria.For<Person>()
+                    .Add(Restrictions<Person>.In<int>(p => p.Age, new int[] { 1, 2, 3 }));
 
             AssertCriteriaAreEqual(expected, actual);
         }
