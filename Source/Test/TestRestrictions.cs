@@ -27,7 +27,7 @@ namespace NHibernate.LambdaExtensions.Test
 
             DetachedCriteria actual =
                 DetachedCriteria.For<Person>()
-                    .Add(SqlExpression.Between<Person>(p => p.Age, 5, 10));
+                    .Add(Restrictions<Person>.Between(p => p.Age, 5, 10));
 
             AssertCriteriaAreEqual(expected, actual);
         }
