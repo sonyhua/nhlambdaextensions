@@ -47,6 +47,28 @@ namespace NHibernate.LambdaExtensions
             return Restrictions.Like(me.Member.Name, value);
         }
         
+        /// <summary>
+        /// Apply an "is null" constraint to the named property
+        /// </summary>
+        /// <param name="expression">lambda expression returning type's property</param>
+        /// <returns>A NHibernate.Criterion.NullExpression.</returns>
+        public static ICriterion IsNull(Expression<Func<T, object>> expression)
+        {
+            MemberExpression me = ExpressionProcessor.FindMemberExpression(expression.Body);
+            return Restrictions.IsNull(me.Member.Name);
+        }
+
+        /// <summary>
+        /// Apply an "is not null" constraint to the named property
+        /// </summary>
+        /// <param name="expression">lambda expression returning type's property</param>
+        /// <returns>A NHibernate.Criterion.NotNullExpression.</returns>
+        public static ICriterion IsNotNull(Expression<Func<T, object>> expression)
+        {
+            MemberExpression me = ExpressionProcessor.FindMemberExpression(expression.Body);
+            return Restrictions.IsNotNull(me.Member.Name);
+        }
+
     }
 
 }
