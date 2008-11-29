@@ -16,6 +16,15 @@ namespace NHibernate.LambdaExtensions.Test
         private void AssertCriteriaAreEqual(ICriteria expected, ICriteria actual)
         {
             Assert.AreEqual(expected.ToString(), actual.ToString());
+            Assert.AreEqual(expected.Alias, actual.Alias);
+            Assert.AreEqual(expected.CriteriaClass, actual.CriteriaClass);
+            if (expected is Impl.CriteriaImpl.Subcriteria)
+            {
+                ICriteria expectedParent = ((Impl.CriteriaImpl.Subcriteria)expected).Parent;
+                ICriteria actualParent = ((Impl.CriteriaImpl.Subcriteria)actual).Parent;
+                AssertCriteriaAreEqual(expectedParent, actualParent);
+                Assert.AreEqual(((Impl.CriteriaImpl.Subcriteria)expected).Path, ((Impl.CriteriaImpl.Subcriteria)actual).Path);
+            }
         }
 
         private ICriteria CreateCriteria<T>()
@@ -146,6 +155,22 @@ namespace NHibernate.LambdaExtensions.Test
             ICriteria actual =
                 CreateCriteria<Person>()
                     .AddOrder<Person>(p => p.Age, Order.Asc);
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
+        [Test]
+        public void Test_CreateCriteriaAssociation()
+        {
+            ICriteria expected =
+                CreateCriteria<Person>()
+                    .CreateCriteria("Children")
+                        .Add(Restrictions.Eq("Nickname", "test"));
+
+            ICriteria actual =
+                CreateCriteria<Person>()
+                    .CreateCriteria((Person p) => p.Children)
+                        .Add<Child>(p => p.Nickname == "test");
 
             AssertCriteriaAreEqual(expected, actual);
         }
