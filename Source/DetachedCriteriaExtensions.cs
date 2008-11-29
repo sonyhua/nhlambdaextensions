@@ -48,6 +48,20 @@ namespace NHibernate.LambdaExtensions
             return criteria;
         }
 
+        /// <summary>
+        /// Create a new DetachedCriteria, "rooted" at the associated entity
+        /// </summary>
+        /// <typeparam name="T">Type (same as criteria type)</typeparam>
+        /// <param name="criteria">criteria instance</param>
+        /// <param name="expression">Lambda expression returning association path</param>
+        /// <returns>The created "sub criteria"</returns>
+        public static DetachedCriteria CreateCriteria<T>(   this DetachedCriteria       criteria,
+                                                            Expression<Func<T, object>> expression)
+        {
+            MemberExpression me = ExpressionProcessor.FindMemberExpression(expression.Body);
+            return criteria.CreateCriteria(me.Member.Name);
+        }
+
     }
 
 }
