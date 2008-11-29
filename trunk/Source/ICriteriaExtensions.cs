@@ -36,7 +36,7 @@ namespace NHibernate.LambdaExtensions
         /// </summary>
         /// <typeparam name="T">Type (same as criteria type)</typeparam>
         /// <param name="criteria">criteria instance</param>
-        /// <param name="expression">Lamba expression</param>
+        /// <param name="expression">Lambda expression</param>
         /// <param name="orderDelegate">Order delegate (direction)</param>
         /// <returns>criteria instance</returns>
         public static ICriteria AddOrder<T>(this ICriteria              criteria,
@@ -46,6 +46,20 @@ namespace NHibernate.LambdaExtensions
             Order order = ExpressionProcessor.ProcessOrder<T>(expression, orderDelegate);
             criteria.AddOrder(order);
             return criteria;
+        }
+
+        /// <summary>
+        /// Create a new NHibernate.ICriteria, "rooted" at the associated entity
+        /// </summary>
+        /// <typeparam name="T">Type (same as criteria type)</typeparam>
+        /// <param name="criteria">criteria instance</param>
+        /// <param name="expression">Lambda expression returning association path</param>
+        /// <returns>The created "sub criteria"</returns>
+        public static ICriteria CreateCriteria<T>(  this ICriteria              criteria,
+                                                    Expression<Func<T, object>> expression)
+        {
+            MemberExpression me = ExpressionProcessor.FindMemberExpression(expression.Body);
+            return criteria.CreateCriteria(me.Member.Name);
         }
 
     }
