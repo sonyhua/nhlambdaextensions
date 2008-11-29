@@ -15,15 +15,19 @@ namespace NHibernate.LambdaExtensions.Test
 
         private void AssertCriteriaAreEqual(ICriteria expected, ICriteria actual)
         {
+            expected = expected.GetCriteriaByAlias(expected.RootAlias);
+            actual = actual.GetCriteriaByAlias(expected.RootAlias);
             Assert.AreEqual(expected.ToString(), actual.ToString());
             Assert.AreEqual(expected.Alias, actual.Alias);
-            Assert.AreEqual(expected.CriteriaClass, actual.CriteriaClass);
-            if (expected is Impl.CriteriaImpl.Subcriteria)
+            Assert.AreEqual(expected.SubcriteriaList.Count, actual.SubcriteriaList.Count);
+
+            for (int i=0; i<expected.SubcriteriaList.Count; i++)
             {
-                ICriteria expectedParent = ((Impl.CriteriaImpl.Subcriteria)expected).Parent;
-                ICriteria actualParent = ((Impl.CriteriaImpl.Subcriteria)actual).Parent;
-                AssertCriteriaAreEqual(expectedParent, actualParent);
-                Assert.AreEqual(((Impl.CriteriaImpl.Subcriteria)expected).Path, ((Impl.CriteriaImpl.Subcriteria)actual).Path);
+                Impl.CriteriaImpl.Subcriteria expectedSubcriteria = (Impl.CriteriaImpl.Subcriteria)expected.SubcriteriaList[i];
+                Impl.CriteriaImpl.Subcriteria actualSubcriteria = (Impl.CriteriaImpl.Subcriteria)actual.SubcriteriaList[i];
+                Assert.AreEqual(expectedSubcriteria.ToString(), actualSubcriteria.ToString());
+                Assert.AreEqual(expectedSubcriteria.Alias, actualSubcriteria.Alias);
+                Assert.AreEqual(expectedSubcriteria.Path, actualSubcriteria.Path);
             }
         }
 
