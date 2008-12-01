@@ -52,7 +52,21 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
-        public void Test_EqWithMemberExpression()
+        public void Test_EqAlternativeSyntax()
+        {
+            ICriteria expected =
+                CreateCriteria<Person>()
+                    .Add(Restrictions.Eq("Name", "test name"));
+
+            ICriteria actual =
+                CreateCriteria<Person>()
+                    .Add((Person p) => p.Name == "test name");
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
+        [Test]
+        public void TestEqWithMemberExpression()
         {
             ICriteria expected =
                 CreateCriteria<Person>()
