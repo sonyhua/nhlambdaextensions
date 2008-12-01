@@ -80,7 +80,34 @@ namespace NHibernate.LambdaExtensions
 
                 return (MemberExpression)unaryExpression.Operand;
             }
+
             throw new Exception("Could not determine member from " + expression.ToString());
+        }
+
+        /// <summary>
+        /// Retrieves the MemberExpression from the expression's container
+        /// </summary>
+        /// <param name="expression">An expression tree that returns the member of a container</param>
+        /// <returns>The appropriate MemberExpression</returns>
+        public static MemberExpression FindMemberContainer(System.Linq.Expressions.Expression expression)
+        {
+            if (expression is MemberExpression)
+            {
+                MemberExpression me = (MemberExpression)expression;
+                return FindMemberExpression(me.Expression);
+            }
+
+            if (expression is UnaryExpression)
+            {
+                UnaryExpression unaryExpression = (UnaryExpression)expression;
+
+                if (unaryExpression.NodeType != ExpressionType.Convert)
+                    throw new Exception("Cannot interpret member container from " + expression.ToString());
+
+                return FindMemberContainer(unaryExpression.Operand);
+            }
+
+            throw new Exception("Could not determine member container from " + expression.ToString());
         }
 
         /// <summary>
@@ -119,7 +146,7 @@ namespace NHibernate.LambdaExtensions
             Order order = orderDelegate(me.Member.Name);
             return order;
         }
-        
+
     }
 
 }

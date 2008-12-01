@@ -62,6 +62,23 @@ namespace NHibernate.LambdaExtensions
             return criteria.CreateCriteria(me.Member.Name);
         }
 
+        /// <summary>
+        /// Join an association, assigning an alias to the joined entity
+        /// </summary>
+        /// <typeparam name="T">type of association</typeparam>
+        /// <param name="criteria">criteria instance</param>
+        /// <param name="expression">Lambda expression returning association path</param>
+        /// <param name="alias">Lambda expression returning alias reference</param>
+        /// <returns>criteria instance</returns>
+        public static ICriteria CreateAlias<T>( this ICriteria              criteria,
+                                                Expression<Func<T, object>> expression,
+                                                Expression<Func<object>>    alias)
+        {
+            MemberExpression me = ExpressionProcessor.FindMemberExpression(expression.Body);
+            MemberExpression aliasContainer = ExpressionProcessor.FindMemberExpression(alias.Body);
+            return criteria.CreateAlias(me.Member.Name, aliasContainer.Member.Name);
+        }
+
     }
 
 }
