@@ -9,6 +9,7 @@ namespace NHibernate.LambdaExtensions.Test
     {
         public string Name { get; protected set; }
         public int Age { get; protected set; }
+        public Person Father { get; protected set; }
         public IList<Child> Children { get; protected set; }
     }
 

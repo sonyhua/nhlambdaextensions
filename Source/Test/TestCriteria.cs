@@ -66,21 +66,6 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
-        public void TestEqWithMemberExpression()
-        {
-            ICriteria expected =
-                CreateCriteria<Person>()
-                    .Add(Restrictions.Eq("Name", "test name"));
-
-            string name = "test name";
-            ICriteria actual =
-                CreateCriteria<Person>()
-                    .Add<Person>(p => p.Name == name);
-
-            AssertCriteriaAreEqual(expected, actual);
-        }
-
-        [Test]
         public void Test_Gt()
         {
             ICriteria expected =
@@ -190,6 +175,21 @@ namespace NHibernate.LambdaExtensions.Test
                 CreateCriteria<Person>()
                     .CreateCriteria((Person p) => p.Children)
                         .Add<Child>(p => p.Nickname == "test");
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
+        [Test]
+        public void Test_CreateAlias()
+        {
+            ICriteria expected =
+                CreateCriteria<Person>()
+                    .CreateAlias("Father", "fatherAlias");
+
+            Person fatherAlias = null;
+            ICriteria actual =
+                CreateCriteria<Person>()
+                    .CreateAlias<Person>(p => p.Father, () => fatherAlias);
 
             AssertCriteriaAreEqual(expected, actual);
         }
