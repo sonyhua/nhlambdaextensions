@@ -13,11 +13,6 @@ namespace NHibernate.LambdaExtensions.Test
     public class TestRestrictions : TestBase
     {
 
-        private void AssertCriteriaAreEqual(DetachedCriteria expected, DetachedCriteria actual)
-        {
-            Assert.AreEqual(expected.ToString(), actual.ToString());
-        }
-
         [Test]
         public void Test_Between()
         {
