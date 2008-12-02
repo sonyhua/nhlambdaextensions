@@ -6,6 +6,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 
 using NHibernate.Criterion;
+using NHibernate.SqlCommand;
 
 namespace NHibernate.LambdaExtensions
 {
@@ -60,6 +61,22 @@ namespace NHibernate.LambdaExtensions
         {
             string path = ExpressionProcessor.FindMemberExpression(expression.Body);
             return criteria.CreateCriteria(path);
+        }
+
+        /// <summary>
+        /// Create a new DetachedCriteria, "rooted" at the associated entity
+        /// </summary>
+        /// <typeparam name="T">Type (same as criteria type)</typeparam>
+        /// <param name="criteria">criteria instance</param>
+        /// <param name="expression">Lambda expression returning association path</param>
+        /// <param name="joinType">The type of join to use</param>
+        /// <returns>The created "sub criteria"</returns>
+        public static DetachedCriteria CreateCriteria<T>(   this DetachedCriteria       criteria,
+                                                            Expression<Func<T, object>> expression,
+                                                            JoinType                    joinType)
+        {
+            string path = ExpressionProcessor.FindMemberExpression(expression.Body);
+            return criteria.CreateCriteria(path, joinType);
         }
 
         /// <summary>
