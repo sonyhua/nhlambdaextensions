@@ -97,6 +97,13 @@ namespace NHibernate.LambdaExtensions
             return member;
         }
 
+        private static bool EvaluatesToNull(System.Linq.Expressions.Expression expression)
+        {
+            var valueExpression = System.Linq.Expressions.Expression.Lambda(expression).Compile();
+            object value = valueExpression.DynamicInvoke();
+            return (value == null);
+        }
+
         private static bool IsMemberExpression(System.Linq.Expressions.Expression expression)
         {
             MemberExpression me = null;
@@ -123,7 +130,11 @@ namespace NHibernate.LambdaExtensions
                 return true;
 
             if (me.Expression.NodeType == ExpressionType.MemberAccess)
-                return true;
+            {
+                // if the member has a null value, it was an alias
+                if (EvaluatesToNull(me.Expression))
+                    return true;
+            }
 
             return false;
         }

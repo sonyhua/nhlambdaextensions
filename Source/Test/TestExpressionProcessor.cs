@@ -30,10 +30,20 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
-        public void TestEvaluateMemberExpression()
+        public void TestEvaluatePropertyExpression()
         {
             string testName = "testName";
             ICriterion criterion = ExpressionProcessor.ProcessExpression<Person>(p => p.Name == testName);
+            SimpleExpression simpleExpression = (SimpleExpression)criterion;
+            Assert.AreEqual("testName", simpleExpression.Value);
+        }
+
+        [Test]
+        public void TestEvaluateMemberExpression()
+        {
+            Person testPerson = new Person();
+            testPerson.Name = "testName";
+            ICriterion criterion = ExpressionProcessor.ProcessExpression<Person>(p => p.Name == testPerson.Name);
             SimpleExpression simpleExpression = (SimpleExpression)criterion;
             Assert.AreEqual("testName", simpleExpression.Value);
         }
