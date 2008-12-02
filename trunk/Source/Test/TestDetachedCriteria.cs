@@ -27,6 +27,7 @@ namespace NHibernate.LambdaExtensions.Test
                 Impl.CriteriaImpl.Subcriteria actualSubcriteria = (Impl.CriteriaImpl.Subcriteria)actual.SubcriteriaList[i];
                 Assert.AreEqual(expectedSubcriteria.Alias, actualSubcriteria.Alias);
                 Assert.AreEqual(expectedSubcriteria.Path, actualSubcriteria.Path);
+                Assert.AreEqual(expectedSubcriteria.JoinType, actualSubcriteria.JoinType);
                 Assert.AreEqual(expectedSubcriteria.ToString(), actualSubcriteria.ToString());
             }
         }
@@ -86,6 +87,22 @@ namespace NHibernate.LambdaExtensions.Test
             DetachedCriteria actual =
                 DetachedCriteria.For<Person>()
                     .CreateCriteria((Person p) => p.Children)
+                        .Add<Child>(p => p.Nickname == "test");
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
+        [Test]
+        public void Test_CreateCriteriaAssociationWithJoinType()
+        {
+            DetachedCriteria expected =
+                DetachedCriteria.For<Person>()
+                    .CreateCriteria("Children", NHibernate.SqlCommand.JoinType.LeftOuterJoin)
+                        .Add(Restrictions.Eq("Nickname", "test"));
+
+            DetachedCriteria actual =
+                DetachedCriteria.For<Person>()
+                    .CreateCriteria((Person p) => p.Children, NHibernate.SqlCommand.JoinType.LeftOuterJoin)
                         .Add<Child>(p => p.Nickname == "test");
 
             AssertCriteriaAreEqual(expected, actual);
