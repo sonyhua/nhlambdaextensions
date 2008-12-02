@@ -32,6 +32,10 @@ namespace NHibernate.LambdaExtensions
             _propertyExpressionCreators = new Dictionary<ExpressionType, Func<string, string, ICriterion>>();
             _propertyExpressionCreators[ExpressionType.Equal] = Restrictions.EqProperty;
             _propertyExpressionCreators[ExpressionType.NotEqual] = Restrictions.NotEqProperty;
+            _propertyExpressionCreators[ExpressionType.GreaterThan] = Restrictions.GtProperty;
+            _propertyExpressionCreators[ExpressionType.GreaterThanOrEqual] = Restrictions.GeProperty;
+            _propertyExpressionCreators[ExpressionType.LessThan] = Restrictions.LtProperty;
+            _propertyExpressionCreators[ExpressionType.LessThanOrEqual] = Restrictions.LeProperty;
         }
 
         private static ICriterion Eq(string propertyName, object value)

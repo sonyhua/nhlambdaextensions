@@ -228,6 +228,74 @@ namespace NHibernate.LambdaExtensions.Test
             AssertCriteriaAreEqual(expected, actual);
         }
 
+        [Test]
+        public void Test_AliasedGtProperty()
+        {
+            ICriteria expected =
+                CreateCriteria<Person>()
+                    .CreateAlias("Father", "fatherAlias")
+                    .Add(Expression.GtProperty("Age", "fatherAlias.Age"));
+
+            Person fatherAlias = null;
+            ICriteria actual =
+                CreateCriteria<Person>()
+                    .CreateAlias<Person>(p => p.Father, () => fatherAlias)
+                    .Add<Person>(p => p.Age > fatherAlias.Age);
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
+        [Test]
+        public void Test_AliasedGeProperty()
+        {
+            ICriteria expected =
+                CreateCriteria<Person>()
+                    .CreateAlias("Father", "fatherAlias")
+                    .Add(Expression.GeProperty("Age", "fatherAlias.Age"));
+
+            Person fatherAlias = null;
+            ICriteria actual =
+                CreateCriteria<Person>()
+                    .CreateAlias<Person>(p => p.Father, () => fatherAlias)
+                    .Add<Person>(p => p.Age >= fatherAlias.Age);
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
+        [Test]
+        public void Test_AliasedLtProperty()
+        {
+            ICriteria expected =
+                CreateCriteria<Person>()
+                    .CreateAlias("Father", "fatherAlias")
+                    .Add(Expression.LtProperty("Age", "fatherAlias.Age"));
+
+            Person fatherAlias = null;
+            ICriteria actual =
+                CreateCriteria<Person>()
+                    .CreateAlias<Person>(p => p.Father, () => fatherAlias)
+                    .Add<Person>(p => p.Age < fatherAlias.Age);
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
+        [Test]
+        public void Test_AliasedLeProperty()
+        {
+            ICriteria expected =
+                CreateCriteria<Person>()
+                    .CreateAlias("Father", "fatherAlias")
+                    .Add(Expression.LeProperty("Age", "fatherAlias.Age"));
+
+            Person fatherAlias = null;
+            ICriteria actual =
+                CreateCriteria<Person>()
+                    .CreateAlias<Person>(p => p.Father, () => fatherAlias)
+                    .Add<Person>(p => p.Age <= fatherAlias.Age);
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
     }
 
 }
