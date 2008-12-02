@@ -246,6 +246,21 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
+        public void Test_CreateAliasWithJoinType()
+        {
+            ICriteria expected =
+                CreateCriteria<Person>()
+                    .CreateAlias("Father", "fatherAlias", NHibernate.SqlCommand.JoinType.LeftOuterJoin);
+
+            Person fatherAlias = null;
+            ICriteria actual =
+                CreateCriteria<Person>()
+                    .CreateAlias<Person>(p => p.Father, () => fatherAlias, NHibernate.SqlCommand.JoinType.LeftOuterJoin);
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
+        [Test]
         public void Test_AliasedEqProperty()
         {
             ICriteria expected =
