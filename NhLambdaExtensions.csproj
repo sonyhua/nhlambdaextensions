@@ -35,6 +35,9 @@
     <Reference Include="nunit.framework">
       <HintPath>SDKs\nant-0.86\bin\lib\common\2.0\nunit.framework.dll</HintPath>
     </Reference>
+    <Reference Include="Rhino.Mocks">
+      <HintPath>SDKs\RhinoMocks/Rhino.Mocks.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
   <UsingTask AssemblyFile="SDKs\ExecParse\ExecParse.dll" TaskName="ExecParse.ExecParse" />

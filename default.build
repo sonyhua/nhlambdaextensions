@@ -41,6 +41,11 @@
         <include name="nunit.framework.dll" />
       </fileset>
     </copy>
+    <copy todir="${build.dir}">
+      <fileset basedir="SDKs\RhinoMocks">
+        <include name="Rhino.Mocks.*" />
+      </fileset>
+    </copy>
 
     <asminfo output="Source/AssemblyInfo.cs" language="CSharp">
       <imports>
@@ -84,6 +89,7 @@
         <include name="${build.dir}\nhibernate.dll" />
         <include name="${build.dir}\NHibernate.LambdaExtensions.dll" />
         <include name="${build.dir}\nunit.framework.dll" />
+        <include name="${build.dir}\Rhino.Mocks.dll" />
       </references>
 
       <sources>
