@@ -194,6 +194,23 @@ namespace NHibernate.LambdaExtensions.Test
             AssertCriteriaAreEqual(expected, actual);
         }
 
+        [Test]
+        public void Test_AliasedEqProperty()
+        {
+            ICriteria expected =
+                CreateCriteria<Person>()
+                    .CreateAlias("Children", "childAlias")
+                    .Add(Expression.EqProperty("Name", "childAlias.Nickname"));
+
+            Child childAlias = null;
+            ICriteria actual =
+                CreateCriteria<Person>()
+                    .CreateAlias<Person>(p => p.Children, () => childAlias)
+                    .Add<Person>(p => p.Name == childAlias.Nickname);
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
     }
 
 }

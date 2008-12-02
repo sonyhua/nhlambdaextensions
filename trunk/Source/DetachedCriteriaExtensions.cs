@@ -58,8 +58,8 @@ namespace NHibernate.LambdaExtensions
         public static DetachedCriteria CreateCriteria<T>(   this DetachedCriteria       criteria,
                                                             Expression<Func<T, object>> expression)
         {
-            MemberExpression me = ExpressionProcessor.FindMemberExpression(expression.Body);
-            return criteria.CreateCriteria(me.Member.Name);
+            string path = ExpressionProcessor.FindMemberExpression(expression.Body);
+            return criteria.CreateCriteria(path);
         }
 
         /// <summary>
@@ -74,9 +74,9 @@ namespace NHibernate.LambdaExtensions
                                                         Expression<Func<T, object>> expression,
                                                         Expression<Func<object>>    alias)
         {
-            MemberExpression me = ExpressionProcessor.FindMemberExpression(expression.Body);
-            MemberExpression aliasContainer = ExpressionProcessor.FindMemberExpression(alias.Body);
-            return criteria.CreateAlias(me.Member.Name, aliasContainer.Member.Name);
+            string path = ExpressionProcessor.FindMemberExpression(expression.Body);
+            string aliasContainer = ExpressionProcessor.FindMemberExpression(alias.Body);
+            return criteria.CreateAlias(path, aliasContainer);
         }
 
     }

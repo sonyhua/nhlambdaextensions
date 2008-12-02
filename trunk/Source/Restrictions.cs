@@ -31,8 +31,8 @@ namespace NHibernate.LambdaExtensions
                                             object                      lo,
                                             object                      hi)
         {
-            MemberExpression me = ExpressionProcessor.FindMemberExpression(expression.Body);
-            return Restrictions.Between(me.Member.Name, lo, hi);
+            string property = ExpressionProcessor.FindMemberExpression(expression.Body);
+            return Restrictions.Between(property, lo, hi);
         }
 
         /// <summary>
@@ -44,8 +44,8 @@ namespace NHibernate.LambdaExtensions
         public static ICriterion Like(  Expression<Func<T, object>> expression,
                                         object                      value)
         {
-            MemberExpression me = ExpressionProcessor.FindMemberExpression(expression.Body);
-            return Restrictions.Like(me.Member.Name, value);
+            string property = ExpressionProcessor.FindMemberExpression(expression.Body);
+            return Restrictions.Like(property, value);
         }
         
         /// <summary>
@@ -55,8 +55,8 @@ namespace NHibernate.LambdaExtensions
         /// <returns>A NHibernate.Criterion.NullExpression.</returns>
         public static ICriterion IsNull(Expression<Func<T, object>> expression)
         {
-            MemberExpression me = ExpressionProcessor.FindMemberExpression(expression.Body);
-            return Restrictions.IsNull(me.Member.Name);
+            string property = ExpressionProcessor.FindMemberExpression(expression.Body);
+            return Restrictions.IsNull(property);
         }
 
         /// <summary>
@@ -66,8 +66,8 @@ namespace NHibernate.LambdaExtensions
         /// <returns>A NHibernate.Criterion.NotNullExpression.</returns>
         public static ICriterion IsNotNull(Expression<Func<T, object>> expression)
         {
-            MemberExpression me = ExpressionProcessor.FindMemberExpression(expression.Body);
-            return Restrictions.IsNotNull(me.Member.Name);
+            string property = ExpressionProcessor.FindMemberExpression(expression.Body);
+            return Restrictions.IsNotNull(property);
         }
 
         /// <summary>
@@ -77,8 +77,8 @@ namespace NHibernate.LambdaExtensions
         /// <returns>A NHibernate.Criterion.IsEmptyExpression.</returns>
         public static ICriterion IsEmpty(Expression<Func<T, IEnumerable>> expression)
         {
-            MemberExpression me = ExpressionProcessor.FindMemberExpression(expression.Body);
-            return Restrictions.IsEmpty(me.Member.Name);
+            string property = ExpressionProcessor.FindMemberExpression(expression.Body);
+            return Restrictions.IsEmpty(property);
         }
 
         /// <summary>
@@ -88,8 +88,8 @@ namespace NHibernate.LambdaExtensions
         /// <returns>A NHibernate.Criterion.IsNotEmptyExpression.</returns>
         public static ICriterion IsNotEmpty(Expression<Func<T, IEnumerable>> expression)
         {
-            MemberExpression me = ExpressionProcessor.FindMemberExpression(expression.Body);
-            return Restrictions.IsNotEmpty(me.Member.Name);
+            string property = ExpressionProcessor.FindMemberExpression(expression.Body);
+            return Restrictions.IsNotEmpty(property);
         }
 
         /// <summary>
@@ -101,8 +101,8 @@ namespace NHibernate.LambdaExtensions
         public static ICriterion In(Expression<Func<T, object>> expression,
                                     ICollection                 values)
         {
-            MemberExpression me = ExpressionProcessor.FindMemberExpression(expression.Body);
-            return Restrictions.In(me.Member.Name, values);
+            string property = ExpressionProcessor.FindMemberExpression(expression.Body);
+            return Restrictions.In(property, values);
         }
 
         /// <summary>
@@ -115,8 +115,8 @@ namespace NHibernate.LambdaExtensions
         public static ICriterion In<U>( Expression<Func<T, U>>  expression,
                                         ICollection<U>          values)
         {
-            MemberExpression me = ExpressionProcessor.FindMemberExpression(expression.Body);
-            return Restrictions.InG<U>(me.Member.Name, values);
+            string property = ExpressionProcessor.FindMemberExpression(expression.Body);
+            return Restrictions.InG<U>(property, values);
         }
 
     }

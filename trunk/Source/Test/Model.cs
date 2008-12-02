@@ -7,15 +7,15 @@ namespace NHibernate.LambdaExtensions.Test
 
     public class Person
     {
-        public string Name { get; protected set; }
-        public int Age { get; protected set; }
-        public Person Father { get; protected set; }
-        public IList<Child> Children { get; protected set; }
+        public string Name { get; set; }
+        public int Age { get; set; }
+        public Person Father { get; set; }
+        public IList<Child> Children { get; set; }
     }
 
     public class Child
     {
-        public string Nickname { get; protected set; }
+        public string Nickname { get; set; }
     }
 
 }
