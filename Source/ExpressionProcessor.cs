@@ -62,14 +62,16 @@ namespace NHibernate.LambdaExtensions
         }
 
         /// <summary>
-        /// Retrieves the MemberExpression from the expression
+        /// Retrieves the name of the property from a member expression
         /// </summary>
-        /// <param name="expression">An expression tree that can contain either a member, or a conversion from a member</param>
-        /// <returns>The appropriate MemberExpression</returns>
-        public static MemberExpression FindMemberExpression(System.Linq.Expressions.Expression expression)
+        /// <param name="expression">An expression tree that can contain either a member, or a conversion from a member.
+        /// If the member is referenced from a ..., then the container is treated as an alias.</param>
+        /// <returns>The name of the member property</returns>
+        public static string FindMemberExpression(System.Linq.Expressions.Expression expression)
         {
+            MemberExpression me = null;
             if (expression is MemberExpression)
-                return (MemberExpression)expression;
+                me = (MemberExpression)expression;
 
             if (expression is UnaryExpression)
             {
@@ -78,23 +80,30 @@ namespace NHibernate.LambdaExtensions
                 if (unaryExpression.NodeType != ExpressionType.Convert)
                     throw new Exception("Cannot interpret member from " + expression.ToString());
 
-                return (MemberExpression)unaryExpression.Operand;
+                me = (MemberExpression)unaryExpression.Operand;
             }
 
-            throw new Exception("Could not determine member from " + expression.ToString());
+            if (me == null)
+                throw new Exception("Could not determine member from " + expression.ToString());
+
+            string member = me.Member.Name;
+
+            if (me.Expression.NodeType == ExpressionType.MemberAccess)
+            {
+                MemberExpression alias = (MemberExpression)me.Expression;
+                member = alias.Member.Name + "." + member;
+            }
+
+            return member;
         }
 
-        /// <summary>
-        /// Retrieves the MemberExpression from the expression's container
-        /// </summary>
-        /// <param name="expression">An expression tree that returns the member of a container</param>
-        /// <returns>The appropriate MemberExpression</returns>
-        public static MemberExpression FindMemberContainer(System.Linq.Expressions.Expression expression)
+        private static bool IsMemberExpression(System.Linq.Expressions.Expression expression)
         {
+            MemberExpression me = null;
+
             if (expression is MemberExpression)
             {
-                MemberExpression me = (MemberExpression)expression;
-                return FindMemberExpression(me.Expression);
+                me = (MemberExpression)expression;
             }
 
             if (expression is UnaryExpression)
@@ -102,12 +111,43 @@ namespace NHibernate.LambdaExtensions
                 UnaryExpression unaryExpression = (UnaryExpression)expression;
 
                 if (unaryExpression.NodeType != ExpressionType.Convert)
-                    throw new Exception("Cannot interpret member container from " + expression.ToString());
+                    throw new Exception("Cannot interpret member from " + expression.ToString());
 
-                return FindMemberContainer(unaryExpression.Operand);
+                me = (MemberExpression)unaryExpression.Operand;
             }
 
-            throw new Exception("Could not determine member container from " + expression.ToString());
+            if (me == null)
+                return false;
+
+            if (me.Expression.NodeType == ExpressionType.Parameter)
+                return true;
+
+            if (me.Expression.NodeType == ExpressionType.MemberAccess)
+                return true;
+
+            return false;
+        }
+
+        private static ICriterion ProcessSimpleExpression(BinaryExpression be)
+        {
+            string property = FindMemberExpression(be.Left);
+
+            var valueExpression = System.Linq.Expressions.Expression.Lambda(be.Right).Compile();
+            var value = valueExpression.DynamicInvoke();
+
+            if (!_simpleExpressionCreators.ContainsKey(be.NodeType))
+                throw new Exception("Unhandled expression type: " + be.NodeType);
+
+            Func<string, object, ICriterion> simpleExpressionCreator = _simpleExpressionCreators[be.NodeType];
+            ICriterion criterion = simpleExpressionCreator(property, value);
+            return criterion;
+        }
+
+        private static ICriterion ProcessMemberExpression(BinaryExpression be)
+        {
+            string leftProperty = FindMemberExpression(be.Left);
+            string rightProperty = FindMemberExpression(be.Right);
+            return NHibernate.Criterion.Restrictions.EqProperty(leftProperty, rightProperty);
         }
 
         /// <summary>
@@ -119,17 +159,11 @@ namespace NHibernate.LambdaExtensions
         public static ICriterion ProcessExpression<T>(Expression<Func<T, bool>> expression)
         {
             BinaryExpression be = (BinaryExpression)expression.Body;
-            MemberExpression me = FindMemberExpression(be.Left);
 
-            var valueExpression = System.Linq.Expressions.Expression.Lambda(be.Right).Compile();
-            var value = valueExpression.DynamicInvoke();
-
-            if (!_simpleExpressionCreators.ContainsKey(be.NodeType))
-                throw new Exception("Unhandled expression type: " + be.NodeType);
-
-            Func<string, object, ICriterion> simpleExpressionCreator = _simpleExpressionCreators[be.NodeType];
-            ICriterion criterion = simpleExpressionCreator(me.Member.Name, value);
-            return criterion;
+            if (IsMemberExpression(be.Right))
+                return ProcessMemberExpression(be);
+            else
+                return ProcessSimpleExpression(be);
         }
 
         /// <summary>
@@ -142,8 +176,8 @@ namespace NHibernate.LambdaExtensions
         public static Order ProcessOrder<T>(Expression<Func<T, object>> expression,
                                             Func<string, Order>         orderDelegate)
         {
-            MemberExpression me = FindMemberExpression(expression.Body);
-            Order order = orderDelegate(me.Member.Name);
+            string property = FindMemberExpression(expression.Body);
+            Order order = orderDelegate(property);
             return order;
         }
 
