@@ -109,6 +109,40 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
+        public void Test_CreateCriteriaAssociationWithAlias()
+        {
+            DetachedCriteria expected =
+                DetachedCriteria.For<Person>()
+                    .CreateCriteria("Children", "childAlias")
+                        .Add(Restrictions.Eq("Nickname", "test"));
+
+            Child childAlias = null;
+            DetachedCriteria actual =
+                DetachedCriteria.For<Person>()
+                    .CreateCriteria((Person p) => p.Children, () => childAlias)
+                        .Add<Child>(p => p.Nickname == "test");
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
+        [Test]
+        public void Test_CreateCriteriaAssociationWithAliasAndJoinType()
+        {
+            DetachedCriteria expected =
+                DetachedCriteria.For<Person>()
+                    .CreateCriteria("Children", "childAlias", NHibernate.SqlCommand.JoinType.LeftOuterJoin)
+                        .Add(Restrictions.Eq("Nickname", "test"));
+
+            Child childAlias = null;
+            DetachedCriteria actual =
+                DetachedCriteria.For<Person>()
+                    .CreateCriteria((Person p) => p.Children, () => childAlias, NHibernate.SqlCommand.JoinType.LeftOuterJoin)
+                        .Add<Child>(p => p.Nickname == "test");
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
+        [Test]
         public void Test_CreateAlias()
         {
             DetachedCriteria expected =
