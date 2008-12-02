@@ -80,6 +80,42 @@ namespace NHibernate.LambdaExtensions
         }
 
         /// <summary>
+        /// Create a new DetachedCriteria, "rooted" at the associated entity
+        /// </summary>
+        /// <typeparam name="T">Type (same as criteria type)</typeparam>
+        /// <param name="criteria">criteria instance</param>
+        /// <param name="expression">Lambda expression returning association path</param>
+        /// <param name="alias">Lambda expression returning alias reference</param>
+        /// <returns>The created "sub criteria"</returns>
+        public static DetachedCriteria CreateCriteria<T>(   this DetachedCriteria       criteria,
+                                                            Expression<Func<T, object>> expression,
+                                                            Expression<Func<object>>    alias)
+        {
+            string path = ExpressionProcessor.FindMemberExpression(expression.Body);
+            string aliasContainer = ExpressionProcessor.FindMemberExpression(alias.Body);
+            return criteria.CreateCriteria(path, aliasContainer);
+        }
+
+        /// <summary>
+        /// Create a new DetachedCriteria, "rooted" at the associated entity
+        /// </summary>
+        /// <typeparam name="T">Type (same as criteria type)</typeparam>
+        /// <param name="criteria">criteria instance</param>
+        /// <param name="expression">Lambda expression returning association path</param>
+        /// <param name="alias">Lambda expression returning alias reference</param>
+        /// <param name="joinType">The type of join to use</param>
+        /// <returns>The created "sub criteria"</returns>
+        public static DetachedCriteria CreateCriteria<T>(   this DetachedCriteria       criteria,
+                                                            Expression<Func<T, object>> expression,
+                                                            Expression<Func<object>>    alias,
+                                                            JoinType                    joinType)
+        {
+            string path = ExpressionProcessor.FindMemberExpression(expression.Body);
+            string aliasContainer = ExpressionProcessor.FindMemberExpression(alias.Body);
+            return criteria.CreateCriteria(path, aliasContainer, joinType);
+        }
+
+        /// <summary>
         /// Join an association, assigning an alias to the joined entity
         /// </summary>
         /// <typeparam name="T">type of association</typeparam>
