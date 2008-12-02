@@ -17,6 +17,7 @@ namespace NHibernate.LambdaExtensions
     {
 
         private readonly static IDictionary<ExpressionType, Func<string, object, ICriterion>> _simpleExpressionCreators = null;
+        private readonly static IDictionary<ExpressionType, Func<string, string, ICriterion>> _propertyExpressionCreators = null;
 
         static ExpressionProcessor()
         {
@@ -27,6 +28,10 @@ namespace NHibernate.LambdaExtensions
             _simpleExpressionCreators[ExpressionType.GreaterThanOrEqual] = Ge;
             _simpleExpressionCreators[ExpressionType.LessThan] = Lt;
             _simpleExpressionCreators[ExpressionType.LessThanOrEqual] = Le;
+
+            _propertyExpressionCreators = new Dictionary<ExpressionType, Func<string, string, ICriterion>>();
+            _propertyExpressionCreators[ExpressionType.Equal] = Restrictions.EqProperty;
+            _propertyExpressionCreators[ExpressionType.NotEqual] = Restrictions.NotEqProperty;
         }
 
         private static ICriterion Eq(string propertyName, object value)
@@ -147,7 +152,7 @@ namespace NHibernate.LambdaExtensions
             var value = valueExpression.DynamicInvoke();
 
             if (!_simpleExpressionCreators.ContainsKey(be.NodeType))
-                throw new Exception("Unhandled expression type: " + be.NodeType);
+                throw new Exception("Unhandled simple expression type: " + be.NodeType);
 
             Func<string, object, ICriterion> simpleExpressionCreator = _simpleExpressionCreators[be.NodeType];
             ICriterion criterion = simpleExpressionCreator(property, value);
@@ -158,7 +163,13 @@ namespace NHibernate.LambdaExtensions
         {
             string leftProperty = FindMemberExpression(be.Left);
             string rightProperty = FindMemberExpression(be.Right);
-            return NHibernate.Criterion.Restrictions.EqProperty(leftProperty, rightProperty);
+
+            if (!_propertyExpressionCreators.ContainsKey(be.NodeType))
+                throw new Exception("Unhandled property expression type: " + be.NodeType);
+
+            Func<string, string, ICriterion> propertyExpressionCreator = _propertyExpressionCreators[be.NodeType];
+            ICriterion criterion = propertyExpressionCreator(leftProperty, rightProperty);
+            return criterion;
         }
 
         /// <summary>
