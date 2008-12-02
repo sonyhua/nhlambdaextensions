@@ -57,6 +57,19 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
+        public void Test_CreateWithAlias()
+        {
+            DetachedCriteria expected =
+                DetachedCriteria.For<Person>("personAlias");
+
+            Person personAlias = null;
+            DetachedCriteria actual =
+                DetachedCriteria<Person>.Create(() => personAlias);
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
+        [Test]
         public void Test_CreateDetachedCriteriaAssociation()
         {
             DetachedCriteria expected =
