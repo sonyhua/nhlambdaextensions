@@ -66,6 +66,19 @@ namespace NHibernate.LambdaExtensions
         /// <summary>
         /// Create a new DetachedCriteria, "rooted" at the associated entity
         /// </summary>
+        /// <param name="criteria">criteria instance</param>
+        /// <param name="expression">Lambda expression returning association path</param>
+        /// <returns>The created "sub criteria"</returns>
+        public static DetachedCriteria CreateCriteria(  this DetachedCriteria       criteria,
+                                                        Expression<Func<object>>    expression)
+        {
+            string path = ExpressionProcessor.FindMemberExpression(expression.Body);
+            return criteria.CreateCriteria(path);
+        }
+
+        /// <summary>
+        /// Create a new DetachedCriteria, "rooted" at the associated entity
+        /// </summary>
         /// <typeparam name="T">Type (same as criteria type)</typeparam>
         /// <param name="criteria">criteria instance</param>
         /// <param name="expression">Lambda expression returning association path</param>
@@ -74,6 +87,21 @@ namespace NHibernate.LambdaExtensions
         public static DetachedCriteria CreateCriteria<T>(   this DetachedCriteria       criteria,
                                                             Expression<Func<T, object>> expression,
                                                             JoinType                    joinType)
+        {
+            string path = ExpressionProcessor.FindMemberExpression(expression.Body);
+            return criteria.CreateCriteria(path, joinType);
+        }
+
+        /// <summary>
+        /// Create a new DetachedCriteria, "rooted" at the associated entity
+        /// </summary>
+        /// <param name="criteria">criteria instance</param>
+        /// <param name="expression">Lambda expression returning association path</param>
+        /// <param name="joinType">The type of join to use</param>
+        /// <returns>The created "sub criteria"</returns>
+        public static DetachedCriteria CreateCriteria(  this DetachedCriteria       criteria,
+                                                        Expression<Func<object>>    expression,
+                                                        JoinType                    joinType)
         {
             string path = ExpressionProcessor.FindMemberExpression(expression.Body);
             return criteria.CreateCriteria(path, joinType);
@@ -99,6 +127,22 @@ namespace NHibernate.LambdaExtensions
         /// <summary>
         /// Create a new DetachedCriteria, "rooted" at the associated entity
         /// </summary>
+        /// <param name="criteria">criteria instance</param>
+        /// <param name="expression">Lambda expression returning association path</param>
+        /// <param name="alias">Lambda expression returning alias reference</param>
+        /// <returns>The created "sub criteria"</returns>
+        public static DetachedCriteria CreateCriteria(  this DetachedCriteria       criteria,
+                                                        Expression<Func<object>>    expression,
+                                                        Expression<Func<object>>    alias)
+        {
+            string path = ExpressionProcessor.FindMemberExpression(expression.Body);
+            string aliasContainer = ExpressionProcessor.FindMemberExpression(alias.Body);
+            return criteria.CreateCriteria(path, aliasContainer);
+        }
+
+        /// <summary>
+        /// Create a new DetachedCriteria, "rooted" at the associated entity
+        /// </summary>
         /// <typeparam name="T">Type (same as criteria type)</typeparam>
         /// <param name="criteria">criteria instance</param>
         /// <param name="expression">Lambda expression returning association path</param>
@@ -109,6 +153,24 @@ namespace NHibernate.LambdaExtensions
                                                             Expression<Func<T, object>> expression,
                                                             Expression<Func<object>>    alias,
                                                             JoinType                    joinType)
+        {
+            string path = ExpressionProcessor.FindMemberExpression(expression.Body);
+            string aliasContainer = ExpressionProcessor.FindMemberExpression(alias.Body);
+            return criteria.CreateCriteria(path, aliasContainer, joinType);
+        }
+
+        /// <summary>
+        /// Create a new DetachedCriteria, "rooted" at the associated entity
+        /// </summary>
+        /// <param name="criteria">criteria instance</param>
+        /// <param name="expression">Lambda expression returning association path</param>
+        /// <param name="alias">Lambda expression returning alias reference</param>
+        /// <param name="joinType">The type of join to use</param>
+        /// <returns>The created "sub criteria"</returns>
+        public static DetachedCriteria CreateCriteria(  this DetachedCriteria       criteria,
+                                                        Expression<Func<object>>    expression,
+                                                        Expression<Func<object>>    alias,
+                                                        JoinType                    joinType)
         {
             string path = ExpressionProcessor.FindMemberExpression(expression.Body);
             string aliasContainer = ExpressionProcessor.FindMemberExpression(alias.Body);

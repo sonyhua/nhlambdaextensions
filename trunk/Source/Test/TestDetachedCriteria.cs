@@ -136,6 +136,76 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
+        public void Test_CreateDetachedCriteriaAliasAssociation()
+        {
+            DetachedCriteria expected =
+                DetachedCriteria.For<Person>("personAlias")
+                    .CreateCriteria("personAlias.Children")
+                        .Add(Restrictions.Eq("Nickname", "test"));
+
+            Person personAlias = null;
+            DetachedCriteria actual =
+                DetachedCriteria<Person>.Create(() => personAlias)
+                    .CreateCriteria(() => personAlias.Children)
+                        .Add<Child>(c => c.Nickname == "test");
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
+        [Test]
+        public void Test_CreateCriteriaAliasAssociationWithJoinType()
+        {
+            DetachedCriteria expected =
+                DetachedCriteria.For<Person>("personAlias")
+                    .CreateCriteria("personAlias.Children", NHibernate.SqlCommand.JoinType.LeftOuterJoin)
+                        .Add(Restrictions.Eq("Nickname", "test"));
+
+            Person personAlias = null;
+            DetachedCriteria actual =
+                DetachedCriteria<Person>.Create(() => personAlias)
+                    .CreateCriteria(() => personAlias.Children, NHibernate.SqlCommand.JoinType.LeftOuterJoin)
+                        .Add<Child>(c => c.Nickname == "test");
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
+        [Test]
+        public void Test_CreateCriteriaAliasAssociationWithAlias()
+        {
+            DetachedCriteria expected =
+                DetachedCriteria.For<Person>("personAlias")
+                    .CreateCriteria("personAlias.Children", "childAlias")
+                        .Add(Restrictions.Eq("Nickname", "test"));
+
+            Person personAlias = null;
+            Child childAlias = null;
+            DetachedCriteria actual =
+                DetachedCriteria<Person>.Create(() => personAlias)
+                    .CreateCriteria(() => personAlias.Children, () => childAlias)
+                        .Add<Child>(c => c.Nickname == "test");
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
+        [Test]
+        public void Test_CreateCriteriaAliasAssociationWithAliasAndJoinType()
+        {
+            DetachedCriteria expected =
+                DetachedCriteria.For<Person>("personAlias")
+                    .CreateCriteria("personAlias.Children", "childAlias", NHibernate.SqlCommand.JoinType.LeftOuterJoin)
+                        .Add(Restrictions.Eq("Nickname", "test"));
+
+            Person personAlias = null;
+            Child childAlias = null;
+            DetachedCriteria actual =
+                DetachedCriteria<Person>.Create(() => personAlias)
+                    .CreateCriteria(() => personAlias.Children, () => childAlias, NHibernate.SqlCommand.JoinType.LeftOuterJoin)
+                        .Add<Child>(c => c.Nickname == "test");
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
+        [Test]
         public void Test_CreateAlias()
         {
             DetachedCriteria expected =
