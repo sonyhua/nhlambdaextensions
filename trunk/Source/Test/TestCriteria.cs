@@ -250,6 +250,76 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
+        public void Test_CreateCriteriaAliasAssociation()
+        {
+            ICriteria expected = CreateSession()
+                .CreateCriteria(typeof(Person), "personAlias")
+                    .CreateCriteria("personAlias.Children")
+                        .Add(Restrictions.Eq("Nickname", "test"));
+
+            Person personAlias = null;
+            ICriteria actual = CreateSession()
+                .CreateCriteria(typeof(Person), () => personAlias)
+                    .CreateCriteria(() => personAlias.Children)
+                        .Add<Child>(p => p.Nickname == "test");
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
+        [Test]
+        public void Test_CreateCriteriaAliasAssociationWithJoinType()
+        {
+            ICriteria expected = CreateSession()
+                .CreateCriteria(typeof(Person), "personAlias")
+                    .CreateCriteria("personAlias.Children", NHibernate.SqlCommand.JoinType.LeftOuterJoin)
+                        .Add(Restrictions.Eq("Nickname", "test"));
+
+            Person personAlias = null;
+            ICriteria actual = CreateSession()
+                .CreateCriteria(typeof(Person), () => personAlias)
+                    .CreateCriteria(() => personAlias.Children, NHibernate.SqlCommand.JoinType.LeftOuterJoin)
+                        .Add<Child>(p => p.Nickname == "test");
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
+        [Test]
+        public void Test_CreateCriteriaAliasAssociationWithAlias()
+        {
+            ICriteria expected = CreateSession()
+                .CreateCriteria(typeof(Person), "personAlias")
+                    .CreateCriteria("personAlias.Children", "childAlias")
+                        .Add(Restrictions.Eq("Nickname", "test"));
+
+            Person personAlias = null;
+            Child childAlias = null;
+            ICriteria actual = CreateSession()
+                .CreateCriteria(typeof(Person), () => personAlias)
+                    .CreateCriteria(() => personAlias.Children, () => childAlias)
+                        .Add<Child>(p => p.Nickname == "test");
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
+        [Test]
+        public void Test_CreateCriteriaAliasAssociationWithAliasAndJoinType()
+        {
+            ICriteria expected = CreateSession()
+                .CreateCriteria(typeof(Person), "personAlias")
+                    .CreateCriteria("personAlias.Children", "childAlias", NHibernate.SqlCommand.JoinType.LeftOuterJoin)
+                        .Add(Restrictions.Eq("Nickname", "test"));
+
+            Person personAlias = null;
+            Child childAlias = null;
+            ICriteria actual = CreateSession()
+                .CreateCriteria(typeof(Person), () => personAlias)
+                    .CreateCriteria(() => personAlias.Children, () => childAlias, NHibernate.SqlCommand.JoinType.LeftOuterJoin)
+                        .Add<Child>(p => p.Nickname == "test");
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
+        [Test]
         public void Test_CreateAlias()
         {
             ICriteria expected = CreateSession()
