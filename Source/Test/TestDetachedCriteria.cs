@@ -80,7 +80,7 @@ namespace NHibernate.LambdaExtensions.Test
             DetachedCriteria actual =
                 DetachedCriteria.For<Person>()
                     .CreateCriteria((Person p) => p.Children)
-                        .Add<Child>(p => p.Nickname == "test");
+                        .Add<Child>(c => c.Nickname == "test");
 
             AssertCriteriaAreEqual(expected, actual);
         }
@@ -96,7 +96,7 @@ namespace NHibernate.LambdaExtensions.Test
             DetachedCriteria actual =
                 DetachedCriteria.For<Person>()
                     .CreateCriteria((Person p) => p.Children, NHibernate.SqlCommand.JoinType.LeftOuterJoin)
-                        .Add<Child>(p => p.Nickname == "test");
+                        .Add<Child>(c => c.Nickname == "test");
 
             AssertCriteriaAreEqual(expected, actual);
         }
@@ -113,7 +113,7 @@ namespace NHibernate.LambdaExtensions.Test
             DetachedCriteria actual =
                 DetachedCriteria.For<Person>()
                     .CreateCriteria((Person p) => p.Children, () => childAlias)
-                        .Add<Child>(p => p.Nickname == "test");
+                        .Add<Child>(c => c.Nickname == "test");
 
             AssertCriteriaAreEqual(expected, actual);
         }
@@ -130,7 +130,7 @@ namespace NHibernate.LambdaExtensions.Test
             DetachedCriteria actual =
                 DetachedCriteria.For<Person>()
                     .CreateCriteria((Person p) => p.Children, () => childAlias, NHibernate.SqlCommand.JoinType.LeftOuterJoin)
-                        .Add<Child>(p => p.Nickname == "test");
+                        .Add<Child>(c => c.Nickname == "test");
 
             AssertCriteriaAreEqual(expected, actual);
         }
