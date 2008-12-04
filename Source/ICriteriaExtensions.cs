@@ -247,6 +247,36 @@ namespace NHibernate.LambdaExtensions
             return criteria.CreateAlias(path, aliasContainer, joinType);
         }
 
+        /// <summary>
+        /// Specify an association fetching strategy.
+        /// </summary>
+        /// <param name="criteria">criteria instance</param>
+        /// <param name="alias">Lambda expression returning alias reference</param>
+        /// <param name="fetchMode">The Fetch mode.</param>
+        /// <returns>criteria instance</returns>
+        public static ICriteria SetFetchMode(   this ICriteria              criteria,
+                                                Expression<Func<object>>    alias,
+                                                FetchMode                   fetchMode)
+        {
+            string aliasContainer = ExpressionProcessor.FindMemberExpression(alias.Body);
+            return criteria.SetFetchMode(aliasContainer, fetchMode);
+        }
+
+        /// <summary>
+        /// Set the lock mode of the aliased entity
+        /// </summary>
+        /// <param name="criteria">criteria instance</param>
+        /// <param name="alias">Lambda expression returning alias reference</param>
+        /// <param name="lockMode">the lock mode</param>
+        /// <returns>criteria instance</returns>
+        public static ICriteria SetLockMode(this ICriteria              criteria,
+                                            Expression<Func<object>>    alias,
+                                            LockMode                    lockMode)
+        {
+            string aliasContainer = ExpressionProcessor.FindMemberExpression(alias.Body);
+            return criteria.SetLockMode(aliasContainer, lockMode);
+        }
+
     }
 
 }
