@@ -235,6 +235,38 @@ namespace NHibernate.LambdaExtensions.Test
             AssertCriteriaAreEqual(expected, actual);
         }
 
+        [Test]
+        public void Test_CreateAliasFromAlias()
+        {
+            DetachedCriteria expected =
+                DetachedCriteria.For<Person>("personAlias")
+                    .CreateAlias("personAlias.Father", "fatherAlias");
+
+            Person personAlias = null;
+            Person fatherAlias = null;
+            DetachedCriteria actual =
+                DetachedCriteria<Person>.Create(() => personAlias)
+                    .CreateAlias(() => personAlias.Father, () => fatherAlias);
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
+        [Test]
+        public void Test_CreateAliasFromAliasWithJoinType()
+        {
+            DetachedCriteria expected =
+                DetachedCriteria.For<Person>("personAlias")
+                    .CreateAlias("personAlias.Father", "fatherAlias", NHibernate.SqlCommand.JoinType.LeftOuterJoin);
+
+            Person personAlias = null;
+            Person fatherAlias = null;
+            DetachedCriteria actual =
+                DetachedCriteria<Person>.Create(() => personAlias)
+                    .CreateAlias(() => personAlias.Father, () => fatherAlias, NHibernate.SqlCommand.JoinType.LeftOuterJoin);
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
     }
 
 }
