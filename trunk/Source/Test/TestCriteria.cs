@@ -382,6 +382,40 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
+        public void Test_SetFetchMode()
+        {
+            ICriteria expected = CreateSession()
+                .CreateCriteria(typeof(Person))
+                    .CreateAlias("Father", "fatherAlias")
+                    .SetFetchMode("fatherAlias", FetchMode.Eager);
+
+            Person fatherAlias = null;
+            ICriteria actual = CreateSession()
+                .CreateCriteria(typeof(Person))
+                    .CreateAlias<Person>(p => p.Father, () => fatherAlias)
+                    .SetFetchMode(() => fatherAlias, FetchMode.Eager);
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
+        [Test]
+        public void Test_SetLockMode()
+        {
+            ICriteria expected = CreateSession()
+                .CreateCriteria(typeof(Person))
+                    .CreateAlias("Father", "fatherAlias")
+                    .SetLockMode("fatherAlias", LockMode.Upgrade);
+
+            Person fatherAlias = null;
+            ICriteria actual = CreateSession()
+                .CreateCriteria(typeof(Person))
+                    .CreateAlias<Person>(p => p.Father, () => fatherAlias)
+                    .SetLockMode(() => fatherAlias, LockMode.Upgrade);
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
+        [Test]
         public void Test_AliasedEqProperty()
         {
             ICriteria expected = CreateSession()
