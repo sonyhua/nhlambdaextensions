@@ -64,6 +64,7 @@ namespace NHibernate.LambdaExtensions.Test
             actual = actual.GetCriteriaByAlias(actual.RootAlias);
             Assert.AreEqual(expected.Alias, actual.Alias);
             Assert.AreEqual(expected.CriteriaClass, actual.CriteriaClass);
+            AssertFetchModesAreEqual(expected.FetchModes, actual.FetchModes);
             Assert.AreEqual(expected.SubcriteriaList.Count, actual.SubcriteriaList.Count);
             Assert.AreEqual(expected.ToString(), actual.ToString());
 
