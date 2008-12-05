@@ -22,7 +22,7 @@ namespace NHibernate.LambdaExtensions.Test
 
             DetachedCriteria actual =
                 DetachedCriteria.For<Person>()
-                    .Add(Restrictions<Person>.Between(p => p.Age, 5, 10));
+                    .Add(SqlExpression.Between<Person>(p => p.Age, 5, 10));
 
             AssertCriteriaAreEqual(expected, actual);
         }
@@ -36,7 +36,7 @@ namespace NHibernate.LambdaExtensions.Test
 
             DetachedCriteria actual =
                 DetachedCriteria.For<Person>()
-                    .Add(Restrictions<Person>.Like(p => p.Name, "%test%"));
+                    .Add(SqlExpression.Like<Person>(p => p.Name, "%test%"));
 
             AssertCriteriaAreEqual(expected, actual);
         }
@@ -50,7 +50,7 @@ namespace NHibernate.LambdaExtensions.Test
 
             DetachedCriteria actual =
                 DetachedCriteria.For<Person>()
-                    .Add(Restrictions<Person>.IsNull(p => p.Name));
+                    .Add(SqlExpression.IsNull<Person>(p => p.Name));
 
             AssertCriteriaAreEqual(expected, actual);
         }
@@ -64,7 +64,7 @@ namespace NHibernate.LambdaExtensions.Test
 
             DetachedCriteria actual =
                 DetachedCriteria.For<Person>()
-                    .Add(Restrictions<Person>.IsNotNull(p => p.Name));
+                    .Add(SqlExpression.IsNotNull<Person>(p => p.Name));
 
             AssertCriteriaAreEqual(expected, actual);
         }
@@ -78,7 +78,7 @@ namespace NHibernate.LambdaExtensions.Test
 
             DetachedCriteria actual =
                 DetachedCriteria.For<Person>()
-                    .Add(Restrictions<Person>.IsEmpty(p => p.Children));
+                    .Add(SqlExpression.IsEmpty<Person>(p => p.Children));
 
             AssertCriteriaAreEqual(expected, actual);
         }
@@ -92,7 +92,7 @@ namespace NHibernate.LambdaExtensions.Test
 
             DetachedCriteria actual =
                 DetachedCriteria.For<Person>()
-                    .Add(Restrictions<Person>.IsNotEmpty(p => p.Children));
+                    .Add(SqlExpression.IsNotEmpty<Person>(p => p.Children));
 
             AssertCriteriaAreEqual(expected, actual);
         }
@@ -106,7 +106,7 @@ namespace NHibernate.LambdaExtensions.Test
 
             DetachedCriteria actual =
                 DetachedCriteria.For<Person>()
-                    .Add(Restrictions<Person>.In(p => p.Name, new string[] { "name1", "name2", "name3" }));
+                    .Add(SqlExpression.In<Person>(p => p.Name, new string[] { "name1", "name2", "name3" }));
 
             AssertCriteriaAreEqual(expected, actual);
         }
@@ -120,7 +120,7 @@ namespace NHibernate.LambdaExtensions.Test
 
             DetachedCriteria actual =
                 DetachedCriteria.For<Person>()
-                    .Add(Restrictions<Person>.In<int>(p => p.Age, new int[] { 1, 2, 3 }));
+                    .Add(SqlExpression.In<Person, int>(p => p.Age, new int[] { 1, 2, 3 }));
 
             AssertCriteriaAreEqual(expected, actual);
         }
