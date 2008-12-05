@@ -125,6 +125,18 @@ namespace NHibernate.LambdaExtensions
             return Restrictions.InG<U>(property, values);
         }
 
+        /// <summary>
+        /// Return the negation of an expression
+        /// </summary>
+        /// <typeparam name="T">Generic type</typeparam>
+        /// <param name="expression">Lambda expression</param>
+        /// <returns>A NHibernate.Criterion.NotExpression.</returns>
+        public static ICriterion Not<T>(Expression<Func<T, bool>> expression)
+        {
+            ICriterion criterion = ExpressionProcessor.ProcessExpression<T>(expression);
+            return Restrictions.Not(criterion);
+        }
+
     }
 
 }
