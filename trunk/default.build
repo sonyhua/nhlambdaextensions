@@ -29,19 +29,19 @@
 
   <target name="build">
 
-    <mkdir dir="${build.dir}"/>
-    <copy file="lgpl.txt" tofile="${build.dir}/NHibernate.LambdaExtensions.license.txt" />
-    <copy todir="${build.dir}">
+    <mkdir dir="${build.dir}\bin"/>
+    <copy file="lgpl.txt" tofile="${build.dir}\bin\NHibernate.LambdaExtensions.license.txt" />
+    <copy todir="${build.dir}\bin">
       <fileset basedir="SDKs\NHibernate\bin\net-2.0">
         <include name="*.*" />
       </fileset>
     </copy>
-    <copy todir="${build.dir}">
+    <copy todir="${build.dir}\bin">
       <fileset basedir="SDKs\nant-0.86\bin\lib\common\2.0\">
         <include name="nunit.framework.dll" />
       </fileset>
     </copy>
-    <copy todir="${build.dir}">
+    <copy todir="${build.dir}\bin">
       <fileset basedir="SDKs\RhinoMocks">
         <include name="Rhino.Mocks.*" />
       </fileset>
@@ -67,12 +67,12 @@
     <csc target="library"
          debug="${build.debug}"
          optimize="${optimize}"
-         output="${build.dir}\NHibernate.LambdaExtensions.dll"
-         doc="${build.dir}\NHibernate.LambdaExtensions.xml"
+         output="${build.dir}\bin\NHibernate.LambdaExtensions.dll"
+         doc="${build.dir}\bin\NHibernate.LambdaExtensions.xml"
          warnaserror="true">
 
       <references>
-        <include name="${build.dir}\nhibernate.dll" />
+        <include name="${build.dir}\bin\nhibernate.dll" />
       </references>
       <sources>
         <include name="Source\*.cs" />
@@ -82,14 +82,14 @@
     <csc target="library"
          debug="${build.debug}"
          optimize="${optimize}"
-         output="${build.dir}\NHibernate.LambdaExtensions.Test.dll"
+         output="${build.dir}\bin\NHibernate.LambdaExtensions.Test.dll"
          warnaserror="true">
 
       <references>
-        <include name="${build.dir}\nhibernate.dll" />
-        <include name="${build.dir}\NHibernate.LambdaExtensions.dll" />
-        <include name="${build.dir}\nunit.framework.dll" />
-        <include name="${build.dir}\Rhino.Mocks.dll" />
+        <include name="${build.dir}\bin\nhibernate.dll" />
+        <include name="${build.dir}\bin\NHibernate.LambdaExtensions.dll" />
+        <include name="${build.dir}\bin\nunit.framework.dll" />
+        <include name="${build.dir}\bin\Rhino.Mocks.dll" />
       </references>
 
       <sources>
@@ -104,7 +104,7 @@
       <formatter type="Xml" usefile="true" extension=".xml"/>
       <test>
         <assemblies>
-          <include name="${build.dir}\NHibernate.LambdaExtensions.Test.dll"/>
+          <include name="${build.dir}\bin\NHibernate.LambdaExtensions.Test.dll"/>
         </assemblies>
       </test>
     </nunit2>
@@ -113,7 +113,7 @@
 
   <target name="exportResults">
     <copy todir="build">
-      <fileset basedir="${build.dir}">
+      <fileset basedir="${build.dir}\bin">
         <include name="*-results.xml" />
       </fileset>
     </copy>
