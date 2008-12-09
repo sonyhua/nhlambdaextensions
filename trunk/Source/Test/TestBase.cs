@@ -14,7 +14,7 @@ namespace NHibernate.LambdaExtensions.Test
 
         private void AssertFetchModesAreEqual(IDictionary expected, IDictionary actual)
         {
-            Assert.AreEqual(expected.Keys.Count, actual.Keys.Count);
+            Assert.AreEqual(expected.Keys.Count, actual.Keys.Count, "FetchModes count mismatch");
             foreach (string expectedAlias in expected.Keys)
             {
                 Assert.IsTrue(actual.Contains(expectedAlias), "Expected alias " + expectedAlias);
@@ -26,7 +26,7 @@ namespace NHibernate.LambdaExtensions.Test
 
         private void AssertLockModesAreEqual(IDictionary expected, IDictionary actual)
         {
-            Assert.AreEqual(expected.Keys.Count, actual.Keys.Count);
+            Assert.AreEqual(expected.Keys.Count, actual.Keys.Count, "LockModes count mismatch");
             foreach (string expectedAlias in expected.Keys)
             {
                 Assert.IsTrue(actual.Contains(expectedAlias), "Expected alias " + expectedAlias);
