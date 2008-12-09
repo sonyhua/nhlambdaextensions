@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="NAntBuild" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-    <OutputPath>build\debug</OutputPath>
+    <OutputPath>build\debug\bin</OutputPath>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
     <ErrorReport>prompt</ErrorReport>
     <OutputType>Library</OutputType>
     <StartAction>Program</StartAction>
     <StartProgram>$(MSBuildProjectDirectory)\SDKs\nant-0.86\bin\lib\common\2.0\nunit-gui.exe</StartProgram>
-    <StartArguments>$(MSBuildProjectDirectory)\build\debug\NHibernate.LambdaExtensions.Test.dll</StartArguments>
+    <StartArguments>$(MSBuildProjectDirectory)\build\debug\bin\NHibernate.LambdaExtensions.Test.dll</StartArguments>
   </PropertyGroup>
   <ItemGroup>
     <None Include="**\*.build" />
