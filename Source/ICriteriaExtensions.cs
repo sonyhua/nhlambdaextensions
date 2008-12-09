@@ -280,6 +280,22 @@ namespace NHibernate.LambdaExtensions
         /// <summary>
         /// Specify an association fetching strategy.
         /// </summary>
+        /// <typeparam name="T">Type (same as criteria type)</typeparam>
+        /// <param name="criteria">criteria instance</param>
+        /// <param name="alias">Lambda expression returning alias reference</param>
+        /// <param name="fetchMode">The Fetch mode.</param>
+        /// <returns>criteria instance</returns>
+        public static ICriteria SetFetchMode<T>(this ICriteria              criteria,
+                                                Expression<Func<T, object>> alias,
+                                                FetchMode                   fetchMode)
+        {
+            string aliasContainer = ExpressionProcessor.FindMemberExpression(alias.Body);
+            return criteria.SetFetchMode(aliasContainer, fetchMode);
+        }
+
+        /// <summary>
+        /// Specify an association fetching strategy.
+        /// </summary>
         /// <param name="criteria">criteria instance</param>
         /// <param name="alias">Lambda expression returning alias reference</param>
         /// <param name="fetchMode">The Fetch mode.</param>
