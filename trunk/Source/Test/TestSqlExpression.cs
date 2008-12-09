@@ -140,6 +140,63 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
+        public void Test_And()
+        {
+            DetachedCriteria expected =
+                DetachedCriteria.For<Person>()
+                    .Add(Restrictions.And(
+                        Restrictions.Eq("Name", "test"),
+                        Restrictions.Gt("Age", 5)));
+
+            DetachedCriteria actual =
+                DetachedCriteria.For<Person>()
+                    .Add(Restrictions.And(
+                        SqlExpression.CriterionFor<Person>(p => p.Name == "test"),
+                        SqlExpression.CriterionFor<Person>(p => p.Age > 5)));
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
+        [Test]
+        public void Test_AndWithAlias()
+        {
+            DetachedCriteria expected =
+                DetachedCriteria.For<Person>()
+                    .CreateAlias("Father", "fatherAlias")
+                    .Add(Restrictions.And(
+                        Restrictions.Eq("Name", "test"),
+                        Restrictions.Gt("fatherAlias.Age", 5)));
+
+            Person fatherAlias = null;
+            DetachedCriteria actual =
+                DetachedCriteria.For<Person>()
+                    .CreateCriteria<Person>(p => p.Father, () => fatherAlias)
+                    .Add(Restrictions.And(
+                        SqlExpression.CriterionFor<Person>(p => p.Name == "test"),
+                        SqlExpression.CriterionFor(() => fatherAlias.Age > 5)));
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
+        [Test]
+        public void Test_Or()
+        {
+            DetachedCriteria expected =
+                DetachedCriteria.For<Person>()
+                    .Add(Restrictions.Or(
+                        Restrictions.Eq("Name", "test"),
+                        Restrictions.Gt("Age", 5)));
+
+            DetachedCriteria actual =
+                DetachedCriteria.For<Person>()
+                    .Add(Restrictions.Or(
+                        SqlExpression.CriterionFor<Person>(p => p.Name == "test"),
+                        SqlExpression.CriterionFor<Person>(p => p.Age > 5)));
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
+        [Test]
         public void Test_Conjunction()
         {
             DetachedCriteria expected =

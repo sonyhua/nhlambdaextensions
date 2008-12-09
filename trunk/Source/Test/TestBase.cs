@@ -44,7 +44,7 @@ namespace NHibernate.LambdaExtensions.Test
             AssertFetchModesAreEqual(expected.FetchModes, actual.FetchModes);
             AssertLockModesAreEqual(expected.LockModes, actual.LockModes);
             Assert.AreEqual(expected.CriteriaClass, actual.CriteriaClass);
-            Assert.AreEqual(expected.SubcriteriaList.Count, actual.SubcriteriaList.Count);
+            Assert.AreEqual(expected.SubcriteriaList.Count, actual.SubcriteriaList.Count, "Subcriteria count mismatch");
             Assert.AreEqual(expected.ToString(), actual.ToString());
 
             for (int i=0; i<expected.SubcriteriaList.Count; i++)
@@ -65,7 +65,7 @@ namespace NHibernate.LambdaExtensions.Test
             Assert.AreEqual(expected.Alias, actual.Alias);
             Assert.AreEqual(expected.CriteriaClass, actual.CriteriaClass);
             AssertFetchModesAreEqual(expected.FetchModes, actual.FetchModes);
-            Assert.AreEqual(expected.SubcriteriaList.Count, actual.SubcriteriaList.Count);
+            Assert.AreEqual(expected.SubcriteriaList.Count, actual.SubcriteriaList.Count, "Subcriteria count mismatch");
             Assert.AreEqual(expected.ToString(), actual.ToString());
 
             for (int i=0; i<expected.SubcriteriaList.Count; i++)
