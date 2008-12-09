@@ -28,6 +28,21 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
+        public void Test_BetweenUsingAlias()
+        {
+            DetachedCriteria expected =
+                DetachedCriteria.For<Person>("personAlias")
+                    .Add(Restrictions.Between("personAlias.Age", 5, 10));
+
+            Person personAlias = null;
+            DetachedCriteria actual =
+                DetachedCriteria<Person>.Create(() => personAlias)
+                    .Add(SqlExpression.Between(() => personAlias.Age, 5, 10));
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
+        [Test]
         public void Test_Like()
         {
             DetachedCriteria expected =
@@ -37,6 +52,21 @@ namespace NHibernate.LambdaExtensions.Test
             DetachedCriteria actual =
                 DetachedCriteria.For<Person>()
                     .Add(SqlExpression.Like<Person>(p => p.Name, "%test%"));
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
+        [Test]
+        public void Test_LikeUsingAlias()
+        {
+            DetachedCriteria expected =
+                DetachedCriteria.For<Person>("personAlias")
+                    .Add(Restrictions.Like("personAlias.Name", "%test%"));
+
+            Person personAlias = null;
+            DetachedCriteria actual =
+                DetachedCriteria<Person>.Create(() => personAlias)
+                    .Add(SqlExpression.Like(() => personAlias.Name, "%test%"));
 
             AssertCriteriaAreEqual(expected, actual);
         }
@@ -56,6 +86,21 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
+        public void Test_IsNullUsingAlias()
+        {
+            DetachedCriteria expected =
+                DetachedCriteria.For<Person>("personAlias")
+                    .Add(Restrictions.IsNull("personAlias.Name"));
+
+            Person personAlias = null;
+            DetachedCriteria actual =
+                DetachedCriteria<Person>.Create(() => personAlias)
+                    .Add(SqlExpression.IsNull(() => personAlias.Name));
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
+        [Test]
         public void Test_IsNotNull()
         {
             DetachedCriteria expected =
@@ -65,6 +110,21 @@ namespace NHibernate.LambdaExtensions.Test
             DetachedCriteria actual =
                 DetachedCriteria.For<Person>()
                     .Add(SqlExpression.IsNotNull<Person>(p => p.Name));
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
+        [Test]
+        public void Test_IsNotNullUsingAlias()
+        {
+            DetachedCriteria expected =
+                DetachedCriteria.For<Person>("personAlias")
+                    .Add(Restrictions.IsNotNull("personAlias.Name"));
+
+            Person personAlias = null;
+            DetachedCriteria actual =
+                DetachedCriteria<Person>.Create(() => personAlias)
+                    .Add(SqlExpression.IsNotNull(() => personAlias.Name));
 
             AssertCriteriaAreEqual(expected, actual);
         }
@@ -84,6 +144,21 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
+        public void Test_IsEmptyUsingAlias()
+        {
+            DetachedCriteria expected =
+                DetachedCriteria.For<Person>("personAlias")
+                    .Add(Restrictions.IsEmpty("personAlias.Children"));
+
+            Person personAlias = null;
+            DetachedCriteria actual =
+                DetachedCriteria<Person>.Create(() => personAlias)
+                    .Add(SqlExpression.IsEmpty(() => personAlias.Children));
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
+        [Test]
         public void Test_IsNotEmpty()
         {
             DetachedCriteria expected =
@@ -93,6 +168,21 @@ namespace NHibernate.LambdaExtensions.Test
             DetachedCriteria actual =
                 DetachedCriteria.For<Person>()
                     .Add(SqlExpression.IsNotEmpty<Person>(p => p.Children));
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
+        [Test]
+        public void Test_IsNotEmptyUsingAlias()
+        {
+            DetachedCriteria expected =
+                DetachedCriteria.For<Person>("personAlias")
+                    .Add(Restrictions.IsNotEmpty("personAlias.Children"));
+
+            Person personAlias = null;
+            DetachedCriteria actual =
+                DetachedCriteria<Person>.Create(() => personAlias)
+                    .Add(SqlExpression.IsNotEmpty(() => personAlias.Children));
 
             AssertCriteriaAreEqual(expected, actual);
         }
@@ -112,6 +202,21 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
+        public void Test_InUsingAlias()
+        {
+            DetachedCriteria expected =
+                DetachedCriteria.For<Person>("personAlias")
+                    .Add(Restrictions.In("personAlias.Name", new string[] { "name1", "name2", "name3" }));
+
+            Person personAlias = null;
+            DetachedCriteria actual =
+                DetachedCriteria<Person>.Create(() => personAlias)
+                    .Add(SqlExpression.In(() => personAlias.Name, new string[] { "name1", "name2", "name3" }));
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
+        [Test]
         public void Test_GenericIn()
         {
             DetachedCriteria expected =
@@ -126,6 +231,21 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
+        public void Test_GenericInUsingAlias()
+        {
+            DetachedCriteria expected =
+                DetachedCriteria.For<Person>("personAlias")
+                    .Add(Restrictions.InG<int>("personAlias.Age", new int[] { 1, 2, 3 }));
+
+            Person personAlias = null;
+            DetachedCriteria actual =
+                DetachedCriteria<Person>.Create(() => personAlias)
+                    .Add(SqlExpression.In<int>(() => personAlias.Age, new int[] { 1, 2, 3 }));
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
+        [Test]
         public void Test_Not()
         {
             DetachedCriteria expected =
@@ -135,6 +255,21 @@ namespace NHibernate.LambdaExtensions.Test
             DetachedCriteria actual =
                 DetachedCriteria.For<Person>()
                     .Add(SqlExpression.Not<Person>(p => p.Age > 5));
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
+        [Test]
+        public void Test_NotUsingAlias()
+        {
+            DetachedCriteria expected =
+                DetachedCriteria.For<Person>("personAlias")
+                    .Add(Restrictions.Not(Restrictions.Gt("personAlias.Age", 5)));
+
+            Person personAlias = null;
+            DetachedCriteria actual =
+                DetachedCriteria<Person>.Create(() => personAlias)
+                    .Add(SqlExpression.Not(() => personAlias.Age > 5));
 
             AssertCriteriaAreEqual(expected, actual);
         }
@@ -158,7 +293,7 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
-        public void Test_AndWithAlias()
+        public void Test_AndUsingAlias()
         {
             DetachedCriteria expected =
                 DetachedCriteria.For<Person>()
@@ -210,6 +345,25 @@ namespace NHibernate.LambdaExtensions.Test
                     .Add(Restrictions.Conjunction()
                             .Add<Person>(p => p.Name == "test")
                             .Add<Person>(p => p.Age > 5));
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
+        [Test]
+        public void Test_ConjunctionUsingAlias()
+        {
+            DetachedCriteria expected =
+                DetachedCriteria.For<Person>("personAlias")
+                    .Add(Restrictions.Conjunction()
+                            .Add(Restrictions.Eq("personAlias.Name", "test"))
+                            .Add(Restrictions.Gt("personAlias.Age", 5)));
+
+            Person personAlias = null;
+            DetachedCriteria actual =
+                DetachedCriteria<Person>.Create(() => personAlias)
+                    .Add(Restrictions.Conjunction()
+                            .Add(() => personAlias.Name == "test")
+                            .Add(() => personAlias.Age > 5));
 
             AssertCriteriaAreEqual(expected, actual);
         }
