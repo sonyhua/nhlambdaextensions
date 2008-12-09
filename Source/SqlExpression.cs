@@ -26,6 +26,29 @@ namespace NHibernate.LambdaExtensions
         protected SqlExpression() { }
 
         /// <summary>
+        /// Create an ICriterion for the supplied LambdaExpression
+        /// </summary>
+        /// <typeparam name="T">generic type</typeparam>
+        /// <param name="expression">lambda expression</param>
+        /// <returns>return NHibernate.Criterion.ICriterion</returns>
+        public static ICriterion CriterionFor<T>(Expression<Func<T, bool>> expression)
+        {
+            ICriterion criterion = ExpressionProcessor.ProcessExpression<T>(expression);
+            return criterion;
+        }
+
+        /// <summary>
+        /// Create an ICriterion for the supplied LambdaExpression
+        /// </summary>
+        /// <param name="expression">lambda expression</param>
+        /// <returns>return NHibernate.Criterion.ICriterion</returns>
+        public static ICriterion CriterionFor(Expression<Func<bool>> expression)
+        {
+            ICriterion criterion = ExpressionProcessor.ProcessExpression(expression);
+            return criterion;
+        }
+
+        /// <summary>
         /// Apply a "between" constraint to the named property
         /// </summary>
         /// <param name="expression">lambda expression returning type's property</param>

@@ -193,6 +193,21 @@ namespace NHibernate.LambdaExtensions
         }
 
         /// <summary>
+        /// Convert a lambda expression to NHibernate ICriterion
+        /// </summary>
+        /// <param name="expression">The lambda expression to convert</param>
+        /// <returns>NHibernate ICriterion</returns>
+        public static ICriterion ProcessExpression(Expression<Func<bool>> expression)
+        {
+            BinaryExpression be = (BinaryExpression)expression.Body;
+
+            if (IsMemberExpression(be.Right))
+                return ProcessMemberExpression(be);
+            else
+                return ProcessSimpleExpression(be);
+        }
+
+        /// <summary>
         /// Convert a lambda expression to NHibernate Order
         /// </summary>
         /// <typeparam name="T">The type of the lambda expression</typeparam>
