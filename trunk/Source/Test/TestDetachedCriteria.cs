@@ -302,6 +302,20 @@ namespace NHibernate.LambdaExtensions.Test
         {
             DetachedCriteria expected =
                 DetachedCriteria.For<Person>()
+                    .SetFetchMode("Father", FetchMode.Eager);
+
+            DetachedCriteria actual =
+                DetachedCriteria.For<Person>()
+                    .SetFetchMode<Person>(p => p.Father, FetchMode.Eager);
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
+        [Test]
+        public void Test_SetFetchModeUsingAlias()
+        {
+            DetachedCriteria expected =
+                DetachedCriteria.For<Person>()
                     .CreateAlias("Father", "fatherAlias")
                     .SetFetchMode("fatherAlias", FetchMode.Eager);
 

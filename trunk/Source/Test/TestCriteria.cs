@@ -418,6 +418,20 @@ namespace NHibernate.LambdaExtensions.Test
         {
             ICriteria expected = CreateSession()
                 .CreateCriteria(typeof(Person))
+                    .SetFetchMode("Father", FetchMode.Eager);
+
+            ICriteria actual = CreateSession()
+                .CreateCriteria(typeof(Person))
+                    .SetFetchMode<Person>(p => p.Father, FetchMode.Eager);
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
+        [Test]
+        public void Test_SetFetchModeUsingAlias()
+        {
+            ICriteria expected = CreateSession()
+                .CreateCriteria(typeof(Person))
                     .CreateAlias("Father", "fatherAlias")
                     .SetFetchMode("fatherAlias", FetchMode.Eager);
 
