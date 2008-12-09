@@ -64,6 +64,21 @@ namespace NHibernate.LambdaExtensions
         }
 
         /// <summary>
+        /// Apply a "between" constraint to the named property
+        /// </summary>
+        /// <param name="expression">lambda expression returning type's property</param>
+        /// <param name="lo">low value of between</param>
+        /// <param name="hi">high value of between</param>
+        /// <returns>A NHibernate.Criterion.BetweenExpression.</returns>
+        public static ICriterion Between(   Expression<Func<object>>    expression,
+                                            object                      lo,
+                                            object                      hi)
+        {
+            string property = ExpressionProcessor.FindMemberExpression(expression.Body);
+            return Restrictions.Between(property, lo, hi);
+        }
+
+        /// <summary>
         /// Apply a "like" constraint to the named property
         /// </summary>
         /// <param name="expression">lambda expression returning type's property</param>
@@ -71,6 +86,19 @@ namespace NHibernate.LambdaExtensions
         /// <returns>A NHibernate.Criterion.LikeExpression.</returns>
         public static ICriterion Like<T>(   Expression<Func<T, object>> expression,
                                             object                      value)
+        {
+            string property = ExpressionProcessor.FindMemberExpression(expression.Body);
+            return Restrictions.Like(property, value);
+        }
+        
+        /// <summary>
+        /// Apply a "like" constraint to the named property
+        /// </summary>
+        /// <param name="expression">lambda expression returning type's property</param>
+        /// <param name="value">The value for the Property.</param>
+        /// <returns>A NHibernate.Criterion.LikeExpression.</returns>
+        public static ICriterion Like(  Expression<Func<object>>    expression,
+                                        object                      value)
         {
             string property = ExpressionProcessor.FindMemberExpression(expression.Body);
             return Restrictions.Like(property, value);
@@ -88,11 +116,33 @@ namespace NHibernate.LambdaExtensions
         }
 
         /// <summary>
+        /// Apply an "is null" constraint to the named property
+        /// </summary>
+        /// <param name="expression">lambda expression returning type's property</param>
+        /// <returns>A NHibernate.Criterion.NullExpression.</returns>
+        public static ICriterion IsNull(Expression<Func<object>> expression)
+        {
+            string property = ExpressionProcessor.FindMemberExpression(expression.Body);
+            return Restrictions.IsNull(property);
+        }
+
+        /// <summary>
         /// Apply an "is not null" constraint to the named property
         /// </summary>
         /// <param name="expression">lambda expression returning type's property</param>
         /// <returns>A NHibernate.Criterion.NotNullExpression.</returns>
         public static ICriterion IsNotNull<T>(Expression<Func<T, object>> expression)
+        {
+            string property = ExpressionProcessor.FindMemberExpression(expression.Body);
+            return Restrictions.IsNotNull(property);
+        }
+
+        /// <summary>
+        /// Apply an "is not null" constraint to the named property
+        /// </summary>
+        /// <param name="expression">lambda expression returning type's property</param>
+        /// <returns>A NHibernate.Criterion.NotNullExpression.</returns>
+        public static ICriterion IsNotNull(Expression<Func<object>> expression)
         {
             string property = ExpressionProcessor.FindMemberExpression(expression.Body);
             return Restrictions.IsNotNull(property);
@@ -110,11 +160,33 @@ namespace NHibernate.LambdaExtensions
         }
 
         /// <summary>
+        /// Apply an "is empty" constraint to the named property
+        /// </summary>
+        /// <param name="expression">lambda expression returning type's property</param>
+        /// <returns>A NHibernate.Criterion.IsEmptyExpression.</returns>
+        public static ICriterion IsEmpty(Expression<Func<IEnumerable>> expression)
+        {
+            string property = ExpressionProcessor.FindMemberExpression(expression.Body);
+            return Restrictions.IsEmpty(property);
+        }
+
+        /// <summary>
         /// Apply an "is not empty" constraint to the named property
         /// </summary>
         /// <param name="expression">lambda expression returning type's property</param>
         /// <returns>A NHibernate.Criterion.IsNotEmptyExpression.</returns>
         public static ICriterion IsNotEmpty<T>(Expression<Func<T, IEnumerable>> expression)
+        {
+            string property = ExpressionProcessor.FindMemberExpression(expression.Body);
+            return Restrictions.IsNotEmpty(property);
+        }
+
+        /// <summary>
+        /// Apply an "is not empty" constraint to the named property
+        /// </summary>
+        /// <param name="expression">lambda expression returning type's property</param>
+        /// <returns>A NHibernate.Criterion.IsNotEmptyExpression.</returns>
+        public static ICriterion IsNotEmpty(Expression<Func<IEnumerable>> expression)
         {
             string property = ExpressionProcessor.FindMemberExpression(expression.Body);
             return Restrictions.IsNotEmpty(property);
@@ -128,6 +200,19 @@ namespace NHibernate.LambdaExtensions
         /// <returns>An NHibernate.Criterion.InExpression.</returns>
         public static ICriterion In<T>( Expression<Func<T, object>> expression,
                                         ICollection                 values)
+        {
+            string property = ExpressionProcessor.FindMemberExpression(expression.Body);
+            return Restrictions.In(property, values);
+        }
+
+        /// <summary>
+        /// Apply an "in" constraint to the named property
+        /// </summary>
+        /// <param name="expression">lambda expression returning type's property</param>
+        /// <param name="values">An ICollection of values.</param>
+        /// <returns>An NHibernate.Criterion.InExpression.</returns>
+        public static ICriterion In(Expression<Func<object>>    expression,
+                                    ICollection                 values)
         {
             string property = ExpressionProcessor.FindMemberExpression(expression.Body);
             return Restrictions.In(property, values);
@@ -149,6 +234,20 @@ namespace NHibernate.LambdaExtensions
         }
 
         /// <summary>
+        /// Apply an "in" constraint to the named property.
+        /// </summary>
+        /// <typeparam name="T">Generic type</typeparam>
+        /// <param name="expression">lambda expression returning type's property</param>
+        /// <param name="values">An System.Collections.Generic.ICollection&lt;T> of values.</param>
+        /// <returns>An NHibernate.Criterion.InExpression.</returns>
+        public static ICriterion In<T>( Expression<Func<T>> expression,
+                                        ICollection<T>      values)
+        {
+            string property = ExpressionProcessor.FindMemberExpression(expression.Body);
+            return Restrictions.InG<T>(property, values);
+        }
+
+        /// <summary>
         /// Return the negation of an expression
         /// </summary>
         /// <typeparam name="T">Generic type</typeparam>
@@ -157,6 +256,17 @@ namespace NHibernate.LambdaExtensions
         public static ICriterion Not<T>(Expression<Func<T, bool>> expression)
         {
             ICriterion criterion = ExpressionProcessor.ProcessExpression<T>(expression);
+            return Restrictions.Not(criterion);
+        }
+
+        /// <summary>
+        /// Return the negation of an expression
+        /// </summary>
+        /// <param name="expression">Lambda expression</param>
+        /// <returns>A NHibernate.Criterion.NotExpression.</returns>
+        public static ICriterion Not(Expression<Func<bool>> expression)
+        {
+            ICriterion criterion = ExpressionProcessor.ProcessExpression(expression);
             return Restrictions.Not(criterion);
         }
 

@@ -31,6 +31,20 @@ namespace NHibernate.LambdaExtensions
             return junction.Add(criterion);
         }
 
+        /// <summary>
+        /// Adds an NHibernate.Criterion.ICriterion to the list of NHibernate.Criterion.ICriterions
+        /// to junction together.
+        /// </summary>
+        /// <param name="junction">NHibernate junction</param>
+        /// <param name="expression">Lambda expression</param>
+        /// <returns>This NHibernate.Criterion.Junction instance.</returns>
+        public static Junction Add( this Junction           junction,
+                                    Expression<Func<bool>>  expression)
+        {
+            ICriterion criterion = ExpressionProcessor.ProcessExpression(expression);
+            return junction.Add(criterion);
+        }
+
     }
 
 }
