@@ -64,6 +64,22 @@ namespace NHibernate.LambdaExtensions
         }
 
         /// <summary>
+        /// Add order expressed as a lambda expression
+        /// </summary>
+        /// <param name="criteria">criteria instance</param>
+        /// <param name="expression">Lambda expression</param>
+        /// <param name="orderDelegate">Order delegate (direction)</param>
+        /// <returns>criteria instance</returns>
+        public static ICriteria AddOrder(   this ICriteria              criteria,
+                                            Expression<Func<object>>    expression,
+                                            Func<string, Order>         orderDelegate)
+        {
+            Order order = ExpressionProcessor.ProcessOrder(expression, orderDelegate);
+            criteria.AddOrder(order);
+            return criteria;
+        }
+
+        /// <summary>
         /// Create a new NHibernate.ICriteria, "rooted" at the associated entity
         /// </summary>
         /// <typeparam name="T">Type (same as criteria type)</typeparam>
