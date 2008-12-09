@@ -33,6 +33,20 @@ namespace NHibernate.LambdaExtensions
         }
 
         /// <summary>
+        /// Add criterion expressed as a lambda expression
+        /// </summary>
+        /// <param name="criteria">criteria instance</param>
+        /// <param name="expression">Lambda expression</param>
+        /// <returns>criteria instance</returns>
+        public static ICriteria Add(this ICriteria          criteria,
+                                    Expression<Func<bool>>  expression)
+        {
+            ICriterion criterion = ExpressionProcessor.ProcessExpression(expression);
+            criteria.Add(criterion);
+            return criteria;
+        }
+
+        /// <summary>
         /// Add order expressed as a lambda expression
         /// </summary>
         /// <typeparam name="T">Type (same as criteria type)</typeparam>
