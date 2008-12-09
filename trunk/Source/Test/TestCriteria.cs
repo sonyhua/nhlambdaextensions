@@ -86,6 +86,21 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
+        public void Test_EqWithAlias()
+        {
+            ICriteria expected = CreateSession()
+                .CreateCriteria(typeof(Person), "personAlias")
+                    .Add(Restrictions.Eq("personAlias.Name", "test name"));
+
+            Person personAlias = null;
+            ICriteria actual = CreateSession()
+                .CreateCriteria(typeof(Person), () => personAlias)
+                    .Add(() => personAlias.Name == "test name");
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
+        [Test]
         public void Test_Gt()
         {
             ICriteria expected = CreateSession()
