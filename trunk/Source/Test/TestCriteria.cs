@@ -199,6 +199,23 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
+        public void Test_OrderUsingAlias()
+        {
+            ICriteria expected = CreateSession()
+                .CreateCriteria(typeof(Person), "personAlias")
+                    .AddOrder(Order.Asc("personAlias.Name"))
+                    .AddOrder(Order.Desc("personAlias.Age"));
+
+            Person personAlias = null;
+            ICriteria actual = CreateSession()
+                .CreateCriteria(typeof(Person), () => personAlias)
+                    .AddOrder(() => personAlias.Name, Order.Asc)
+                    .AddOrder(() => personAlias.Age, Order.Desc);
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
+        [Test]
         public void Test_CreateCriteriaAssociation()
         {
             ICriteria expected = CreateSession()

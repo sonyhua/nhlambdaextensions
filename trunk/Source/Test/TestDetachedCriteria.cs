@@ -56,6 +56,21 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
+        public void TestOrderUsingAlias()
+        {
+            DetachedCriteria expected =
+                DetachedCriteria.For<Person>("personAlias")
+                    .AddOrder(Order.Desc("personAlias.Name"));
+
+            Person personAlias = null;
+            DetachedCriteria actual =
+                DetachedCriteria<Person>.Create(() => personAlias)
+                    .AddOrder(() => personAlias.Name, Order.Desc);
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
+        [Test]
         public void TestCombinedAddAndOrder()
         {
             DetachedCriteria expected =
