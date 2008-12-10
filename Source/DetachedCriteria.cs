@@ -21,6 +21,11 @@ namespace NHibernate.LambdaExtensions
     {
 
         /// <summary>
+        /// Protected constructor - class not for instantiation
+        /// </summary>
+        protected DetachedCriteria() { }
+
+        /// <summary>
         /// Create a DetachedCriteria with a strongly typed alias
         /// </summary>
         /// <param name="alias">Lambda expression returning alias reference</param>

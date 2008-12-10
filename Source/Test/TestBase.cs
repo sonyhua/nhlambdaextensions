@@ -36,6 +36,29 @@ namespace NHibernate.LambdaExtensions.Test
             }
         }
 
+        private void AssertProjectionsAreEqual(IProjection expected, IProjection actual)
+        {
+            if (expected == null)
+            {
+                Assert.IsNull(actual, "expected no projection");
+                return;
+            }
+
+            Assert.IsNotNull(actual, "expected projection, got null");
+
+            Assert.AreEqual(expected.ToString(), actual.ToString());
+            if (expected is ProjectionList)
+            {
+                ProjectionList expectedList = (ProjectionList)expected;
+                ProjectionList actualList = (ProjectionList)actual;
+                Assert.AreEqual(expectedList.Length, actualList.Length, "Projection count mismatch");
+                for (int i=0; i<expectedList.Length; i++)
+                {
+                    AssertProjectionsAreEqual(expectedList[i], actualList[i]);
+                }
+            }
+        }
+
         protected void AssertCriteriaAreEqual(ICriteria expected, ICriteria actual)
         {
             expected = expected.GetCriteriaByAlias(expected.RootAlias);
@@ -43,6 +66,7 @@ namespace NHibernate.LambdaExtensions.Test
             Assert.AreEqual(expected.Alias, actual.Alias);
             AssertFetchModesAreEqual(expected.FetchModes, actual.FetchModes);
             AssertLockModesAreEqual(expected.LockModes, actual.LockModes);
+            AssertProjectionsAreEqual(expected.Projection, actual.Projection);
             Assert.AreEqual(expected.CriteriaClass, actual.CriteriaClass);
             Assert.AreEqual(expected.SubcriteriaList.Count, actual.SubcriteriaList.Count, "Subcriteria count mismatch");
             Assert.AreEqual(expected.ToString(), actual.ToString());
@@ -65,6 +89,7 @@ namespace NHibernate.LambdaExtensions.Test
             Assert.AreEqual(expected.Alias, actual.Alias);
             Assert.AreEqual(expected.CriteriaClass, actual.CriteriaClass);
             AssertFetchModesAreEqual(expected.FetchModes, actual.FetchModes);
+            AssertProjectionsAreEqual(expected.Projection, actual.Projection);
             Assert.AreEqual(expected.SubcriteriaList.Count, actual.SubcriteriaList.Count, "Subcriteria count mismatch");
             Assert.AreEqual(expected.ToString(), actual.ToString());
 

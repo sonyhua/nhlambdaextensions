@@ -10,7 +10,7 @@ namespace NHibernate.LambdaExtensions.Test
 {
 
     [TestFixture]
-    public class TestRestrictions : TestBase
+    public class TestSqlExpression : TestBase
     {
 
         [Test]
