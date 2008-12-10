@@ -203,6 +203,64 @@ namespace NHibernate.LambdaExtensions.Test
             AssertCriteriaAreEqual(expected, actual);
         }
 
+        [Test]
+        public void Test_Max()
+        {
+            DetachedCriteria expected =
+                DetachedCriteria.For<Person>()
+                    .SetProjection(Projections.Max("Age"));
+
+            DetachedCriteria actual =
+                DetachedCriteria.For<Person>()
+                    .SetProjection(SafeProjection.Max<Person>(p => p.Age));
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
+        [Test]
+        public void Test_MaxUsingAlias()
+        {
+            DetachedCriteria expected =
+                DetachedCriteria.For<Person>("personAlias")
+                    .SetProjection(Projections.Max("personAlias.Age"));
+
+            Person personAlias = null;
+            DetachedCriteria actual =
+                DetachedCriteria<Person>.Create(() => personAlias)
+                    .SetProjection(SafeProjection.Max(() => personAlias.Age));
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
+        [Test]
+        public void Test_Min()
+        {
+            DetachedCriteria expected =
+                DetachedCriteria.For<Person>()
+                    .SetProjection(Projections.Min("Age"));
+
+            DetachedCriteria actual =
+                DetachedCriteria.For<Person>()
+                    .SetProjection(SafeProjection.Min<Person>(p => p.Age));
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
+        [Test]
+        public void Test_MinUsingAlias()
+        {
+            DetachedCriteria expected =
+                DetachedCriteria.For<Person>("personAlias")
+                    .SetProjection(Projections.Min("personAlias.Age"));
+
+            Person personAlias = null;
+            DetachedCriteria actual =
+                DetachedCriteria<Person>.Create(() => personAlias)
+                    .SetProjection(SafeProjection.Min(() => personAlias.Age));
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
     }
 
 }

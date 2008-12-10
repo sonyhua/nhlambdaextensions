@@ -150,6 +150,52 @@ namespace NHibernate.LambdaExtensions
             return Projections.GroupProperty(property);
         }
 
+        /// <summary>
+        /// Max projection
+        /// </summary>
+        /// <typeparam name="T">generic type</typeparam>
+        /// <param name="expression">lambda expression</param>
+        /// <returns>return NHibernate.Criterion.AggregateProjection</returns>
+        public static AggregateProjection Max<T>(Expression<Func<T, object>> expression)
+        {
+            string property = ExpressionProcessor.FindMemberExpression(expression.Body);
+            return Projections.Max(property);
+        }
+
+        /// <summary>
+        /// Max projection
+        /// </summary>
+        /// <param name="expression">lambda expression</param>
+        /// <returns>return NHibernate.Criterion.AggregateProjection</returns>
+        public static AggregateProjection Max(Expression<Func<object>> expression)
+        {
+            string property = ExpressionProcessor.FindMemberExpression(expression.Body);
+            return Projections.Max(property);
+        }
+
+        /// <summary>
+        /// Min projection
+        /// </summary>
+        /// <typeparam name="T">generic type</typeparam>
+        /// <param name="expression">lambda expression</param>
+        /// <returns>return NHibernate.Criterion.AggregateProjection</returns>
+        public static AggregateProjection Min<T>(Expression<Func<T, object>> expression)
+        {
+            string property = ExpressionProcessor.FindMemberExpression(expression.Body);
+            return Projections.Min(property);
+        }
+
+        /// <summary>
+        /// Min projection
+        /// </summary>
+        /// <param name="expression">lambda expression</param>
+        /// <returns>return NHibernate.Criterion.AggregateProjection</returns>
+        public static AggregateProjection Min(Expression<Func<object>> expression)
+        {
+            string property = ExpressionProcessor.FindMemberExpression(expression.Body);
+            return Projections.Min(property);
+        }
+
     }
 
 }
