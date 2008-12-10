@@ -127,6 +127,29 @@ namespace NHibernate.LambdaExtensions
             return Projections.CountDistinct(property);
         }
 
+        /// <summary>
+        /// Group property projection
+        /// </summary>
+        /// <typeparam name="T">generic type</typeparam>
+        /// <param name="expression">lambda expression</param>
+        /// <returns>return NHibernate.Criterion.PropertyProjection</returns>
+        public static PropertyProjection GroupProperty<T>(Expression<Func<T, object>> expression)
+        {
+            string property = ExpressionProcessor.FindMemberExpression(expression.Body);
+            return Projections.GroupProperty(property);
+        }
+
+        /// <summary>
+        /// Group property projection
+        /// </summary>
+        /// <param name="expression">lambda expression</param>
+        /// <returns>return NHibernate.Criterion.PropertyProjection</returns>
+        public static PropertyProjection GroupProperty(Expression<Func<object>> expression)
+        {
+            string property = ExpressionProcessor.FindMemberExpression(expression.Body);
+            return Projections.GroupProperty(property);
+        }
+
     }
 
 }

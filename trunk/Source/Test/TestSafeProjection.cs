@@ -174,6 +174,35 @@ namespace NHibernate.LambdaExtensions.Test
             AssertCriteriaAreEqual(expected, actual);
         }
 
+        [Test]
+        public void Test_GroupProperty()
+        {
+            DetachedCriteria expected =
+                DetachedCriteria.For<Person>()
+                    .SetProjection(Projections.GroupProperty("Name"));
+
+            DetachedCriteria actual =
+                DetachedCriteria.For<Person>()
+                    .SetProjection(SafeProjection.GroupProperty<Person>(p => p.Name));
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
+        [Test]
+        public void Test_GroupPropertyUsingAlias()
+        {
+            DetachedCriteria expected =
+                DetachedCriteria.For<Person>("personAlias")
+                    .SetProjection(Projections.GroupProperty("personAlias.Age"));
+
+            Person personAlias = null;
+            DetachedCriteria actual =
+                DetachedCriteria<Person>.Create(() => personAlias)
+                    .SetProjection(SafeProjection.GroupProperty(() => personAlias.Age));
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
     }
 
 }
