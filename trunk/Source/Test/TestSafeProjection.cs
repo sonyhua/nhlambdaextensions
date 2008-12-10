@@ -14,7 +14,7 @@ namespace NHibernate.LambdaExtensions.Test
     {
 
         [Test]
-        public void Test_SimpleProperty()
+        public void Test_Property()
         {
             DetachedCriteria expected =
                 DetachedCriteria.For<Person>()
@@ -28,7 +28,7 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
-        public void Test_PropertyAlias()
+        public void Test_PropertyUsingAlias()
         {
             DetachedCriteria expected =
                 DetachedCriteria.For<Person>()
@@ -68,6 +68,21 @@ namespace NHibernate.LambdaExtensions.Test
             DetachedCriteria actual =
                 DetachedCriteria.For<Person>()
                     .SetProjection(SafeProjection.Property<Person>(p => p.Age).As(() => ageAlias));
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
+        [Test]
+        public void Test_AliasedProperty()
+        {
+            DetachedCriteria expected =
+                DetachedCriteria.For<Person>("personAlias")
+                    .SetProjection(Projections.Property("personAlias.Age"));
+
+            Person personAlias = null;
+            DetachedCriteria actual =
+                DetachedCriteria<Person>.Create(() => personAlias)
+                    .SetProjection(SafeProjection.Property(() => personAlias.Age));
 
             AssertCriteriaAreEqual(expected, actual);
         }

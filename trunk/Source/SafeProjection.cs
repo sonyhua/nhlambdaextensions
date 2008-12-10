@@ -35,6 +35,17 @@ namespace NHibernate.LambdaExtensions
         }
 
         /// <summary>
+        /// Create an IProjection for the specified property expression
+        /// </summary>
+        /// <param name="expression">lambda expression</param>
+        /// <returns>return NHibernate.Criterion.PropertyProjection</returns>
+        public static PropertyProjection Property(Expression<Func<object>> expression)
+        {
+            string property = ExpressionProcessor.FindMemberExpression(expression.Body);
+            return Projections.Property(property);
+        }
+
+        /// <summary>
         /// Assign an alias to a projection by wrapping it
         /// </summary>
         /// <param name="projection">the projection to wrap</param>
