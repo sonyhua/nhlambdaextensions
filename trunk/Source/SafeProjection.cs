@@ -34,6 +34,18 @@ namespace NHibernate.LambdaExtensions
             return Projections.Property(property);
         }
 
+        /// <summary>
+        /// Assign an alias to a projection by wrapping it
+        /// </summary>
+        /// <param name="projection">the projection to wrap</param>
+        /// <param name="alias">LambdaExpression returning an alias</param>
+        /// <returns>return NHibernate.Criterion.IProjection</returns>
+        public static IProjection Alias(IProjection                 projection,
+                                        Expression<Func<object>>    alias)
+        {
+            string aliasContainer = ExpressionProcessor.FindMemberExpression(alias.Body);
+            return Projections.Alias(projection, aliasContainer);
+        }
 
     }
 
