@@ -13,7 +13,7 @@ namespace NHibernate.LambdaExtensions
     /// <summary>
     /// Converts lambda expressions to NHibernate criterion/order
     /// </summary>
-    public static class ExpressionProcessor
+    public class ExpressionProcessor
     {
 
         private readonly static IDictionary<ExpressionType, Func<string, object, ICriterion>> _simpleExpressionCreators = null;
@@ -37,6 +37,11 @@ namespace NHibernate.LambdaExtensions
             _propertyExpressionCreators[ExpressionType.LessThan] = Restrictions.LtProperty;
             _propertyExpressionCreators[ExpressionType.LessThanOrEqual] = Restrictions.LeProperty;
         }
+
+        /// <summary>
+        /// Protected constructor - class not for instantiation
+        /// </summary>
+        protected ExpressionProcessor() { }
 
         private static ICriterion Eq(string propertyName, object value)
         {
