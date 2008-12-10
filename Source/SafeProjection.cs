@@ -104,6 +104,29 @@ namespace NHibernate.LambdaExtensions
             return Projections.Count(property);
         }
 
+        /// <summary>
+        /// CountDistinct projection
+        /// </summary>
+        /// <typeparam name="T">generic type</typeparam>
+        /// <param name="expression">lambda expression</param>
+        /// <returns>return NHibernate.Criterion.CountProjection</returns>
+        public static CountProjection CountDistinct<T>(Expression<Func<T, object>> expression)
+        {
+            string property = ExpressionProcessor.FindMemberExpression(expression.Body);
+            return Projections.CountDistinct(property);
+        }
+
+        /// <summary>
+        /// CountDistinct projection
+        /// </summary>
+        /// <param name="expression">lambda expression</param>
+        /// <returns>return NHibernate.Criterion.CountProjection</returns>
+        public static CountProjection CountDistinct(Expression<Func<object>> expression)
+        {
+            string property = ExpressionProcessor.FindMemberExpression(expression.Body);
+            return Projections.CountDistinct(property);
+        }
+
     }
 
 }
