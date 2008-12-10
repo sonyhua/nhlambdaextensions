@@ -87,6 +87,35 @@ namespace NHibernate.LambdaExtensions.Test
             AssertCriteriaAreEqual(expected, actual);
         }
 
+        [Test]
+        public void Test_Avg()
+        {
+            DetachedCriteria expected =
+                DetachedCriteria.For<Person>()
+                    .SetProjection(Projections.Avg("Age"));
+
+            DetachedCriteria actual =
+                DetachedCriteria.For<Person>()
+                    .SetProjection(SafeProjection.Avg<Person>(p => p.Age));
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
+        [Test]
+        public void Test_AvgUsingAlias()
+        {
+            DetachedCriteria expected =
+                DetachedCriteria.For<Person>("personAlias")
+                    .SetProjection(Projections.Avg("personAlias.Age"));
+
+            Person personAlias = null;
+            DetachedCriteria actual =
+                DetachedCriteria<Person>.Create(() => personAlias)
+                    .SetProjection(SafeProjection.Avg(() => personAlias.Age));
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
     }
 
 }
