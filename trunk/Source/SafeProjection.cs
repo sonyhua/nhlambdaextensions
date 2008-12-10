@@ -27,8 +27,8 @@ namespace NHibernate.LambdaExtensions
         /// </summary>
         /// <typeparam name="T">generic type</typeparam>
         /// <param name="expression">lambda expression</param>
-        /// <returns>return NHibernate.Criterion.IProjection</returns>
-        public static IProjection Property<T>(Expression<Func<T, object>> expression)
+        /// <returns>return NHibernate.Criterion.PropertyProjection</returns>
+        public static PropertyProjection Property<T>(Expression<Func<T, object>> expression)
         {
             string property = ExpressionProcessor.FindMemberExpression(expression.Body);
             return Projections.Property(property);
