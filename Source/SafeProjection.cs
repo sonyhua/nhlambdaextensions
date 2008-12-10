@@ -58,6 +58,29 @@ namespace NHibernate.LambdaExtensions
             return Projections.Alias(projection, aliasContainer);
         }
 
+        /// <summary>
+        /// Average projection
+        /// </summary>
+        /// <typeparam name="T">generic type</typeparam>
+        /// <param name="expression">lambda expression</param>
+        /// <returns>return NHibernate.Criterion.AggregateProjection</returns>
+        public static AggregateProjection Avg<T>(Expression<Func<T, object>> expression)
+        {
+            string property = ExpressionProcessor.FindMemberExpression(expression.Body);
+            return Projections.Avg(property);
+        }
+
+        /// <summary>
+        /// Average projection
+        /// </summary>
+        /// <param name="expression">lambda expression</param>
+        /// <returns>return NHibernate.Criterion.AggregateProjection</returns>
+        public static AggregateProjection Avg(Expression<Func<object>> expression)
+        {
+            string property = ExpressionProcessor.FindMemberExpression(expression.Body);
+            return Projections.Avg(property);
+        }
+
     }
 
 }
