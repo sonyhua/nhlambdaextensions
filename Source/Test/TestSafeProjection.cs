@@ -116,6 +116,35 @@ namespace NHibernate.LambdaExtensions.Test
             AssertCriteriaAreEqual(expected, actual);
         }
 
+        [Test]
+        public void Test_Count()
+        {
+            DetachedCriteria expected =
+                DetachedCriteria.For<Person>()
+                    .SetProjection(Projections.Count("Age"));
+
+            DetachedCriteria actual =
+                DetachedCriteria.For<Person>()
+                    .SetProjection(SafeProjection.Count<Person>(p => p.Age));
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
+        [Test]
+        public void Test_CountUsingAlias()
+        {
+            DetachedCriteria expected =
+                DetachedCriteria.For<Person>("personAlias")
+                    .SetProjection(Projections.Count("personAlias.Age"));
+
+            Person personAlias = null;
+            DetachedCriteria actual =
+                DetachedCriteria<Person>.Create(() => personAlias)
+                    .SetProjection(SafeProjection.Count(() => personAlias.Age));
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
     }
 
 }

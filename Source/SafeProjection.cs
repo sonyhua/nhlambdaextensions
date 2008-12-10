@@ -81,6 +81,29 @@ namespace NHibernate.LambdaExtensions
             return Projections.Avg(property);
         }
 
+        /// <summary>
+        /// Count projection
+        /// </summary>
+        /// <typeparam name="T">generic type</typeparam>
+        /// <param name="expression">lambda expression</param>
+        /// <returns>return NHibernate.Criterion.CountProjection</returns>
+        public static CountProjection Count<T>(Expression<Func<T, object>> expression)
+        {
+            string property = ExpressionProcessor.FindMemberExpression(expression.Body);
+            return Projections.Count(property);
+        }
+
+        /// <summary>
+        /// Count projection
+        /// </summary>
+        /// <param name="expression">lambda expression</param>
+        /// <returns>return NHibernate.Criterion.CountProjection</returns>
+        public static CountProjection Count(Expression<Func<object>> expression)
+        {
+            string property = ExpressionProcessor.FindMemberExpression(expression.Body);
+            return Projections.Count(property);
+        }
+
     }
 
 }
