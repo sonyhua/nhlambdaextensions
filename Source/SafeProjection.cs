@@ -196,6 +196,29 @@ namespace NHibernate.LambdaExtensions
             return Projections.Min(property);
         }
 
+        /// <summary>
+        /// Sum projection
+        /// </summary>
+        /// <typeparam name="T">generic type</typeparam>
+        /// <param name="expression">lambda expression</param>
+        /// <returns>return NHibernate.Criterion.AggregateProjection</returns>
+        public static AggregateProjection Sum<T>(Expression<Func<T, object>> expression)
+        {
+            string property = ExpressionProcessor.FindMemberExpression(expression.Body);
+            return Projections.Sum(property);
+        }
+
+        /// <summary>
+        /// Sum projection
+        /// </summary>
+        /// <param name="expression">lambda expression</param>
+        /// <returns>return NHibernate.Criterion.AggregateProjection</returns>
+        public static AggregateProjection Sum(Expression<Func<object>> expression)
+        {
+            string property = ExpressionProcessor.FindMemberExpression(expression.Body);
+            return Projections.Sum(property);
+        }
+
     }
 
 }
