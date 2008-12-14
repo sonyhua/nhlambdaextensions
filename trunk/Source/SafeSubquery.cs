@@ -35,7 +35,7 @@ namespace NHibernate.LambdaExtensions
         }
 
         /// <summary>
-        /// Create ICriterion fo subquery expression using lambda syntax
+        /// Create ICriterion for subquery expression using lambda syntax
         /// </summary>
         /// <typeparam name="T">type of property</typeparam>
         /// <param name="expression">lambda expression</param>
@@ -43,6 +43,17 @@ namespace NHibernate.LambdaExtensions
         public static AbstractCriterion Where<T>(Expression<Func<T, bool>> expression)
         {
             AbstractCriterion criterion = ExpressionProcessor.ProcessSubquery<T>(expression);
+            return criterion;
+        }
+
+        /// <summary>
+        /// Create ICriterion for subquery expression using lambda syntax
+        /// </summary>
+        /// <param name="expression">lambda expression</param>
+        /// <returns>NHibernate.ICriterion.AbstractCriterion</returns>
+        public static AbstractCriterion Where(Expression<Func<bool>> expression)
+        {
+            AbstractCriterion criterion = ExpressionProcessor.ProcessSubquery(expression);
             return criterion;
         }
 

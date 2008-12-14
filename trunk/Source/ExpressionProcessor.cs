@@ -40,6 +40,7 @@ namespace NHibernate.LambdaExtensions
 
             _subqueryExpressionCreators = new Dictionary<ExpressionType, Func<string, DetachedCriteria, AbstractCriterion>>();
             _subqueryExpressionCreators[ExpressionType.Equal] = Subqueries.PropertyEq;
+            _subqueryExpressionCreators[ExpressionType.GreaterThan] = Subqueries.PropertyGt;
         }
 
         /// <summary>
@@ -269,6 +270,24 @@ namespace NHibernate.LambdaExtensions
         /// <param name="expression">lambda expression to convert</param>
         /// <returns>NHibernate.ICriterion.AbstractCriterion</returns>
         public static AbstractCriterion ProcessSubquery<T>(Expression<Func<T, bool>> expression)
+        {
+            BinaryExpression be = (BinaryExpression)expression.Body;
+            string property = FindMemberExpression(be.Left);
+            DetachedCriteria detachedCriteria = FindDetachedCriteria(be.Right);
+
+            if (!_subqueryExpressionCreators.ContainsKey(be.NodeType))
+                throw new Exception("Unhandled subquery expression type: " + be.NodeType);
+
+            Func<string, DetachedCriteria, AbstractCriterion> subqueryExpressionCreator = _subqueryExpressionCreators[be.NodeType];
+            return subqueryExpressionCreator(property, detachedCriteria);
+        }
+
+        /// <summary>
+        /// Convert a lambda expression to NHibernate subquery AbstractCriterion
+        /// </summary>
+        /// <param name="expression">lambda expression to convert</param>
+        /// <returns>NHibernate.ICriterion.AbstractCriterion</returns>
+        public static AbstractCriterion ProcessSubquery(Expression<Func<bool>> expression)
         {
             BinaryExpression be = (BinaryExpression)expression.Body;
             string property = FindMemberExpression(be.Left);
