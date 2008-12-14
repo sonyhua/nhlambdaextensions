@@ -10,7 +10,7 @@ namespace NHibernate.LambdaExtensions.Test
 {
 
     [TestFixture]
-    public class TestSafeSubquery : TestBase
+    public class TestLambdaSubquery : TestBase
     {
 
         // In
@@ -54,7 +54,7 @@ namespace NHibernate.LambdaExtensions.Test
 
             ICriteria actual = CreateSession()
                 .CreateCriteria(typeof(Person))
-                    .Add(SafeSubquery.Property<Person>(p => p.Name).Eq(DetachedCriteriaSubquery));
+                    .Add(LambdaSubquery.Property<Person>(p => p.Name).Eq(DetachedCriteriaSubquery));
 
             AssertCriteriaAreEqual(expected, actual);
         }
@@ -68,7 +68,7 @@ namespace NHibernate.LambdaExtensions.Test
 
             ICriteria actual = CreateSession()
                 .CreateCriteria(typeof(Person))
-                    .Add(SafeSubquery.Where<Person>(p => p.Name == DetachedCriteriaSubquery.As<string>()));
+                    .Add(LambdaSubquery.Where<Person>(p => p.Name == DetachedCriteriaSubquery.As<string>()));
 
             AssertCriteriaAreEqual(expected, actual);
         }
@@ -83,7 +83,7 @@ namespace NHibernate.LambdaExtensions.Test
             Person personAlias = null;
             ICriteria actual = CreateSession()
                 .CreateCriteria(typeof(Person), () => personAlias)
-                    .Add(SafeSubquery.Property(() => personAlias.Age).Gt(DetachedCriteriaSubquery));
+                    .Add(LambdaSubquery.Property(() => personAlias.Age).Gt(DetachedCriteriaSubquery));
 
             AssertCriteriaAreEqual(expected, actual);
         }
@@ -98,7 +98,7 @@ namespace NHibernate.LambdaExtensions.Test
             Person personAlias = null;
             ICriteria actual = CreateSession()
                 .CreateCriteria(typeof(Person), () => personAlias)
-                    .Add(SafeSubquery.Where(() => personAlias.Age > DetachedCriteriaSubquery.As<int>()));
+                    .Add(LambdaSubquery.Where(() => personAlias.Age > DetachedCriteriaSubquery.As<int>()));
 
             AssertCriteriaAreEqual(expected, actual);
         }

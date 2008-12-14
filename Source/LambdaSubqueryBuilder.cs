@@ -12,9 +12,9 @@ namespace NHibernate.LambdaExtensions
 {
 
     /// <summary>
-    /// Provides syntax extensions to allow building of subquery criterion for SafeSubquery class
+    /// Provides syntax extensions to allow building of subquery criterion for LambdaSubquery class
     /// </summary>
-    public class SafeSubqueryBuilder
+    public class LambdaSubqueryBuilder
     {
 
         private string _propertyName;
@@ -22,7 +22,7 @@ namespace NHibernate.LambdaExtensions
         /// <summary>
         /// Constructed with property name
         /// </summary>
-        public SafeSubqueryBuilder(string propertyName)
+        public LambdaSubqueryBuilder(string propertyName)
         {
             _propertyName = propertyName;
         }

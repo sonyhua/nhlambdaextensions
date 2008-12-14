@@ -10,7 +10,7 @@ namespace NHibernate.LambdaExtensions.Test
 {
 
     [TestFixture]
-    public class TestSafeProjection : TestBase
+    public class TestLambdaProjection : TestBase
     {
 
         [Test]
@@ -22,7 +22,7 @@ namespace NHibernate.LambdaExtensions.Test
 
             DetachedCriteria actual =
                 DetachedCriteria.For<Person>()
-                    .SetProjection(SafeProjection.Property<Person>(p => p.Name));
+                    .SetProjection(LambdaProjection.Property<Person>(p => p.Name));
 
             AssertCriteriaAreEqual(expected, actual);
         }
@@ -37,7 +37,7 @@ namespace NHibernate.LambdaExtensions.Test
             string nameAlias = null;
             DetachedCriteria actual =
                 DetachedCriteria.For<Person>()
-                    .SetProjection(SafeProjection.Alias(SafeProjection.Property<Person>(p => p.Name), () => nameAlias));
+                    .SetProjection(LambdaProjection.Alias(LambdaProjection.Property<Person>(p => p.Name), () => nameAlias));
 
             AssertCriteriaAreEqual(expected, actual);
         }
@@ -52,7 +52,7 @@ namespace NHibernate.LambdaExtensions.Test
             int ageAlias = 0;
             DetachedCriteria actual =
                 DetachedCriteria.For<Person>()
-                    .SetProjection(SafeProjection.Alias(SafeProjection.Property<Person>(p => p.Age), () => ageAlias));
+                    .SetProjection(LambdaProjection.Alias(LambdaProjection.Property<Person>(p => p.Age), () => ageAlias));
 
             AssertCriteriaAreEqual(expected, actual);
         }
@@ -67,7 +67,7 @@ namespace NHibernate.LambdaExtensions.Test
             int ageAlias = 0;
             DetachedCriteria actual =
                 DetachedCriteria.For<Person>()
-                    .SetProjection(SafeProjection.Property<Person>(p => p.Age).As(() => ageAlias));
+                    .SetProjection(LambdaProjection.Property<Person>(p => p.Age).As(() => ageAlias));
 
             AssertCriteriaAreEqual(expected, actual);
         }
@@ -82,7 +82,7 @@ namespace NHibernate.LambdaExtensions.Test
             Person personAlias = null;
             DetachedCriteria actual =
                 DetachedCriteria<Person>.Create(() => personAlias)
-                    .SetProjection(SafeProjection.Property(() => personAlias.Age));
+                    .SetProjection(LambdaProjection.Property(() => personAlias.Age));
 
             AssertCriteriaAreEqual(expected, actual);
         }
@@ -96,7 +96,7 @@ namespace NHibernate.LambdaExtensions.Test
 
             DetachedCriteria actual =
                 DetachedCriteria.For<Person>()
-                    .SetProjection(SafeProjection.Avg<Person>(p => p.Age));
+                    .SetProjection(LambdaProjection.Avg<Person>(p => p.Age));
 
             AssertCriteriaAreEqual(expected, actual);
         }
@@ -111,7 +111,7 @@ namespace NHibernate.LambdaExtensions.Test
             Person personAlias = null;
             DetachedCriteria actual =
                 DetachedCriteria<Person>.Create(() => personAlias)
-                    .SetProjection(SafeProjection.Avg(() => personAlias.Age));
+                    .SetProjection(LambdaProjection.Avg(() => personAlias.Age));
 
             AssertCriteriaAreEqual(expected, actual);
         }
@@ -125,7 +125,7 @@ namespace NHibernate.LambdaExtensions.Test
 
             DetachedCriteria actual =
                 DetachedCriteria.For<Person>()
-                    .SetProjection(SafeProjection.Count<Person>(p => p.Age));
+                    .SetProjection(LambdaProjection.Count<Person>(p => p.Age));
 
             AssertCriteriaAreEqual(expected, actual);
         }
@@ -140,7 +140,7 @@ namespace NHibernate.LambdaExtensions.Test
             Person personAlias = null;
             DetachedCriteria actual =
                 DetachedCriteria<Person>.Create(() => personAlias)
-                    .SetProjection(SafeProjection.Count(() => personAlias.Age));
+                    .SetProjection(LambdaProjection.Count(() => personAlias.Age));
 
             AssertCriteriaAreEqual(expected, actual);
         }
@@ -154,7 +154,7 @@ namespace NHibernate.LambdaExtensions.Test
 
             DetachedCriteria actual =
                 DetachedCriteria.For<Person>()
-                    .SetProjection(SafeProjection.CountDistinct<Person>(p => p.Name));
+                    .SetProjection(LambdaProjection.CountDistinct<Person>(p => p.Name));
 
             AssertCriteriaAreEqual(expected, actual);
         }
@@ -169,7 +169,7 @@ namespace NHibernate.LambdaExtensions.Test
             Person personAlias = null;
             DetachedCriteria actual =
                 DetachedCriteria<Person>.Create(() => personAlias)
-                    .SetProjection(SafeProjection.CountDistinct(() => personAlias.Age));
+                    .SetProjection(LambdaProjection.CountDistinct(() => personAlias.Age));
 
             AssertCriteriaAreEqual(expected, actual);
         }
@@ -183,7 +183,7 @@ namespace NHibernate.LambdaExtensions.Test
 
             DetachedCriteria actual =
                 DetachedCriteria.For<Person>()
-                    .SetProjection(SafeProjection.GroupProperty<Person>(p => p.Name));
+                    .SetProjection(LambdaProjection.GroupProperty<Person>(p => p.Name));
 
             AssertCriteriaAreEqual(expected, actual);
         }
@@ -198,7 +198,7 @@ namespace NHibernate.LambdaExtensions.Test
             Person personAlias = null;
             DetachedCriteria actual =
                 DetachedCriteria<Person>.Create(() => personAlias)
-                    .SetProjection(SafeProjection.GroupProperty(() => personAlias.Age));
+                    .SetProjection(LambdaProjection.GroupProperty(() => personAlias.Age));
 
             AssertCriteriaAreEqual(expected, actual);
         }
@@ -212,7 +212,7 @@ namespace NHibernate.LambdaExtensions.Test
 
             DetachedCriteria actual =
                 DetachedCriteria.For<Person>()
-                    .SetProjection(SafeProjection.Max<Person>(p => p.Age));
+                    .SetProjection(LambdaProjection.Max<Person>(p => p.Age));
 
             AssertCriteriaAreEqual(expected, actual);
         }
@@ -227,7 +227,7 @@ namespace NHibernate.LambdaExtensions.Test
             Person personAlias = null;
             DetachedCriteria actual =
                 DetachedCriteria<Person>.Create(() => personAlias)
-                    .SetProjection(SafeProjection.Max(() => personAlias.Age));
+                    .SetProjection(LambdaProjection.Max(() => personAlias.Age));
 
             AssertCriteriaAreEqual(expected, actual);
         }
@@ -241,7 +241,7 @@ namespace NHibernate.LambdaExtensions.Test
 
             DetachedCriteria actual =
                 DetachedCriteria.For<Person>()
-                    .SetProjection(SafeProjection.Min<Person>(p => p.Age));
+                    .SetProjection(LambdaProjection.Min<Person>(p => p.Age));
 
             AssertCriteriaAreEqual(expected, actual);
         }
@@ -256,7 +256,7 @@ namespace NHibernate.LambdaExtensions.Test
             Person personAlias = null;
             DetachedCriteria actual =
                 DetachedCriteria<Person>.Create(() => personAlias)
-                    .SetProjection(SafeProjection.Min(() => personAlias.Age));
+                    .SetProjection(LambdaProjection.Min(() => personAlias.Age));
 
             AssertCriteriaAreEqual(expected, actual);
         }
@@ -270,7 +270,7 @@ namespace NHibernate.LambdaExtensions.Test
 
             DetachedCriteria actual =
                 DetachedCriteria.For<Person>()
-                    .SetProjection(SafeProjection.Sum<Person>(p => p.Age));
+                    .SetProjection(LambdaProjection.Sum<Person>(p => p.Age));
 
             AssertCriteriaAreEqual(expected, actual);
         }
@@ -285,7 +285,7 @@ namespace NHibernate.LambdaExtensions.Test
             Person personAlias = null;
             DetachedCriteria actual =
                 DetachedCriteria<Person>.Create(() => personAlias)
-                    .SetProjection(SafeProjection.Sum(() => personAlias.Age));
+                    .SetProjection(LambdaProjection.Sum(() => personAlias.Age));
 
             AssertCriteriaAreEqual(expected, actual);
         }
