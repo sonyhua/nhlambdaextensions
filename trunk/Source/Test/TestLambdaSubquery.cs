@@ -162,6 +162,53 @@ namespace NHibernate.LambdaExtensions.Test
             AssertCriteriaAreEqual(expected, actual);
         }
 
+        [Test]
+        public void TestAllExpressionCombinations()
+        {
+            ICriteria expected = CreateSession()
+                .CreateCriteria(typeof(Person), "personAlias")
+                    .Add(Subqueries.PropertyEq("personAlias.Age", DetachedCriteriaSubquery))
+                    .Add(Subqueries.PropertyNe("Age", DetachedCriteriaSubquery))
+                    .Add(Subqueries.PropertyGt("Age", DetachedCriteriaSubquery))
+                    .Add(Subqueries.PropertyGe("Age", DetachedCriteriaSubquery))
+                    .Add(Subqueries.PropertyLt("Age", DetachedCriteriaSubquery))
+                    .Add(Subqueries.PropertyLe("Age", DetachedCriteriaSubquery))
+
+                    .Add(Subqueries.PropertyEqAll("personAlias.Age", DetachedCriteriaSubquery))
+                    .Add(Subqueries.PropertyGtAll("Age", DetachedCriteriaSubquery))
+                    .Add(Subqueries.PropertyGeAll("Age", DetachedCriteriaSubquery))
+                    .Add(Subqueries.PropertyLtAll("Age", DetachedCriteriaSubquery))
+                    .Add(Subqueries.PropertyLeAll("Age", DetachedCriteriaSubquery))
+
+                    .Add(Subqueries.PropertyGtSome("personAlias.Age", DetachedCriteriaSubquery))
+                    .Add(Subqueries.PropertyGeSome("Age", DetachedCriteriaSubquery))
+                    .Add(Subqueries.PropertyLtSome("Age", DetachedCriteriaSubquery))
+                    .Add(Subqueries.PropertyLeSome("Age", DetachedCriteriaSubquery));
+
+            Person personAlias = null;
+            ICriteria actual = CreateSession()
+                .CreateCriteria(typeof(Person), () => personAlias)
+                    .Add(LambdaSubquery.Where(() => personAlias.Age == DetachedCriteriaSubquery.As<int>()))
+                    .Add(LambdaSubquery.Where<Person>(p => p.Age != DetachedCriteriaSubquery.As<int>()))
+                    .Add(LambdaSubquery.Where<Person>(p => p.Age > DetachedCriteriaSubquery.As<int>()))
+                    .Add(LambdaSubquery.Where<Person>(p => p.Age >= DetachedCriteriaSubquery.As<int>()))
+                    .Add(LambdaSubquery.Where<Person>(p => p.Age < DetachedCriteriaSubquery.As<int>()))
+                    .Add(LambdaSubquery.Where<Person>(p => p.Age <= DetachedCriteriaSubquery.As<int>()))
+
+                    .Add(LambdaSubquery.WhereAll(() => personAlias.Age == DetachedCriteriaSubquery.As<int>()))
+                    .Add(LambdaSubquery.WhereAll<Person>(p => p.Age > DetachedCriteriaSubquery.As<int>()))
+                    .Add(LambdaSubquery.WhereAll<Person>(p => p.Age >= DetachedCriteriaSubquery.As<int>()))
+                    .Add(LambdaSubquery.WhereAll<Person>(p => p.Age < DetachedCriteriaSubquery.As<int>()))
+                    .Add(LambdaSubquery.WhereAll<Person>(p => p.Age <= DetachedCriteriaSubquery.As<int>()))
+
+                    .Add(LambdaSubquery.WhereSome(() => personAlias.Age > DetachedCriteriaSubquery.As<int>()))
+                    .Add(LambdaSubquery.WhereSome<Person>(p => p.Age >= DetachedCriteriaSubquery.As<int>()))
+                    .Add(LambdaSubquery.WhereSome<Person>(p => p.Age < DetachedCriteriaSubquery.As<int>()))
+                    .Add(LambdaSubquery.WhereSome<Person>(p => p.Age <= DetachedCriteriaSubquery.As<int>()));
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
     }
 
 }
