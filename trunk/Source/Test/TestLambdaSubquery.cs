@@ -103,6 +103,20 @@ namespace NHibernate.LambdaExtensions.Test
             AssertCriteriaAreEqual(expected, actual);
         }
 
+        [Test]
+        public void Test_PropertyEqAll()
+        {
+            ICriteria expected = CreateSession()
+                .CreateCriteria(typeof(Person))
+                    .Add(Subqueries.PropertyEqAll("Name", DetachedCriteriaSubquery));
+
+            ICriteria actual = CreateSession()
+                .CreateCriteria(typeof(Person))
+                    .Add(LambdaSubquery.WhereAll<Person>(p => p.Name == DetachedCriteriaSubquery.As<string>()));
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
     }
 
 }
