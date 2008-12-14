@@ -14,13 +14,13 @@ namespace NHibernate.LambdaExtensions
     /// <summary>
     /// Provides typesafe projections using lambda expressions to express properties
     /// </summary>
-    public class SafeProjection
+    public class LambdaProjection
     {
 
         /// <summary>
         /// Protected constructor - class not for instantiation
         /// </summary>
-        protected SafeProjection() { }
+        protected LambdaProjection() { }
 
         /// <summary>
         /// Create an IProjection for the specified property expression
