@@ -6,43 +6,12 @@ using NHibernate.Criterion;
 
 using NUnit.Framework;
 
-using Rhino.Mocks;
-
 namespace NHibernate.LambdaExtensions.Test
 {
 
     [TestFixture]
     public class TestCriteria : TestBase
     {
-
-        private ICriteria CreateCriteriaStub(System.Type persistentType)
-        {
-            return new NHibernate.Impl.CriteriaImpl(persistentType, null);
-        }
-
-        private ICriteria CreateCriteriaStub(System.Type persistentType, string alias)
-        {
-            return new NHibernate.Impl.CriteriaImpl(persistentType, alias, null);
-        }
-
-        private ISession CreateSession()
-        {
-            MockRepository mocks = new MockRepository();
-            ISession session = mocks.Stub<ISession>();
-
-            Expect
-                .Call(session.CreateCriteria(null))
-                .IgnoreArguments().Repeat.Any()
-                .Do((Func<System.Type, ICriteria>)CreateCriteriaStub);
-
-            Expect
-                .Call(session.CreateCriteria(null, null))
-                .IgnoreArguments().Repeat.Any()
-                .Do((Func<System.Type, string, ICriteria>)CreateCriteriaStub);
-
-            mocks.ReplayAll();
-            return session;
-        }
 
         [Test]
         public void Test_CreateCriteriaWithAlias()
