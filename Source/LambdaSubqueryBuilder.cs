@@ -34,6 +34,16 @@ namespace NHibernate.LambdaExtensions
         }
 
         /// <summary>
+        /// Create a property in subquery criterion
+        /// </summary>
+        /// <param name="detachedCriteria">detached criteria subquery</param>
+        /// <returns>returns NHibernate.Criterion.AbstractCriterion</returns>
+        public AbstractCriterion In(DetachedCriteria detachedCriteria)
+        {
+            return CreatePropertyCriterion(Subqueries.PropertyIn, detachedCriteria);
+        }
+
+        /// <summary>
         /// Create a property equal subquery criterion
         /// </summary>
         /// <param name="detachedCriteria">detached criteria subquery</param>
