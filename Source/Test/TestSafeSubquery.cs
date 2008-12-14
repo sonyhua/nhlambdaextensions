@@ -54,7 +54,7 @@ namespace NHibernate.LambdaExtensions.Test
 
             ICriteria actual = CreateSession()
                 .CreateCriteria(typeof(Person))
-                    .Add(SafeSubquery.Property<Person>(p => p.Name).Eq(DetachedCriteriaSubquery));
+                    .Add(SafeSubquery.Where<Person>(p => p.Name == DetachedCriteriaSubquery.As<string>()));
 
             AssertCriteriaAreEqual(expected, actual);
         }

@@ -308,6 +308,17 @@ namespace NHibernate.LambdaExtensions
             return criteria.SetFetchMode(aliasContainer, fetchMode);
         }
 
+        /// <summary>
+        /// Extension method to allow comparison of detached criteria (always returns null)
+        /// </summary>
+        /// <typeparam name="T">type returned by detached criteria</typeparam>
+        /// <param name="criteria">the DetachedCriteria instance</param>
+        /// <returns>returns null (or value-type default)</returns>
+        public static T As<T>(this DetachedCriteria criteria)
+        {
+            return default(T);
+        }
+
     }
 
 }

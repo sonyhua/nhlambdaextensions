@@ -18,6 +18,7 @@ namespace NHibernate.LambdaExtensions
 
         private readonly static IDictionary<ExpressionType, Func<string, object, ICriterion>> _simpleExpressionCreators = null;
         private readonly static IDictionary<ExpressionType, Func<string, string, ICriterion>> _propertyExpressionCreators = null;
+        private readonly static IDictionary<ExpressionType, Func<string, DetachedCriteria, AbstractCriterion>> _subqueryExpressionCreators = null;
 
         static ExpressionProcessor()
         {
@@ -36,6 +37,9 @@ namespace NHibernate.LambdaExtensions
             _propertyExpressionCreators[ExpressionType.GreaterThanOrEqual] = Restrictions.GeProperty;
             _propertyExpressionCreators[ExpressionType.LessThan] = Restrictions.LtProperty;
             _propertyExpressionCreators[ExpressionType.LessThanOrEqual] = Restrictions.LeProperty;
+
+            _subqueryExpressionCreators = new Dictionary<ExpressionType, Func<string, DetachedCriteria, AbstractCriterion>>();
+            _subqueryExpressionCreators[ExpressionType.Equal] = Subqueries.PropertyEq;
         }
 
         /// <summary>
@@ -109,6 +113,23 @@ namespace NHibernate.LambdaExtensions
             }
 
             return member;
+        }
+
+        /// <summary>
+        /// Retrieves a detached criteria from an appropriate lambda expression
+        /// </summary>
+        /// <param name="expression">Expresson for detached criteria using .As&lt;>() extension"/></param>
+        /// <returns>Evaluated detached criteria</returns>
+        public static DetachedCriteria FindDetachedCriteria(System.Linq.Expressions.Expression expression)
+        {
+            MethodCallExpression methodCallExpression = expression as MethodCallExpression;
+
+            if (methodCallExpression == null)
+                throw new Exception("right operand should be detachedCriteriaInstance.As<T>() - " + expression.ToString());
+
+            var criteriaExpression = System.Linq.Expressions.Expression.Lambda(methodCallExpression.Arguments[0]).Compile();
+            object detachedCriteria = criteriaExpression.DynamicInvoke();
+            return (DetachedCriteria)detachedCriteria;
         }
 
         private static bool EvaluatesToNull(System.Linq.Expressions.Expression expression)
@@ -239,6 +260,25 @@ namespace NHibernate.LambdaExtensions
             string property = FindMemberExpression(expression.Body);
             Order order = orderDelegate(property);
             return order;
+        }
+
+        /// <summary>
+        /// Convert a lambda expression to NHibernate subquery AbstractCriterion
+        /// </summary>
+        /// <typeparam name="T">type of member expression</typeparam>
+        /// <param name="expression">lambda expression to convert</param>
+        /// <returns>NHibernate.ICriterion.AbstractCriterion</returns>
+        public static AbstractCriterion ProcessSubquery<T>(Expression<Func<T, bool>> expression)
+        {
+            BinaryExpression be = (BinaryExpression)expression.Body;
+            string property = FindMemberExpression(be.Left);
+            DetachedCriteria detachedCriteria = FindDetachedCriteria(be.Right);
+
+            if (!_subqueryExpressionCreators.ContainsKey(be.NodeType))
+                throw new Exception("Unhandled subquery expression type: " + be.NodeType);
+
+            Func<string, DetachedCriteria, AbstractCriterion> subqueryExpressionCreator = _subqueryExpressionCreators[be.NodeType];
+            return subqueryExpressionCreator(property, detachedCriteria);
         }
 
     }
