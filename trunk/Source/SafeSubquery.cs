@@ -35,6 +35,17 @@ namespace NHibernate.LambdaExtensions
         }
 
         /// <summary>
+        /// Create a ICriterion for the specified property subquery expression
+        /// </summary>
+        /// <param name="expression">lambda expression</param>
+        /// <returns>returns SafeSubqueryBuilder</returns>
+        public static SafeSubqueryBuilder Property(Expression<Func<object>> expression)
+        {
+            string property = ExpressionProcessor.FindMemberExpression(expression.Body);
+            return new SafeSubqueryBuilder(property);
+        }
+
+        /// <summary>
         /// Create ICriterion for subquery expression using lambda syntax
         /// </summary>
         /// <typeparam name="T">type of property</typeparam>

@@ -83,6 +83,21 @@ namespace NHibernate.LambdaExtensions.Test
             Person personAlias = null;
             ICriteria actual = CreateSession()
                 .CreateCriteria(typeof(Person), () => personAlias)
+                    .Add(SafeSubquery.Property(() => personAlias.Age).Gt(DetachedCriteriaSubquery));
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
+        [Test]
+        public void Test_PropertyGtUsingAliasAlternativeSyntax()
+        {
+            ICriteria expected = CreateSession()
+                .CreateCriteria(typeof(Person), "personAlias")
+                    .Add(Subqueries.PropertyGt("personAlias.Age", DetachedCriteriaSubquery));
+
+            Person personAlias = null;
+            ICriteria actual = CreateSession()
+                .CreateCriteria(typeof(Person), () => personAlias)
                     .Add(SafeSubquery.Where(() => personAlias.Age > DetachedCriteriaSubquery.As<int>()));
 
             AssertCriteriaAreEqual(expected, actual);
