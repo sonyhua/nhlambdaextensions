@@ -109,6 +109,14 @@
       </test>
     </nunit2>
 
+    <setenv name="PATH" value="${nant::get-base-directory()}/../../t4;%PATH%"/>
+    <mkdir dir="${build.dir}\doc"/>
+
+    <exec program="TextTransform">
+      <arg line="-out ${build.dir}\doc\NhLambdaExtensions.html" />
+      <arg line="Doc/NhLambdaExtensions.html" />
+    </exec>
+
   </target>
 
   <target name="exportResults">
