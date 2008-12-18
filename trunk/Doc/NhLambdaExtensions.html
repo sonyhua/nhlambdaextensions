@@ -23,6 +23,12 @@
             	font-family:verdana, arial, helvetica, sans-serif;
             	margin:0px 0px 12px 0px;
             	}
+            li {
+            	font-size:10px;
+            	line-height:20px;
+            	font-family:verdana, arial, helvetica, sans-serif;
+            	margin:0px 0px 3px 0px;
+            	}
             #Content>p {margin:0px;}
             #Content>p+p {text-indent:30px;}
 
@@ -63,6 +69,9 @@
                 border-top: 0px;
                 margin-top: 0px;
                 }
+            code {
+            	background-color:#ddd;
+                }
         </style>
     </head>
     
@@ -102,7 +111,7 @@
 <pre><code>.Add(Expression.Eq("Name", "Smith"))
 </code></pre>
                 <p>becomes:</p>
-<pre><code>.Add(.Add&lt;Person&gt;(p =&gt; p.Name == "Smith"))
+<pre><code>.Add&lt;Person&gt;(p =&gt; p.Name == "Smith")
 </code></pre>
             <p>
                 With this kind of syntax there are no 'magic strings', and refactoring tools like
@@ -115,10 +124,79 @@
             </p>
             
             <h2>2. Getting started</h2>
+            <p>
+                Assuming you're already using NHibernate:
+            </p>
+            <ol>
+                <li>Download and extract NhLambdaExtensions from
+                    <a target="_blank" href="http://code.google.com/p/nhlambdaextensions/downloads/list">here</a>;</li>
+                <li>Put the NHibernate.LambdaExtensions.dll next to your NHibernate.dll;</li>
+                <li>Add a reference to NHibernate.LambdaExtensions;</li>
+                <li>Add a <code>using NHibernate.LambdaExtensions;</code> statement.</li>
+            </ol>
+            <p>
+                That's it.
+            </p>
             
             <h2>3. Simple expressions</h2>
+            <p>
+                Simple expressions (&lt;, &lt;=, ==, !=, &gt; &amp; &gt;=) can be added using an extension
+                method on the ICriteria interface that takes an appropriate lambda expression.  e.g.,:
+            </p>
+<pre><code>.Add&lt;Person&gt;(p =&gt; p.Name == "Smith")
+</code></pre>
+            <p>
+                C# allows another syntax that semantically identical to the above:
+            </p>
+<pre><code>.Add((Person p) =&gt; p.Name == "Smith")
+</code></pre>
+            <p>
+                Note that the lambda expression is converted to a plain ICriterion at runtime.
+                The lambda expression is not stored in the resulting ICriteria, so the only difference
+                between:
+            </p>
+<pre><code>.Add(Expression.Eq("Name", "Smith"))</code></pre>
+                <p>and:</p>
+<pre><code>.Add&lt;Person&gt;(p =&gt; p.Name == "Smith")</code></pre>
+            <p>
+                is the compile time checking.  At runtime this calls
+                <code>.Add(Expression.Eq("Name", "Smith"))</code>
+                in both cases.
+            </p>
+            <p>
+                All of the extensions on the ICriteria interface have corresponding extensions on the
+                DetachedCriteria class.  So you can write:
+            </p>
+<pre><code>mySession
+    .CreateCriteria(typeof(Person))
+        .Add&lt;Person&gt;(p =&gt; p.Name == "Smith");
+</code></pre>
+            <p>
+                and also:
+            </p>
+<pre><code>    DetachedCriteria.For&lt;Person&gt;()
+        .Add&lt;Person&gt;(p =&gt; p.Name == "Smith");
+</code></pre>
             
             <h2>4. SQL specific functions</h2>
+            <p>
+                Some SQL operators/functions do not have a direct equivalent in C#.
+                (e.g., the SQL <code>where name like '%anna%'</code>).
+            </p>
+            <p>
+                Some LINQ providers might try to make a transparent mapping from the C#
+                <code>Name.StartsWith("anna")</code> to the SQL <code>where name like 'anna%'</code>.
+            </p>
+            <p>
+                The aim of this project is to provide a typesafe interface to ICriteria while
+                maintaining the opaqueness that makes it clearer to the developer what query
+                will be executed on the database.  Instead of mapping the <code>StartsWith</code>
+                function, there is a corresponding SqlExpression class that allows strongly-typed
+                expressions to be created.  So:
+            </p>
+<pre><code>.Add(Expression.Like("Name", "%anna%"))</code></pre>
+                <p>becomes:</p>
+<pre><code>.Add(SqlExpression.Like&lt;Person&gt;(p => p.Name, "%anna%"))</code></pre>
             
             <h2>5. Aliases</h2>
             
@@ -126,8 +204,12 @@
             
             <h2>7. Subqueries</h2>
             
-            <a name="#examples"/>
+            <a name="#examples"></a>
             <h2>8. Examples</h2>
+            <p>
+                Below are some examples of how to write ICriteria using the 'old' style,
+                and then rewritten using NHibernate Lambda Extensions.
+            </p>
 
         </div>
     </body>
