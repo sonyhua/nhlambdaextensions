@@ -58,6 +58,11 @@
             th {
                 font-style:italic;
                 }
+            pre {
+                padding-top: 0px;
+                border-top: 0px;
+                margin-top: 0px;
+                }
         </style>
     </head>
     
@@ -67,19 +72,62 @@
         
             <h1>NHibernate Lambda Extensions - Documentation</h1>
             
-            <h2>Introduction</h2>
+            <h2>1. Introduction</h2>
+
+            <p>
+                The .Net framework introduced
+                <a target="_blank" href="http://en.wikipedia.org/wiki/Language_Integrated_Query">LINQ</a>,
+                <a target="_blank" href="http://weblogs.asp.net/scottgu/archive/2007/04/08/new-orcas-language-feature-lambda-expressions.aspx">Lambda Expressions</a>,
+                and <a target="_blank" href="http://weblogs.asp.net/scottgu/archive/2007/03/13/new-orcas-language-feature-extension-methods.aspx">Extension Methods</a>.
+                In addition, an ORM (like NHibernate) can implement the IQueryable interface to allow transparent querying
+                of a datasource using LINQ.
+            </p>
+            <p>
+                Sometimes you want the expressiveness of a query language that is closer to the persistence
+                implementation (i.e., a relational database) like
+                NHibernate's
+                <a target="_blank" href="http://martinfowler.com/eaaCatalog/queryObject.html">Query Object</a>
+                the
+                <a target="_blank" href="http://www.nhforge.org/doc/nh/en/index.html#querycriteria">ICriteria</a>
+                interface.
+                The trouble with the ICriteria interface is the use of 'magic strings' for property names
+                which can hinder the use of some refactoring tools.
+            </p>
+            <p>
+                This project supplies Extension Methods and uses Lambda Expressions to provide some extra
+                syntax to remove the 'magic strings' from your ICriteria queries.
+            </p>
+            <p>
+                So, for example:</p>
+<pre><code>.Add(Expression.Eq("Name", "Smith"))
+</code></pre>
+                <p>becomes:</p>
+<pre><code>.Add(.Add&lt;Person&gt;(p =&gt; p.Name == "Smith"))
+</code></pre>
+            <p>
+                With this kind of syntax there are no 'magic strings', and refactoring tools like
+                'Find All References', and 'Refactor-&gt;Rename' work perfectly.
+            </p>
+            <p>
+                It is worth mentioning that this project is intended to remove the references to 'magic strings'
+                from the ICriteria API while maintaining it's opaqueness.  It is <u><b>not</b></u> a LINQ provider for NHibernate.  There are
+                seperate projects already in place to handle this (considerably more complex) problem.
+            </p>
             
-            <h2>Simple expressions</h2>
+            <h2>2. Getting started</h2>
             
-            <h2>SQL specific functions</h2>
+            <h2>3. Simple expressions</h2>
             
-            <h2>Aliases</h2>
+            <h2>4. SQL specific functions</h2>
             
-            <h2>Projections</h2>
+            <h2>5. Aliases</h2>
             
-            <h2>Subqueries</h2>
+            <h2>6. Projections</h2>
             
-            <h2>Examples</h2>
+            <h2>7. Subqueries</h2>
+            
+            <a name="#examples"/>
+            <h2>8. Examples</h2>
 
         </div>
     </body>
