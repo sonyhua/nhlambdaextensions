@@ -27,7 +27,7 @@
     </Compile>
     <None Include="**\*.config" />
     <None Include="**\*.xml" />
-    <None Include="**\*.tt" />
+    <Content Include="**\*.tt" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

@@ -3,6 +3,7 @@ using System;
 
 using NHibernate;
 using NHibernate.Criterion;
+using NHibernate.SqlCommand;
 
 using NUnit.Framework;
 
@@ -205,12 +206,12 @@ namespace NHibernate.LambdaExtensions.Test
         {
             ICriteria expected = CreateSession()
                 .CreateCriteria(typeof(Person))
-                    .CreateCriteria("Children", NHibernate.SqlCommand.JoinType.LeftOuterJoin)
+                    .CreateCriteria("Children", JoinType.LeftOuterJoin)
                         .Add(Restrictions.Eq("Nickname", "test"));
 
             ICriteria actual = CreateSession()
                 .CreateCriteria(typeof(Person))
-                    .CreateCriteria((Person p) => p.Children, NHibernate.SqlCommand.JoinType.LeftOuterJoin)
+                    .CreateCriteria((Person p) => p.Children, JoinType.LeftOuterJoin)
                         .Add<Child>(c => c.Nickname == "test");
 
             AssertCriteriaAreEqual(expected, actual);
@@ -238,13 +239,13 @@ namespace NHibernate.LambdaExtensions.Test
         {
             ICriteria expected = CreateSession()
                 .CreateCriteria(typeof(Person))
-                    .CreateCriteria("Children", "childAlias", NHibernate.SqlCommand.JoinType.LeftOuterJoin)
+                    .CreateCriteria("Children", "childAlias", JoinType.LeftOuterJoin)
                         .Add(Restrictions.Eq("Nickname", "test"));
 
             Child childAlias = null;
             ICriteria actual = CreateSession()
                 .CreateCriteria(typeof(Person))
-                    .CreateCriteria((Person p) => p.Children, () => childAlias, NHibernate.SqlCommand.JoinType.LeftOuterJoin)
+                    .CreateCriteria((Person p) => p.Children, () => childAlias, JoinType.LeftOuterJoin)
                         .Add<Child>(c => c.Nickname == "test");
 
             AssertCriteriaAreEqual(expected, actual);
@@ -272,13 +273,13 @@ namespace NHibernate.LambdaExtensions.Test
         {
             ICriteria expected = CreateSession()
                 .CreateCriteria(typeof(Person), "personAlias")
-                    .CreateCriteria("personAlias.Children", NHibernate.SqlCommand.JoinType.LeftOuterJoin)
+                    .CreateCriteria("personAlias.Children", JoinType.LeftOuterJoin)
                         .Add(Restrictions.Eq("Nickname", "test"));
 
             Person personAlias = null;
             ICriteria actual = CreateSession()
                 .CreateCriteria(typeof(Person), () => personAlias)
-                    .CreateCriteria(() => personAlias.Children, NHibernate.SqlCommand.JoinType.LeftOuterJoin)
+                    .CreateCriteria(() => personAlias.Children, JoinType.LeftOuterJoin)
                         .Add<Child>(c => c.Nickname == "test");
 
             AssertCriteriaAreEqual(expected, actual);
@@ -307,14 +308,14 @@ namespace NHibernate.LambdaExtensions.Test
         {
             ICriteria expected = CreateSession()
                 .CreateCriteria(typeof(Person), "personAlias")
-                    .CreateCriteria("personAlias.Children", "childAlias", NHibernate.SqlCommand.JoinType.LeftOuterJoin)
+                    .CreateCriteria("personAlias.Children", "childAlias", JoinType.LeftOuterJoin)
                         .Add(Restrictions.Eq("Nickname", "test"));
 
             Person personAlias = null;
             Child childAlias = null;
             ICriteria actual = CreateSession()
                 .CreateCriteria(typeof(Person), () => personAlias)
-                    .CreateCriteria(() => personAlias.Children, () => childAlias, NHibernate.SqlCommand.JoinType.LeftOuterJoin)
+                    .CreateCriteria(() => personAlias.Children, () => childAlias, JoinType.LeftOuterJoin)
                         .Add<Child>(c => c.Nickname == "test");
 
             AssertCriteriaAreEqual(expected, actual);
@@ -340,12 +341,12 @@ namespace NHibernate.LambdaExtensions.Test
         {
             ICriteria expected = CreateSession()
                 .CreateCriteria(typeof(Person))
-                    .CreateAlias("Father", "fatherAlias", NHibernate.SqlCommand.JoinType.LeftOuterJoin);
+                    .CreateAlias("Father", "fatherAlias", JoinType.LeftOuterJoin);
 
             Person fatherAlias = null;
             ICriteria actual = CreateSession()
                 .CreateCriteria(typeof(Person))
-                    .CreateAlias<Person>(p => p.Father, () => fatherAlias, NHibernate.SqlCommand.JoinType.LeftOuterJoin);
+                    .CreateAlias<Person>(p => p.Father, () => fatherAlias, JoinType.LeftOuterJoin);
 
             AssertCriteriaAreEqual(expected, actual);
         }
@@ -371,13 +372,13 @@ namespace NHibernate.LambdaExtensions.Test
         {
             ICriteria expected = CreateSession()
                 .CreateCriteria(typeof(Person), "personAlias")
-                    .CreateAlias("personAlias.Father", "fatherAlias", NHibernate.SqlCommand.JoinType.LeftOuterJoin);
+                    .CreateAlias("personAlias.Father", "fatherAlias", JoinType.LeftOuterJoin);
 
             Person personAlias = null;
             Person fatherAlias = null;
             ICriteria actual = CreateSession()
                 .CreateCriteria(typeof(Person), () => personAlias)
-                    .CreateAlias(() => personAlias.Father, () => fatherAlias, NHibernate.SqlCommand.JoinType.LeftOuterJoin);
+                    .CreateAlias(() => personAlias.Father, () => fatherAlias, JoinType.LeftOuterJoin);
 
             AssertCriteriaAreEqual(expected, actual);
         }

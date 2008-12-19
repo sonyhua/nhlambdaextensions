@@ -1,5 +1,7 @@
 <#@ template language="C#" hostspecific="True" #>
 <#@ include file="Utility.tt" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Text.RegularExpressions" #>
 <#
   Init();
 #>
@@ -291,6 +293,72 @@ DetachedCriteria&lt;Person&gt;.Create(() => personAlias)</code></pre>
                 Below are some examples of how to write ICriteria using the 'old' style,
                 and then rewritten using NHibernate Lambda Extensions.
             </p>
+<#
+  IList<string> examplesNames = new List<string>();
+  IDictionary<string, IList<string>> tests = new Dictionary<string, IList<string>>();
+  IDictionary<string, string> beforeContent = new Dictionary<string, string>();
+  IDictionary<string, string> afterContent = new Dictionary<string, string>();
+  
+  foreach (string testFile in _testFiles)
+  {
+    string examplesName = testFile.Substring(4, testFile.Length - 7);
+    examplesNames.Add(examplesName);
+    tests[examplesName] = new List<string>();
+    string fileContent = File.ReadAllText(Path.Combine(_testFolder, testFile));
+    Regex testFinder = new Regex(@"Test_[\s\S]*?{[\s\S]*?}");
+    foreach (Match test in testFinder.Matches(fileContent))
+    {
+      string testContent = test.Value;
+      Regex testNameFinder = new Regex(@"Test_([\s\S]*?)\(\)");
+      string testName = testNameFinder.Match(testContent).Groups[1].ToString();
+      tests[examplesName].Add(testName);
+      
+      Regex testContentFinder = new Regex(@"{[\s]*\n([\s\S]*)}");
+      testContent = testContentFinder.Match(testContent).Groups[1].ToString();
+      Regex beforeFinder = new Regex(@"([\s\S]*?)\n[\s]*\n");
+      Regex afterFinder = new Regex(@"\n[\s]*\n([\s\S]*?)\n[\s]*\n");
+      string before = beforeFinder.Match(testContent).Groups[1].ToString();
+      string after = afterFinder.Match(testContent).Groups[1].ToString();
+      beforeContent[examplesName+testName] = before;
+      afterContent[examplesName+testName] = after;
+    }
+  }
+  foreach (string examplesName in examplesNames)
+  {
+    #>
+    <h2 style="margin-left:20px;"><a href="#examples_<#=examplesName#>"/><#=examplesName#> Examples</a></h2>
+    <#
+    foreach (string testName in tests[examplesName])
+    {
+      #>
+        <h3 style="margin-left:50px;"><a href="#examples_<#=examplesName#>_<#=testName#>"><#=AddSpacesBetweenCapitals(testName)#></a></h3>
+      <#
+    }
+  }
+  foreach (string examplesName in examplesNames)
+  {
+    #>
+    <a name="#examples_<#=examplesName#>"></a>
+    <h2 style="font-size:13pt;"><#=examplesName#> Examples</h2>
+    <#
+    foreach (string testName in tests[examplesName])
+    {
+      #>
+        <a name="#examples_<#=examplesName#>_<#=testName#>"></a>
+        <h2><#=AddSpacesBetweenCapitals(testName)#></h2>
+        <p>Using original ICriteria API:<p>
+<pre style="width:100%;overflow-x:auto;"><code>
+<#=FormatCode(beforeContent[examplesName+testName])#>
+</code></pre>
+        <p>Using NHibernate Lambda Extensions:<p>
+<pre style="width:100%;overflow-x:auto;"><code>
+<#=FormatCode(afterContent[examplesName+testName])#>
+</code></pre>
+        <p>&nbsp;</p>
+      <#
+    }
+  }
+#>
 
         </div>
     </body>
@@ -298,9 +366,31 @@ DetachedCriteria&lt;Person&gt;.Create(() => personAlias)</code></pre>
 
 <#+
   private string _version;
+  private string[] _testFiles;
+  private string _testFolder;
 
   private void Init()
   {
     _version = GetCommandLineProperty("version");
+    
+    _testFolder = GetCommandLineProperty("testFolder");
+    string testFilesString = GetCommandLineProperty("testFiles");
+    _testFiles = testFilesString.Split(';');
+  }
+  
+  private string AddSpacesBetweenCapitals(string input)
+  {
+    Regex capitalFinder = new Regex(@"([ABCDEFGHIJKLMNOPQRSTUVWXYZ])");
+    string output = capitalFinder.Replace(input, " $1");
+    return output.TrimStart(' ');
+  }
+  
+  private string FormatCode(string input)
+  {
+    input = input.Replace("\t", "    ");
+    Regex leadingTabFinder = new Regex(@"            ([\S])");
+    string output = leadingTabFinder.Replace(input, "$1");
+    output = output.Replace("<", "&lt;").Replace(">", "&gt;");
+    return output;
   }
 #>
