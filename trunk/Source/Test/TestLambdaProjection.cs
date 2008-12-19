@@ -43,7 +43,7 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
-        public void Test_PropertyAliasWithValueType()
+        public void TestPropertyAliasWithValueType()
         {
             DetachedCriteria expected =
                 DetachedCriteria.For<Person>()
@@ -102,7 +102,7 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
-        public void Test_AvgUsingAlias()
+        public void TestAvgUsingAlias()
         {
             DetachedCriteria expected =
                 DetachedCriteria.For<Person>("personAlias")
@@ -131,7 +131,7 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
-        public void Test_CountUsingAlias()
+        public void TestCountUsingAlias()
         {
             DetachedCriteria expected =
                 DetachedCriteria.For<Person>("personAlias")
@@ -146,7 +146,7 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
-        public void Test_CountDistinct()
+        public void TestCountDistinct()
         {
             DetachedCriteria expected =
                 DetachedCriteria.For<Person>()
@@ -160,7 +160,7 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
-        public void Test_CountDistinctUsingAlias()
+        public void TestCountDistinctUsingAlias()
         {
             DetachedCriteria expected =
                 DetachedCriteria.For<Person>("personAlias")
@@ -189,7 +189,7 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
-        public void Test_GroupPropertyUsingAlias()
+        public void TestGroupPropertyUsingAlias()
         {
             DetachedCriteria expected =
                 DetachedCriteria.For<Person>("personAlias")
@@ -204,7 +204,7 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
-        public void Test_Max()
+        public void TestMax()
         {
             DetachedCriteria expected =
                 DetachedCriteria.For<Person>()
@@ -218,7 +218,7 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
-        public void Test_MaxUsingAlias()
+        public void TestMaxUsingAlias()
         {
             DetachedCriteria expected =
                 DetachedCriteria.For<Person>("personAlias")
@@ -233,7 +233,7 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
-        public void Test_Min()
+        public void TestMin()
         {
             DetachedCriteria expected =
                 DetachedCriteria.For<Person>()
@@ -247,7 +247,7 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
-        public void Test_MinUsingAlias()
+        public void TestMinUsingAlias()
         {
             DetachedCriteria expected =
                 DetachedCriteria.For<Person>("personAlias")
@@ -262,7 +262,7 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
-        public void Test_Sum()
+        public void TestSum()
         {
             DetachedCriteria expected =
                 DetachedCriteria.For<Person>()
@@ -276,7 +276,7 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
-        public void Test_SumUsingAlias()
+        public void TestSumUsingAlias()
         {
             DetachedCriteria expected =
                 DetachedCriteria.For<Person>("personAlias")
