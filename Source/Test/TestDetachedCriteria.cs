@@ -101,7 +101,7 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
-        public void Test_CreateDetachedCriteriaAssociation()
+        public void TestCreateDetachedCriteriaAssociation()
         {
             DetachedCriteria expected =
                 DetachedCriteria.For<Person>()
@@ -117,7 +117,7 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
-        public void Test_CreateCriteriaAssociationWithJoinType()
+        public void TestCreateCriteriaAssociationWithJoinType()
         {
             DetachedCriteria expected =
                 DetachedCriteria.For<Person>()
@@ -133,7 +133,7 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
-        public void Test_CreateCriteriaAssociationWithAlias()
+        public void TestCreateCriteriaAssociationWithAlias()
         {
             DetachedCriteria expected =
                 DetachedCriteria.For<Person>()
@@ -167,7 +167,7 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
-        public void Test_CreateDetachedCriteriaAliasAssociation()
+        public void TestCreateDetachedCriteriaAliasAssociation()
         {
             DetachedCriteria expected =
                 DetachedCriteria.For<Person>("personAlias")
@@ -184,7 +184,7 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
-        public void Test_CreateCriteriaAliasAssociationWithJoinType()
+        public void TestCreateCriteriaAliasAssociationWithJoinType()
         {
             DetachedCriteria expected =
                 DetachedCriteria.For<Person>("personAlias")
@@ -201,7 +201,7 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
-        public void Test_CreateCriteriaAliasAssociationWithAlias()
+        public void TestCreateCriteriaAliasAssociationWithAlias()
         {
             DetachedCriteria expected =
                 DetachedCriteria.For<Person>("personAlias")
@@ -219,7 +219,7 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
-        public void Test_CreateCriteriaAliasAssociationWithAliasAndJoinType()
+        public void TestCreateCriteriaAliasAssociationWithAliasAndJoinType()
         {
             DetachedCriteria expected =
                 DetachedCriteria.For<Person>("personAlias")
@@ -252,7 +252,7 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
-        public void Test_CreateAliasWithJoinType()
+        public void TestCreateAliasWithJoinType()
         {
             DetachedCriteria expected =
                 DetachedCriteria.For<Person>()
@@ -283,7 +283,7 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
-        public void Test_CreateAliasFromAliasWithJoinType()
+        public void TestCreateAliasFromAliasWithJoinType()
         {
             DetachedCriteria expected =
                 DetachedCriteria.For<Person>("personAlias")
@@ -313,7 +313,7 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
-        public void Test_SetFetchModeUsingAlias()
+        public void TestSetFetchModeUsingAlias()
         {
             DetachedCriteria expected =
                 DetachedCriteria.For<Person>()
