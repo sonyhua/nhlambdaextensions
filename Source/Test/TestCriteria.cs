@@ -71,77 +71,29 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
-        public void Test_Gt()
+        public void TestExpressionCombinations()
         {
             ICriteria expected = CreateSession()
                 .CreateCriteria(typeof(Person))
-                    .Add(Restrictions.Gt("Age", 10));
-
-            ICriteria actual = CreateSession()
-                .CreateCriteria(typeof(Person))
-                    .Add<Person>(p => p.Age > 10);
-
-            AssertCriteriaAreEqual(expected, actual);
-        }
-
-        [Test]
-        public void Test_Ne()
-        {
-            ICriteria expected = CreateSession()
-                .CreateCriteria(typeof(Person))
-                    .Add(Restrictions.Not(Restrictions.Eq("Name", "test name")));
-
-            ICriteria actual = CreateSession()
-                .CreateCriteria(typeof(Person))
-                    .Add<Person>(p => p.Name != "test name");
-
-            AssertCriteriaAreEqual(expected, actual);
-        }
-
-        [Test]
-        public void Test_Ge()
-        {
-            ICriteria expected = CreateSession()
-                .CreateCriteria(typeof(Person))
-                    .Add(Restrictions.Ge("Age", 10));
-
-            ICriteria actual = CreateSession()
-                .CreateCriteria(typeof(Person))
-                    .Add<Person>(p => p.Age >= 10);
-
-            AssertCriteriaAreEqual(expected, actual);
-        }
-
-        [Test]
-        public void Test_Lt()
-        {
-            ICriteria expected = CreateSession()
-                .CreateCriteria(typeof(Person))
-                    .Add(Restrictions.Lt("Age", 10));
-
-            ICriteria actual = CreateSession()
-                .CreateCriteria(typeof(Person))
-                    .Add<Person>(p => p.Age < 10);
-
-            AssertCriteriaAreEqual(expected, actual);
-        }
-
-        [Test]
-        public void Test_Le()
-        {
-            ICriteria expected = CreateSession()
-                .CreateCriteria(typeof(Person))
+                    .Add(Restrictions.Gt("Age", 10))
+                    .Add(Restrictions.Not(Restrictions.Eq("Name", "test name")))
+                    .Add(Restrictions.Ge("Age", 10))
+                    .Add(Restrictions.Lt("Age", 10))
                     .Add(Restrictions.Le("Age", 10));
 
             ICriteria actual = CreateSession()
                 .CreateCriteria(typeof(Person))
+                    .Add<Person>(p => p.Age > 10)
+                    .Add<Person>(p => p.Name != "test name")
+                    .Add<Person>(p => p.Age >= 10)
+                    .Add<Person>(p => p.Age < 10)
                     .Add<Person>(p => p.Age <= 10);
 
             AssertCriteriaAreEqual(expected, actual);
         }
 
         [Test]
-        public void Test_OrderByStringProperty()
+        public void Test_Order()
         {
             ICriteria expected = CreateSession()
                 .CreateCriteria(typeof(Person))
@@ -155,7 +107,7 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
-        public void Test_OrderByInt32Property()
+        public void TestOrderByInt32Property()
         {
             ICriteria expected = CreateSession()
                 .CreateCriteria(typeof(Person))
