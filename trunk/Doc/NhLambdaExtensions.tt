@@ -391,6 +391,7 @@ DetachedCriteria&lt;Person&gt;.Create(() => personAlias)</code></pre>
     Regex leadingTabFinder = new Regex(@"            ([\S])");
     string output = leadingTabFinder.Replace(input, "$1");
     output = output.Replace("<", "&lt;").Replace(">", "&gt;");
+    output = output.Replace("expected =", "before =").Replace("actual =", "after =");
     return output;
   }
 #>

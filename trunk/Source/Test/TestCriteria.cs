@@ -138,7 +138,7 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
-        public void Test_CreateCriteriaAssociation()
+        public void TestCreateCriteriaAssociation()
         {
             ICriteria expected = CreateSession()
                 .CreateCriteria(typeof(Person))
@@ -154,7 +154,7 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
-        public void Test_CreateCriteriaAssociationWithJoinType()
+        public void TestCreateCriteriaAssociationWithJoinType()
         {
             ICriteria expected = CreateSession()
                 .CreateCriteria(typeof(Person))
@@ -187,7 +187,7 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
-        public void Test_CreateCriteriaAssociationWithAliasAndJoinType()
+        public void TestCreateCriteriaAssociationWithAliasAndJoinType()
         {
             ICriteria expected = CreateSession()
                 .CreateCriteria(typeof(Person))
@@ -204,7 +204,7 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
-        public void Test_CreateCriteriaAliasAssociation()
+        public void TestCreateCriteriaAliasAssociation()
         {
             ICriteria expected = CreateSession()
                 .CreateCriteria(typeof(Person), "personAlias")
@@ -221,7 +221,7 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
-        public void Test_CreateCriteriaAliasAssociationWithJoinType()
+        public void TestCreateCriteriaAliasAssociationWithJoinType()
         {
             ICriteria expected = CreateSession()
                 .CreateCriteria(typeof(Person), "personAlias")
@@ -238,7 +238,7 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
-        public void Test_CreateCriteriaAliasAssociationWithAlias()
+        public void TestCreateCriteriaAliasAssociationWithAlias()
         {
             ICriteria expected = CreateSession()
                 .CreateCriteria(typeof(Person), "personAlias")
@@ -289,7 +289,7 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
-        public void Test_CreateAliasWithJoinType()
+        public void TestCreateAliasWithJoinType()
         {
             ICriteria expected = CreateSession()
                 .CreateCriteria(typeof(Person))
@@ -304,7 +304,7 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
-        public void Test_CreateAliasUsingAlias()
+        public void TestCreateAliasUsingAlias()
         {
             ICriteria expected = CreateSession()
                 .CreateCriteria(typeof(Person), "personAlias")
@@ -350,7 +350,7 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
-        public void Test_SetFetchModeUsingAlias()
+        public void TestSetFetchModeUsingAlias()
         {
             ICriteria expected = CreateSession()
                 .CreateCriteria(typeof(Person))
@@ -401,7 +401,7 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
-        public void Test_AliasedNotEqProperty()
+        public void TestAliasedNotEqProperty()
         {
             ICriteria expected = CreateSession()
                 .CreateCriteria(typeof(Person))
@@ -418,68 +418,23 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
-        public void Test_AliasedGtProperty()
+        public void TestAliasedPropertyCombinations()
         {
             ICriteria expected = CreateSession()
                 .CreateCriteria(typeof(Person))
                     .CreateAlias("Father", "fatherAlias")
-                    .Add(Expression.GtProperty("Age", "fatherAlias.Age"));
-
-            Person fatherAlias = null;
-            ICriteria actual = CreateSession()
-                .CreateCriteria(typeof(Person))
-                    .CreateAlias<Person>(p => p.Father, () => fatherAlias)
-                    .Add<Person>(p => p.Age > fatherAlias.Age);
-
-            AssertCriteriaAreEqual(expected, actual);
-        }
-
-        [Test]
-        public void Test_AliasedGeProperty()
-        {
-            ICriteria expected = CreateSession()
-                .CreateCriteria(typeof(Person))
-                    .CreateAlias("Father", "fatherAlias")
-                    .Add(Expression.GeProperty("Age", "fatherAlias.Age"));
-
-            Person fatherAlias = null;
-            ICriteria actual = CreateSession()
-                .CreateCriteria(typeof(Person))
-                    .CreateAlias<Person>(p => p.Father, () => fatherAlias)
-                    .Add<Person>(p => p.Age >= fatherAlias.Age);
-
-            AssertCriteriaAreEqual(expected, actual);
-        }
-
-        [Test]
-        public void Test_AliasedLtProperty()
-        {
-            ICriteria expected = CreateSession()
-                .CreateCriteria(typeof(Person))
-                    .CreateAlias("Father", "fatherAlias")
-                    .Add(Expression.LtProperty("Age", "fatherAlias.Age"));
-
-            Person fatherAlias = null;
-            ICriteria actual = CreateSession()
-                .CreateCriteria(typeof(Person))
-                    .CreateAlias<Person>(p => p.Father, () => fatherAlias)
-                    .Add<Person>(p => p.Age < fatherAlias.Age);
-
-            AssertCriteriaAreEqual(expected, actual);
-        }
-
-        [Test]
-        public void Test_AliasedLeProperty()
-        {
-            ICriteria expected = CreateSession()
-                .CreateCriteria(typeof(Person))
-                    .CreateAlias("Father", "fatherAlias")
+                    .Add(Expression.GtProperty("Age", "fatherAlias.Age"))
+                    .Add(Expression.GeProperty("Age", "fatherAlias.Age"))
+                    .Add(Expression.LtProperty("Age", "fatherAlias.Age"))
                     .Add(Expression.LeProperty("Age", "fatherAlias.Age"));
 
             Person fatherAlias = null;
             ICriteria actual = CreateSession()
                 .CreateCriteria(typeof(Person))
                     .CreateAlias<Person>(p => p.Father, () => fatherAlias)
+                    .Add<Person>(p => p.Age > fatherAlias.Age)
+                    .Add<Person>(p => p.Age >= fatherAlias.Age)
+                    .Add<Person>(p => p.Age < fatherAlias.Age)
                     .Add<Person>(p => p.Age <= fatherAlias.Age);
 
             AssertCriteriaAreEqual(expected, actual);
