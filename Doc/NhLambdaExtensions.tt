@@ -305,7 +305,7 @@ DetachedCriteria&lt;Person&gt;.Create(() => personAlias)</code></pre>
     examplesNames.Add(examplesName);
     tests[examplesName] = new List<string>();
     string fileContent = File.ReadAllText(Path.Combine(_testFolder, testFile));
-    Regex testFinder = new Regex(@"Test_[\s\S]*?{[\s\S]*?}");
+    Regex testFinder = new Regex(@"Test_[\s\S]*?{[\s\S]*?Assert[\s\S]*?}");
     foreach (Match test in testFinder.Matches(fileContent))
     {
       string testContent = test.Value;
