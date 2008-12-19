@@ -261,6 +261,26 @@ DetachedCriteria&lt;Person&gt;.Create(() => personAlias)</code></pre>
             </p>
             
             <h2>7. Subqueries</h2>
+            <p>
+                Subqueries are put together using the <code>LambdaSubquery</code> class.  Each of the
+                original NHibernate factory methods has an equivalent LambdaSubquery, so:
+            </p>
+<pre><code>.Add(Subqueries.PropertyIn("Name", myDetachedCriteriaSubquery))</code></pre>
+            <p>
+                becomes:
+            </p>
+<pre><code>.Add(LambdaSubquery.Property&lt;Person&gt;(p =&gt; p.Name).In(myDetachedCriteriaSubquery))</code></pre>
+            
+            <p>
+                In addition to these factory methods are the methods <code>Where</code>, <code>WhereAll</code>,
+                and <code>WhereSome</code> along with an extension method on the <code>DetachedCriteria</code>
+                class, which allows the use of lambda expressions to describe simple comparisons.  So:
+            </p>
+<pre><code>.Add(Subqueries.PropertyGt("Age", myDetachedCriteriaSubquery))</code></pre>
+            <p>
+                becomes:
+            </p>
+<pre><code>.Add(LambdaSubquery.Where&lt;Person&gt;(p =&gt; p.Age &gt; myDetachedCriteriaSubquery.As&lt;int&gt;()))</code></pre>
             
             <a name="#examples"></a>
             <h2>8. Examples</h2>
