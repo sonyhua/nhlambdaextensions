@@ -11,6 +11,7 @@
   <!-- debug build by default -->
   <call target="debug" />
 
+  <property name="project.dir" value="${project::get-base-directory()}" />
   <property name="project.version" value="1.0.0.0" overwrite="false" />
 
   <target name="debug" description="Setup a 'debug' build">
@@ -112,8 +113,16 @@
     <setenv name="PATH" value="${nant::get-base-directory()}/../../t4;%PATH%"/>
     <mkdir dir="${build.dir}\doc"/>
 
+    <property name="testFiles" value="TestCriteria.cs"/>
+    <property name="testFiles" value="${testFiles};TestDetachedCriteria.cs"/>
+    <property name="testFiles" value="${testFiles};TestSqlExpression.cs"/>
+    <property name="testFiles" value="${testFiles};TestLambdaProjection.cs"/>
+    <property name="testFiles" value="${testFiles};TestLambdaSubquery.cs"/>
+
     <exec program="TextTransform">
       <arg line="-a version!${project.version}" />
+      <arg line="-a testFiles!${testFiles}" />
+      <arg line="-a testFolder!${project.dir}\Source\Test" />
       <arg line="-out ${build.dir}\doc\NhLambdaExtensions.html" />
       <arg line="Doc/NhLambdaExtensions.tt" />
     </exec>
