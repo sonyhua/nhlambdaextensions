@@ -240,12 +240,25 @@ mySession
             <p>
                 To create an alias on the root of DetachedCriteria use:
             </p>
-<pre><code>DetachedCriteria&lt;Person&gt;.Create(() => personAlias)</code></pre>
+<pre><code>Person personAlias = null;
+DetachedCriteria&lt;Person&gt;.Create(() => personAlias)</code></pre>
             <p>
                 See below for more <a href="#examples">examples</a>.
             </p>
             
             <h2>6. Projections</h2>
+            <p>
+                Projections are made typesafe through the <code>LambdaProjection</code> class,
+                with the <code>Property</code> method returning an IProjection.  In addition, the
+                SimpleProjection class has an extension to allow you to alias the projections.  So:
+            </p>
+<pre><code>.SetProjection(Projections.Property("Age").As("ageAlias"))</code></pre>
+            <p>can be written as:</p>
+<pre><code>.SetProjection(LambdaProjection.Property&lt;Person>(p =&gt; p.Age).As(() =&gt; ageAlias))</code></pre>
+            <p>
+                There are additional factory methods to create other projections (e.g., Max, Min, Avg, etc.)
+                See below for more <a href="#examples">examples</a>.
+            </p>
             
             <h2>7. Subqueries</h2>
             
