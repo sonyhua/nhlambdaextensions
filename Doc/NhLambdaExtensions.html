@@ -93,7 +93,7 @@
                 of a datasource using LINQ.
             </p>
             <p>
-                Sometimes you want the expressiveness of a query language that is closer to the persistence
+                However, sometimes you want the expressiveness of a query language that is closer to the persistence
                 implementation (i.e., a relational database) like
                 NHibernate's
                 <a target="_blank" href="http://martinfowler.com/eaaCatalog/queryObject.html">Query Object</a>
@@ -141,8 +141,8 @@
             
             <h2>3. Simple expressions</h2>
             <p>
-                Simple expressions (&lt;, &lt;=, ==, !=, &gt; &amp; &gt;=) can be added using an extension
-                method on the ICriteria interface that takes an appropriate lambda expression.  e.g.,:
+                Simple expressions (&lt;, &lt;=, ==, !=, &gt; &amp; &gt;=) can be added using an Extension
+                Method on the ICriteria interface that takes an appropriate Lambda Expression.  e.g.,:
             </p>
 <pre><code>.Add&lt;Person&gt;(p =&gt; p.Name == "Smith")
 </code></pre>
@@ -152,8 +152,8 @@
 <pre><code>.Add((Person p) =&gt; p.Name == "Smith")
 </code></pre>
             <p>
-                Note that the lambda expression is converted to a plain ICriterion at runtime.
-                The lambda expression is not stored in the resulting ICriteria, so the only difference
+                Note that the Lambda Expression is converted to a plain ICriterion at runtime.
+                The Lambda Expression is not stored in the resulting ICriteria, so the only difference
                 between:
             </p>
 <pre><code>.Add(Expression.Eq("Name", "Smith"))</code></pre>
@@ -229,7 +229,7 @@
             </p>
             <p>
                 Aliases can be assigned using both the <code>CreateCriteria</code> and the
-                <code>CreateAlias</code> extension:
+                <code>CreateAlias</code> extensions:
             </p>
 <pre><code>Person fatherAlias = null;
 mySession
@@ -263,7 +263,7 @@ DetachedCriteria&lt;Person&gt;.Create(() => personAlias)</code></pre>
             <h2>7. Subqueries</h2>
             <p>
                 Subqueries are put together using the <code>LambdaSubquery</code> class.  Each of the
-                original NHibernate factory methods has an equivalent LambdaSubquery, so:
+                original NHibernate factory methods has an equivalent on LambdaSubquery, so:
             </p>
 <pre><code>.Add(Subqueries.PropertyIn("Name", myDetachedCriteriaSubquery))</code></pre>
             <p>
@@ -273,8 +273,8 @@ DetachedCriteria&lt;Person&gt;.Create(() => personAlias)</code></pre>
             
             <p>
                 In addition to these factory methods are the methods <code>Where</code>, <code>WhereAll</code>,
-                and <code>WhereSome</code> along with an extension method on the <code>DetachedCriteria</code>
-                class, which allows the use of lambda expressions to describe simple comparisons.  So:
+                and <code>WhereSome</code> along with an Extension Method on the <code>DetachedCriteria</code>
+                class, which allows the use of Lambda Expressions to describe simple comparisons.  So:
             </p>
 <pre><code>.Add(Subqueries.PropertyGt("Age", myDetachedCriteriaSubquery))</code></pre>
             <p>
