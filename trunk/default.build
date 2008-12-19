@@ -113,8 +113,9 @@
     <mkdir dir="${build.dir}\doc"/>
 
     <exec program="TextTransform">
+      <arg line="-a version!${project.version}" />
       <arg line="-out ${build.dir}\doc\NhLambdaExtensions.html" />
-      <arg line="Doc/NhLambdaExtensions.html" />
+      <arg line="Doc/NhLambdaExtensions.tt" />
     </exec>
 
   </target>
