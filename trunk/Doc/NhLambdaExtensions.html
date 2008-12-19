@@ -65,6 +65,7 @@
                 font-style:italic;
                 }
             pre {
+            	background-color:#ddd;
                 padding-top: 0px;
                 border-top: 0px;
                 margin-top: 0px;
@@ -199,6 +200,35 @@
 <pre><code>.Add(SqlExpression.Like&lt;Person&gt;(p => p.Name, "%anna%"))</code></pre>
             
             <h2>5. Aliases</h2>
+            <p>
+                Aliases are also assigned using 'magic strings' in the ICriteria interface, however their value
+                does not correspond to a name in the object domain.  For example, when an alias is assigned using
+                <code>.CreateAlias("Father", "fatherAlias")</code>, the string "fatherAlias" does not correspond
+                to a property or class in the domain.
+            </p>
+            <p>
+                Aliases are assigned using an empty variable.  The variable can be declared anywhere (but should
+                be empty/default at runtime).  The compiler can then check the syntax against the variable is
+                used correctly, but at runtime the variable is not evaluated (just used as a placeholder for
+                the alias).
+            </p>
+            <p>
+                Aliases can be assigned using both the <code>CreateCriteria</code> and the
+                <code>CreateAlias</code> extension:
+            </p>
+<pre><code>Person fatherAlias = null;
+mySession
+    .CreateCriteria(typeof(Person))
+        .CreateAlias&lt;Person>(p =&gt; p.Father, () =&gt; fatherAlias)
+        .Add&lt;Person&gt;(p =&gt; p.Name == fatherAlias.Name);
+</code></pre>
+            <p>
+                To create an alias on the root of DetachedCriteria use:
+            </p>
+<pre><code>DetachedCriteria&lt;Person&gt;.Create(() => personAlias)</code></pre>
+            <p>
+                See below for more <a href="#examples">examples</a>.
+            </p>
             
             <h2>6. Projections</h2>
             
