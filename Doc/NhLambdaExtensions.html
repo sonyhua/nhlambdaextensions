@@ -198,18 +198,33 @@
 <pre><code>.Add(Expression.Like("Name", "%anna%"))</code></pre>
                 <p>becomes:</p>
 <pre><code>.Add(SqlExpression.Like&lt;Person&gt;(p => p.Name, "%anna%"))</code></pre>
+            <p>
+                There is also a factory method <code>SqlExpression.CriterionFor</code>
+                to allow you to create arbitrary ICriterion for simple
+                expressions.  This allows you to use simple expressions anywhere that an ICriterion
+                can be used (e.g., <code>Expression.And</code>).  So:
+            </p>
+<pre><code>.Add&lt;Person&gt;(p =&gt; p.Name == "Smith")</code></pre>
+            <p>can also be written as:</p>
+<pre><code>.Add(SqlExpression.CriterionFor&lt;Person&gt;(p =&gt; p.Name == "Smith"))</code></pre>
+            <p>allowing expressions like:</p>
+<pre><code>.Add(Expression.Or(
+    SqlExpression.CriterionFor&lt;Person&gt;(p =&gt; p.Name == "test"),
+    SqlExpression.CriterionFor&lt;Person&gt;(p =&gt; p.Age &gt; 5)));
+</code></pre>
             
             <h2>5. Aliases</h2>
             <p>
-                Aliases are also assigned using 'magic strings' in the ICriteria interface, however their value
+                In the traditional ICriteria interface aliases are assigned using 'magic strings', however their value
                 does not correspond to a name in the object domain.  For example, when an alias is assigned using
                 <code>.CreateAlias("Father", "fatherAlias")</code>, the string "fatherAlias" does not correspond
                 to a property or class in the domain.
             </p>
             <p>
-                Aliases are assigned using an empty variable.  The variable can be declared anywhere (but should
+                In NHibernate Lambda Extensions, aliases are assigned using an empty variable.
+                The variable can be declared anywhere (but should
                 be empty/default at runtime).  The compiler can then check the syntax against the variable is
-                used correctly, but at runtime the variable is not evaluated (just used as a placeholder for
+                used correctly, but at runtime the variable is not evaluated (it's just used as a placeholder for
                 the alias).
             </p>
             <p>
