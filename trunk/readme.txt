@@ -21,4 +21,5 @@ nant                                    Perform a debug build (same as: nant deb
 nant clean                              Clean the debug build (same as: nant debug clean)
 nant release build                      Perform a release build
 nant release clean                      Clean a release build
+nant package                            Package up a release build
 

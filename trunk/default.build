@@ -129,6 +129,34 @@
 
   </target>
 
+  <target name="package">
+    
+    <delete>
+      <fileset><include name="*.zip"/></fileset>
+    </delete>
+
+    <call target="debug" />
+    <call target="clean" />
+
+    <call target="release" />
+    <call target="clean" />
+
+    <call target="release" />
+    <call target="build" />
+    
+    <property name="nhVersion" value="${assemblyname::get-version(assemblyname::get-assembly-name(build.dir + '\bin\NHibernate.dll'))}"/>
+
+    <zip zipfile="NhLambdaExtensions-${project.version}-ForNH-${nhVersion}.zip">
+      <fileset basedir="${build.dir}">
+        <include name="doc/**" />
+        <include name="bin/NHibernate.LambdaExtensions.dll" />
+        <include name="bin/NHibernate.LambdaExtensions.xml" />
+        <include name="bin/NHibernate.LambdaExtensions.license.txt" />
+      </fileset>
+    </zip>
+
+  </target>
+
   <target name="exportResults">
     <copy todir="build">
       <fileset basedir="${build.dir}\bin">
