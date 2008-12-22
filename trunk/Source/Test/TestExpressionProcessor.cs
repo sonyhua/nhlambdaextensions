@@ -39,6 +39,14 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
+        public void TestEvaluateEnumeration()
+        {
+            ICriterion before = Restrictions.Eq("Gender", PersonGender.Female);
+            ICriterion after = ExpressionProcessor.ProcessExpression<Person>(p => p.Gender == PersonGender.Female);
+            Assert.AreEqual(before.ToString(), after.ToString());
+        }
+
+        [Test]
         public void TestEvaluateMemberExpression()
         {
             Person testPerson = new Person();
