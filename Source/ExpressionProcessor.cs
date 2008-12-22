@@ -116,7 +116,7 @@ namespace NHibernate.LambdaExtensions
         /// Retrieves the name of the property from a member expression
         /// </summary>
         /// <param name="expression">An expression tree that can contain either a member, or a conversion from a member.
-        /// If the member is referenced from a ..., then the container is treated as an alias.</param>
+        /// If the member is referenced from a null valued object, then the container is treated as an alias.</param>
         /// <returns>The name of the member property</returns>
         public static string FindMemberExpression(System.Linq.Expressions.Expression expression)
         {
@@ -172,6 +172,28 @@ namespace NHibernate.LambdaExtensions
             return (value == null);
         }
 
+        private static System.Type FindMemberType(System.Linq.Expressions.Expression expression)
+        {
+            MemberExpression me = null;
+            if (expression is MemberExpression)
+                me = (MemberExpression)expression;
+
+            if (expression is UnaryExpression)
+            {
+                UnaryExpression unaryExpression = (UnaryExpression)expression;
+
+                if (unaryExpression.NodeType != ExpressionType.Convert)
+                    throw new Exception("Cannot interpret member from " + expression.ToString());
+
+                me = (MemberExpression)unaryExpression.Operand;
+            }
+
+            if (me == null)
+                throw new Exception("Could not determine member type from " + expression.ToString());
+
+            return me.Type;
+        }
+
         private static bool IsMemberExpression(System.Linq.Expressions.Expression expression)
         {
             MemberExpression me = null;
@@ -207,12 +229,25 @@ namespace NHibernate.LambdaExtensions
             return false;
         }
 
+        private static object ConvertType(object value, System.Type type)
+        {
+            if (value.GetType() == type)
+                return value;
+
+            if (type.IsEnum)
+                return Enum.ToObject(type, value);
+
+            throw new Exception("Cannot convert '" + value.ToString() + "' to " + type.ToString());
+        }
+
         private static ICriterion ProcessSimpleExpression(BinaryExpression be)
         {
             string property = FindMemberExpression(be.Left);
+            System.Type propertyType = FindMemberType(be.Left);
 
             var valueExpression = System.Linq.Expressions.Expression.Lambda(be.Right).Compile();
-            var value = valueExpression.DynamicInvoke();
+            object value = valueExpression.DynamicInvoke();
+            value = ConvertType(value, propertyType);
 
             if (!_simpleExpressionCreators.ContainsKey(be.NodeType))
                 throw new Exception("Unhandled simple expression type: " + be.NodeType);
