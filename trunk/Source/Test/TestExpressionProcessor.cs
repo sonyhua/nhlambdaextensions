@@ -9,6 +9,8 @@ using NUnit.Framework;
 namespace NHibernate.LambdaExtensions.Test
 {
 
+    public class CustomPerson : Person { }
+
     [TestFixture]
     public class TestExpressionProcessor : TestBase
     {
@@ -43,6 +45,15 @@ namespace NHibernate.LambdaExtensions.Test
         {
             ICriterion before = Restrictions.Eq("Gender", PersonGender.Female);
             ICriterion after = ExpressionProcessor.ProcessExpression<Person>(p => p.Gender == PersonGender.Female);
+            Assert.AreEqual(before.ToString(), after.ToString());
+        }
+
+        [Test]
+        public void TestEvaluateSubclass()
+        {
+            Person person = new CustomPerson();
+            ICriterion before = Restrictions.Eq("Father", person);
+            ICriterion after = ExpressionProcessor.ProcessExpression<Person>(p => p.Father == person);
             Assert.AreEqual(before.ToString(), after.ToString());
         }
 
