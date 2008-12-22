@@ -231,7 +231,7 @@ namespace NHibernate.LambdaExtensions
 
         private static object ConvertType(object value, System.Type type)
         {
-            if (value.GetType() == type)
+            if (type.IsAssignableFrom(value.GetType()))
                 return value;
 
             if (type.IsEnum)
