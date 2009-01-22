@@ -139,10 +139,10 @@ namespace NHibernate.LambdaExtensions
 
             string member = me.Member.Name;
 
-            if (me.Expression.NodeType == ExpressionType.MemberAccess)
+            while (me.Expression.NodeType == ExpressionType.MemberAccess)
             {
-                MemberExpression alias = (MemberExpression)me.Expression;
-                member = alias.Member.Name + "." + member;
+                me = (MemberExpression)me.Expression;
+                member = me.Member.Name + "." + member;
             }
 
             return member;

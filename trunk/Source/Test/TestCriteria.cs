@@ -289,6 +289,23 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
+        public void TestEqOnAliasNestedProperty()
+        {
+            ICriteria expected = CreateSession()
+                .CreateCriteria(typeof(Person))
+                    .CreateAlias("Father", "fatherAlias")
+                    .Add(Restrictions.Eq("fatherAlias.Father.Name", "test name"));
+
+            Person fatherAlias = null;
+            ICriteria actual = CreateSession()
+                .CreateCriteria(typeof(Person))
+                .CreateAlias<Person>(x=>x.Father, ()=>fatherAlias)
+                .Add(() => fatherAlias.Father.Name == "test name");
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
+        [Test]
         public void TestCreateAliasWithJoinType()
         {
             ICriteria expected = CreateSession()
