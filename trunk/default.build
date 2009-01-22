@@ -11,8 +11,15 @@
   <!-- debug build by default -->
   <call target="debug" />
 
+  <!--
+    Version number: a.b.c.d
+      a = major revision (major functionality)
+      b = minor revision (minor functionality or collective bug fixes)
+      c = bug fixes
+      d = documentation updated
+  -->
+  <property name="project.version" value="1.0.1.0" overwrite="false" />
   <property name="project.dir" value="${project::get-base-directory()}" />
-  <property name="project.version" value="1.0.0.0" overwrite="false" />
 
   <target name="debug" description="Setup a 'debug' build">
     <property name="optimize" value="false" />
