@@ -1,0 +1,13 @@
+
+
+Build 1.0.1.0 (22-Jan-2009)
+===========================
+
+Issue 1 fix - FindMemberExpression generates invalid member name when alias.SomeProperty.AnotherProperty is used.
+
+
+Build 1.0.0.0 (23-Dec-2009)
+===========================
+
+Initial release.
+
