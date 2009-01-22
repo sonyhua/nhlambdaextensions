@@ -39,6 +39,7 @@
 
     <mkdir dir="${build.dir}\bin"/>
     <copy file="lgpl.txt" tofile="${build.dir}\bin\NHibernate.LambdaExtensions.license.txt" />
+    <copy file="ReleaseNotes.txt" todir="${build.dir}" />
     <copy todir="${build.dir}\bin">
       <fileset basedir="SDKs\NHibernate\bin\net-2.0">
         <include name="*.*" />

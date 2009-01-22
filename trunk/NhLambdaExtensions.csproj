@@ -1,5 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="NAntBuild" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <ProjectGuid>{263BDCE5-2110-422E-AACA-7CD47D0C91A5}</ProjectGuid>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <OutputPath>build\debug\bin</OutputPath>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
@@ -28,6 +32,7 @@
     <None Include="**\*.config" />
     <None Include="**\*.xml" />
     <Content Include="**\*.tt" />
+    <Content Include="**\*.txt" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -75,7 +80,6 @@
         <Message>$1: $2</Message>
       </Error>
     </ExecParseConfiguration>
-    <ProjectGuid>{263BDCE5-2110-422E-AACA-7CD47D0C91A5}</ProjectGuid>
   </PropertyGroup>
   <Target Name="NAntBuild">
     <Message Text="Start NAnt debug build ..." />
