@@ -1,7 +1,11 @@
 
 using System;
 using System.Collections;
+using System.IO;
 using System.Reflection;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters;
+using System.Xml;
 
 using NHibernate.Criterion; 
 using NHibernate.Impl;
@@ -32,12 +36,12 @@ namespace NHibernate.LambdaExtensions.Test
             ISession session = mocks.Stub<ISession>();
 
             Expect
-                .Call(session.CreateCriteria(null))
+                .Call(session.CreateCriteria(typeof(object)))
                 .IgnoreArguments().Repeat.Any()
                 .Do((Func<System.Type, ICriteria>)CreateCriteriaStub);
 
             Expect
-                .Call(session.CreateCriteria(null, null))
+                .Call(session.CreateCriteria(typeof(object), ""))
                 .IgnoreArguments().Repeat.Any()
                 .Do((Func<System.Type, string, ICriteria>)CreateCriteriaStub);
 
@@ -115,8 +119,51 @@ namespace NHibernate.LambdaExtensions.Test
             }
         }
 
+        private void StripIds(XmlDocument document)
+        {
+            foreach(XmlNode id in document.SelectNodes("//*/@*[local-name()='Id' or local-name()='Ref']"))
+            {
+                id.Value = "";
+            }
+        }
+
+        private void StripUnusedClass(XmlDocument document)
+        {
+            // remove any extra data in the serialisation (don't know why this happens in the first place)
+            foreach(XmlNode classNode in document.SelectNodes("//*[local-name()='persistentClass']/*[local-name()='Data']"))
+            {
+                classNode.ParentNode.RemoveChild(classNode);
+            }
+        }
+
+        private XmlDocument SerializeObject(object source)
+        {
+            MemoryStream stream = new MemoryStream();
+            NetDataContractSerializer serializer = new NetDataContractSerializer();
+            XmlDocument document = new XmlDocument();
+
+            serializer.AssemblyFormat = FormatterAssemblyStyle.Simple;
+            serializer.WriteObject(stream, source);
+            stream.Position = 0;
+            document.Load(stream);
+
+            StripIds(document);
+            StripUnusedClass(document);
+
+            return document;
+        }
+
+        private void AssertObjectsAreEqual(object expected, object actual)
+        {
+            XmlDocument serializedExpected = SerializeObject(expected);
+            XmlDocument serializedActual = SerializeObject(expected);
+
+            Assert.AreEqual(serializedExpected.OuterXml, serializedActual.OuterXml);
+        }
+
         protected void AssertCriteriaAreEqual(ICriteria expected, ICriteria actual)
         {
+            AssertObjectsAreEqual(expected, actual);
             expected = expected.GetCriteriaByAlias(expected.RootAlias);
             actual = actual.GetCriteriaByAlias(actual.RootAlias);
             Assert.AreEqual(expected.CriteriaClass, actual.CriteriaClass);
@@ -141,6 +188,7 @@ namespace NHibernate.LambdaExtensions.Test
 
         protected void AssertCriteriaAreEqual(DetachedCriteria expected, DetachedCriteria actual)
         {
+            AssertObjectsAreEqual(expected, actual);
             expected = expected.GetCriteriaByAlias(expected.RootAlias);
             actual = actual.GetCriteriaByAlias(actual.RootAlias);
             Assert.AreEqual(expected.CriteriaClass, actual.CriteriaClass);
