@@ -156,7 +156,7 @@
 
     <zip zipfile="NhLambdaExtensions-${project.version}-ForNH-${nhVersion}.zip">
       <fileset basedir="${build.dir}">
-        <include name="**" />
+        <include name="*" />
         <include name="doc/**" />
         <include name="bin/NHibernate.LambdaExtensions.dll" />
         <include name="bin/NHibernate.LambdaExtensions.xml" />
