@@ -292,7 +292,7 @@ namespace NHibernate.LambdaExtensions.Test
             AssertCriteriaAreEqual(expected, actual);
         }
 
-        [Test] [Ignore("Using different criteria class behind the scenes for some reason")]
+        [Test]
         public void TestAndUsingAlias()
         {
             DetachedCriteria expected =
@@ -305,7 +305,7 @@ namespace NHibernate.LambdaExtensions.Test
             Person fatherAlias = null;
             DetachedCriteria actual =
                 DetachedCriteria.For<Person>()
-                    .CreateCriteria<Person>(p => p.Father, () => fatherAlias)
+                    .CreateAlias<Person>(p => p.Father, () => fatherAlias)
                     .Add(Restrictions.And(
                         SqlExpression.CriterionFor<Person>(p => p.Name == "test"),
                         SqlExpression.CriterionFor(() => fatherAlias.Age > 5)));
