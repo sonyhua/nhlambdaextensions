@@ -44,8 +44,7 @@
     <Reference Include="Rhino.Mocks">
       <HintPath>SDKs\RhinoMocks/Rhino.Mocks.dll</HintPath>
     </Reference>
-    <Reference Include="System.Runtime.Serialization"/>
-    <Reference Include="System.Xml" />
+    <Reference Include="System.Data" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
   <UsingTask AssemblyFile="SDKs\ExecParse\ExecParse.dll" TaskName="ExecParse.ExecParse" />
