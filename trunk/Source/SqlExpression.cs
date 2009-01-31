@@ -209,10 +209,36 @@ namespace NHibernate.LambdaExtensions
         /// Apply an "in" constraint to the named property
         /// </summary>
         /// <param name="expression">lambda expression returning type's property</param>
+        /// <param name="values">An object[] of values.</param>
+        /// <returns>An NHibernate.Criterion.InExpression.</returns>
+        public static ICriterion In<T>( Expression<Func<T, object>> expression,
+                                        object[]                    values)
+        {
+            string property = ExpressionProcessor.FindMemberExpression(expression.Body);
+            return Restrictions.In(property, values);
+        }
+
+        /// <summary>
+        /// Apply an "in" constraint to the named property
+        /// </summary>
+        /// <param name="expression">lambda expression returning type's property</param>
         /// <param name="values">An ICollection of values.</param>
         /// <returns>An NHibernate.Criterion.InExpression.</returns>
         public static ICriterion In(Expression<Func<object>>    expression,
                                     ICollection                 values)
+        {
+            string property = ExpressionProcessor.FindMemberExpression(expression.Body);
+            return Restrictions.In(property, values);
+        }
+
+        /// <summary>
+        /// Apply an "in" constraint to the named property
+        /// </summary>
+        /// <param name="expression">lambda expression returning type's property</param>
+        /// <param name="values">An ICollection of values.</param>
+        /// <returns>An NHibernate.Criterion.InExpression.</returns>
+        public static ICriterion In(Expression<Func<object>>    expression,
+                                    object[]                    values)
         {
             string property = ExpressionProcessor.FindMemberExpression(expression.Body);
             return Restrictions.In(property, values);
@@ -226,7 +252,7 @@ namespace NHibernate.LambdaExtensions
         /// <param name="expression">lambda expression returning type's property</param>
         /// <param name="values">An System.Collections.Generic.ICollection&lt;U> of values.</param>
         /// <returns>An NHibernate.Criterion.InExpression.</returns>
-        public static ICriterion In<T,U>(   Expression<Func<T, U>>  expression,
+        public static ICriterion InG<T,U>(  Expression<Func<T, U>>  expression,
                                             ICollection<U>          values)
         {
             string property = ExpressionProcessor.FindMemberExpression(expression.Body);
@@ -240,7 +266,7 @@ namespace NHibernate.LambdaExtensions
         /// <param name="expression">lambda expression returning type's property</param>
         /// <param name="values">An System.Collections.Generic.ICollection&lt;T> of values.</param>
         /// <returns>An NHibernate.Criterion.InExpression.</returns>
-        public static ICriterion In<T>( Expression<Func<T>> expression,
+        public static ICriterion InG<T>(Expression<Func<T>> expression,
                                         ICollection<T>      values)
         {
             string property = ExpressionProcessor.FindMemberExpression(expression.Body);
