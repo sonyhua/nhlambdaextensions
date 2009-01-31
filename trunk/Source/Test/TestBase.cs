@@ -1,11 +1,9 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters;
-using System.Xml;
 
 using NHibernate.Criterion; 
 using NHibernate.Impl;
@@ -19,6 +17,9 @@ namespace NHibernate.LambdaExtensions.Test
 
     public class TestBase
     {
+
+        private Hashtable _visitedObjects = new Hashtable();
+        private Stack<string> _fieldPath = new Stack<string>();
 
         private ICriteria CreateCriteriaStub(System.Type persistentType)
         {
@@ -119,53 +120,104 @@ namespace NHibernate.LambdaExtensions.Test
             }
         }
 
-        private void StripIds(XmlDocument document)
+        private void AssertDictionariesAreEqual(IDictionary expected, IDictionary actual)
         {
-            foreach(XmlNode id in document.SelectNodes("//*/@*[local-name()='Id' or local-name()='Ref']"))
+            Assert.AreEqual(expected.Keys.Count, actual.Keys.Count);
+            foreach (object key in expected.Keys)
             {
-                id.Value = "";
+                if (!actual.Contains(key))
+                    Assert.AreEqual(key, null);
+
+                AssertObjectsAreEqual(expected[key], actual[key], "[" + key.ToString() + "]");
             }
         }
 
-        private XmlDocument SerializeObject(object source)
+        private void AssertListsAreEqual(IList expected, IList actual)
         {
-            MemoryStream stream = new MemoryStream();
-            NetDataContractSerializer serializer = new NetDataContractSerializer();
-            XmlDocument document = new XmlDocument();
+            Assert.AreEqual(expected.Count, actual.Count);
+            for (int i=0; i<expected.Count; i++)
+            {
+                AssertObjectsAreEqual(expected[i], actual[i], "[" + i.ToString() + "]");
+            }
+        }
 
-            serializer.AssemblyFormat = FormatterAssemblyStyle.Simple;
-            serializer.WriteObject(stream, source);
-            stream.Position = 0;
-            document.Load(stream);
+        private void PushName(string name)
+        {
+            if (_fieldPath.Count == 0)
+            {
+                _fieldPath.Push(name);
+            }
+            else
+            {
+                _fieldPath.Push(_fieldPath.Peek() + name);
+            }
+        }
 
-            StripIds(document);
+        private void AssertObjectsAreEqual(object expected, object actual, string name)
+        {
+            PushName(name);
+            string fieldPath = _fieldPath.Peek();
 
-            return document;
+            if (expected == null)
+            {
+                Assert.AreEqual(expected, actual, fieldPath);
+                _fieldPath.Pop();
+                return;
+            }
+
+            System.Type expectedType = expected.GetType();
+            Assert.AreEqual(expectedType, actual.GetType(), fieldPath);
+
+            if ((expectedType.IsValueType)
+                || (expected is System.Type)
+                || (expected is string))
+            {
+                Assert.AreEqual(expected, actual, fieldPath);
+                _fieldPath.Pop();
+                return;
+            }
+
+            if (expected is IDictionary)
+            {
+                AssertDictionariesAreEqual((IDictionary)expected, (IDictionary)actual);
+                _fieldPath.Pop();
+                return;
+            }
+
+            if (expected is IList)
+            {
+                AssertListsAreEqual((IList)expected, (IList)actual);
+                _fieldPath.Pop();
+                return;
+            }
+
+            if (_visitedObjects.Contains(expected))
+            {
+                _fieldPath.Pop();
+                return;
+            }
+
+            _visitedObjects.Add(expected, null);
+
+            foreach (FieldInfo fieldInfo in expectedType.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
+            {
+                AssertObjectsAreEqual(fieldInfo.GetValue(expected), fieldInfo.GetValue(actual), "." + fieldInfo.Name);
+            }
+
+            _fieldPath.Pop();
         }
 
         private void AssertObjectsAreEqual(object expected, object actual)
         {
-            XmlDocument serializedExpected = SerializeObject(expected);
-            XmlDocument serializedActual = SerializeObject(actual);
-
-            try
-            {
-                Assert.AreEqual(serializedExpected.OuterXml, serializedActual.OuterXml);
-            }
-            catch
-            {
-                serializedExpected.Save("c:\\expected.xml");
-                serializedActual.Save("c:\\actual.xml");
-                throw;
-            }
+            _visitedObjects.Clear();
+            _fieldPath.Clear();
+            AssertObjectsAreEqual(expected, actual, expected.GetType().Name);
         }
 
         protected void AssertCriteriaAreEqual(ICriteria expected, ICriteria actual)
         {
-            //AssertObjectsAreEqual(expected, actual);
             expected = expected.GetCriteriaByAlias(expected.RootAlias);
             actual = actual.GetCriteriaByAlias(actual.RootAlias);
-            Assert.AreEqual(expected.CriteriaClass, actual.CriteriaClass);
             Assert.AreEqual(expected.ToString(), actual.ToString());
             Assert.AreEqual(expected.Alias, actual.Alias);
             AssertFetchModesAreEqual(expected.FetchModes, actual.FetchModes);
@@ -183,14 +235,13 @@ namespace NHibernate.LambdaExtensions.Test
                 Assert.AreEqual(expectedSubcriteria.JoinType, actualSubcriteria.JoinType);
                 Assert.AreEqual(expectedSubcriteria.ToString(), actualSubcriteria.ToString());
             }
+            AssertObjectsAreEqual(expected, actual);
         }
 
         protected void AssertCriteriaAreEqual(DetachedCriteria expected, DetachedCriteria actual)
         {
-            //AssertObjectsAreEqual(expected, actual);
             expected = expected.GetCriteriaByAlias(expected.RootAlias);
             actual = actual.GetCriteriaByAlias(actual.RootAlias);
-            Assert.AreEqual(expected.CriteriaClass, actual.CriteriaClass);
             Assert.AreEqual(expected.ToString(), actual.ToString());
             Assert.AreEqual(expected.Alias, actual.Alias);
             AssertFetchModesAreEqual(expected.FetchModes, actual.FetchModes);
@@ -207,6 +258,7 @@ namespace NHibernate.LambdaExtensions.Test
                 Assert.AreEqual(expectedSubcriteria.JoinType, actualSubcriteria.JoinType);
                 Assert.AreEqual(expectedSubcriteria.ToString(), actualSubcriteria.ToString());
             }
+            AssertObjectsAreEqual(expected, actual);
         }
 
     }
