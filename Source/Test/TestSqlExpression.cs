@@ -1,5 +1,6 @@
 
 using System;
+using System.Collections;
 
 using NHibernate;
 using NHibernate.Criterion;
@@ -187,7 +188,7 @@ namespace NHibernate.LambdaExtensions.Test
             AssertCriteriaAreEqual(expected, actual);
         }
 
-        [Test] [Ignore("Using wrong overload")]
+        [Test]
         public void Test_In()
         {
             DetachedCriteria expected =
@@ -201,7 +202,21 @@ namespace NHibernate.LambdaExtensions.Test
             AssertCriteriaAreEqual(expected, actual);
         }
 
-        [Test] [Ignore("Using wrong overload")]
+        [Test]
+        public void TestInCollection()
+        {
+            DetachedCriteria expected =
+                DetachedCriteria.For<Person>()
+                    .Add(Restrictions.In("Name", new ArrayList() { "name1", "name2", "name3" }));
+
+            DetachedCriteria actual =
+                DetachedCriteria.For<Person>()
+                    .Add(SqlExpression.In<Person>(p => p.Name, new ArrayList() { "name1", "name2", "name3" }));
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
+        [Test]
         public void TestInUsingAlias()
         {
             DetachedCriteria expected =
@@ -217,6 +232,21 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
+        public void TestInCollectionUsingAlias()
+        {
+            DetachedCriteria expected =
+                DetachedCriteria.For<Person>("personAlias")
+                    .Add(Restrictions.In("personAlias.Name", new ArrayList() { "name1", "name2", "name3" }));
+
+            Person personAlias = null;
+            DetachedCriteria actual =
+                DetachedCriteria<Person>.Create(() => personAlias)
+                    .Add(SqlExpression.In(() => personAlias.Name, new ArrayList() { "name1", "name2", "name3" }));
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
+        [Test]
         public void Test_GenericIn()
         {
             DetachedCriteria expected =
@@ -225,7 +255,7 @@ namespace NHibernate.LambdaExtensions.Test
 
             DetachedCriteria actual =
                 DetachedCriteria.For<Person>()
-                    .Add(SqlExpression.In<Person, int>(p => p.Age, new int[] { 1, 2, 3 }));
+                    .Add(SqlExpression.InG<Person, int>(p => p.Age, new int[] { 1, 2, 3 }));
 
             AssertCriteriaAreEqual(expected, actual);
         }
@@ -240,7 +270,7 @@ namespace NHibernate.LambdaExtensions.Test
             Person personAlias = null;
             DetachedCriteria actual =
                 DetachedCriteria<Person>.Create(() => personAlias)
-                    .Add(SqlExpression.In<int>(() => personAlias.Age, new int[] { 1, 2, 3 }));
+                    .Add(SqlExpression.InG<int>(() => personAlias.Age, new int[] { 1, 2, 3 }));
 
             AssertCriteriaAreEqual(expected, actual);
         }
