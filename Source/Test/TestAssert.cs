@@ -207,6 +207,36 @@ namespace NHibernate.LambdaExtensions.Test
             AssertCriteriaAreNotEqual(expected, actual);
         }
 
+        [Test]
+        public void TestPropertyEquality()
+        {
+            ICriteria expected = CreateSession()
+                .CreateCriteria(typeof(Person))
+                    .CreateAlias("Father", "fatherAlias")
+                    .Add(Expression.GtProperty("Age1", "fatherAlias.Age"));
+
+            ICriteria actual = CreateSession()
+                .CreateCriteria(typeof(Person))
+                    .CreateAlias("Father", "fatherAlias")
+                    .Add(Expression.GtProperty("Age2", "fatherAlias.Age"));
+
+            AssertCriteriaAreNotEqual(expected, actual);
+        }
+
+        [Test]
+        public void TestSubquery()
+        {
+            ICriteria expected = CreateSession()
+                .CreateCriteria(typeof(Person))
+                    .Add(Subqueries.PropertyIn("Name", DetachedCriteria.For<Person>().Add(Expression.Eq("Name", "subquery test"))));
+
+            ICriteria actual = CreateSession()
+                .CreateCriteria(typeof(Person))
+                    .Add(Subqueries.PropertyIn("Name", DetachedCriteria.For<Person>().Add(Expression.Eq("Name", "subqueryx test"))));
+
+            AssertCriteriaAreNotEqual(expected, actual);
+        }
+
 	}
 
 }

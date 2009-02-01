@@ -107,6 +107,14 @@ namespace NHibernate.LambdaExtensions.Test
                 return;
             }
 
+            if (_visitedObjects.Contains(expected))
+            {
+                _fieldPath.Pop();
+                return;
+            }
+
+            _visitedObjects.Add(expected, null);
+
             if (expected is IDictionary)
             {
                 AssertDictionariesAreEqual((IDictionary)expected, (IDictionary)actual);
@@ -121,17 +129,13 @@ namespace NHibernate.LambdaExtensions.Test
                 return;
             }
 
-            if (_visitedObjects.Contains(expected))
+            while (expectedType != null)
             {
-                _fieldPath.Pop();
-                return;
-            }
-
-            _visitedObjects.Add(expected, null);
-
-            foreach (FieldInfo fieldInfo in expectedType.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
-            {
-                AssertObjectsAreEqual(fieldInfo.GetValue(expected), fieldInfo.GetValue(actual), "." + fieldInfo.Name);
+                foreach (FieldInfo fieldInfo in expectedType.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
+                {
+                    AssertObjectsAreEqual(fieldInfo.GetValue(expected), fieldInfo.GetValue(actual), "." + fieldInfo.Name);
+                }
+                expectedType = expectedType.BaseType;
             }
 
             _fieldPath.Pop();
