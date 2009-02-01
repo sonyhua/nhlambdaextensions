@@ -139,10 +139,6 @@
 
   <target name="package">
     
-    <delete>
-      <fileset><include name="*.zip"/></fileset>
-    </delete>
-
     <call target="debug" />
     <call target="clean" />
 
@@ -175,6 +171,9 @@
   </target>
 
   <target name="clean">
+    <delete>
+      <fileset><include name="*.zip"/></fileset>
+    </delete>
     <delete file="Source/AssemblyInfo.cs" />
     <delete dir="${build.dir}" />
   </target>
