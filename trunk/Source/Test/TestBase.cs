@@ -52,11 +52,11 @@ namespace NHibernate.LambdaExtensions.Test
 
         private void AssertDictionariesAreEqual(IDictionary expected, IDictionary actual)
         {
-            Assert.AreEqual(expected.Keys.Count, actual.Keys.Count);
+            Assert.AreEqual(expected.Keys.Count, actual.Keys.Count, _fieldPath.Peek() + ".Count");
             foreach (object key in expected.Keys)
             {
                 if (!actual.Contains(key))
-                    Assert.AreEqual(key, null);
+                    Assert.AreEqual(key, null, _fieldPath.Peek() + "[" + key.ToString() + "]");
 
                 AssertObjectsAreEqual(expected[key], actual[key], "[" + key.ToString() + "]");
             }
@@ -64,7 +64,7 @@ namespace NHibernate.LambdaExtensions.Test
 
         private void AssertListsAreEqual(IList expected, IList actual)
         {
-            Assert.AreEqual(expected.Count, actual.Count);
+            Assert.AreEqual(expected.Count, actual.Count, _fieldPath.Peek() + ".Count");
             for (int i=0; i<expected.Count; i++)
             {
                 AssertObjectsAreEqual(expected[i], actual[i], "[" + i.ToString() + "]");
