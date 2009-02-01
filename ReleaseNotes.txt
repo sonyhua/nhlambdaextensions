@@ -1,4 +1,11 @@
 
+Build 1.0.2.0 (01-Feb-2009)
+===========================
+
+Moved testing to reflection based (removes reliance on internal structure of NH classes);
+Corrected overloads for SqlExpression.In() and .InG();
+Corrected packaging to only package the correct files.
+
 
 Build 1.0.1.0 (22-Jan-2009)
 ===========================
