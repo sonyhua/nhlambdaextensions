@@ -329,6 +329,42 @@ namespace NHibernate.LambdaExtensions.Test
             AssertCriteriaAreEqual(expected, actual);
         }
 
+        [Test]
+        public void TestGetCriteriaByAlias()
+        {
+            Person personAlias = null;
+            Person fatherAlias = null;
+            DetachedCriteria criteria =
+                DetachedCriteria<Person>.Create(() => personAlias)
+                    .CreateAlias(() => personAlias.Father, () => fatherAlias);
+
+            Assert.AreEqual("personAlias", criteria.GetCriteriaByAlias(() => personAlias).Alias);
+            Assert.AreEqual("fatherAlias", criteria.GetCriteriaByAlias(() => fatherAlias).Alias);
+        }
+
+        [Test]
+        public void TestGetCriteriaByPath()
+        {
+            Person fatherAlias = null;
+            DetachedCriteria criteria =
+                DetachedCriteria.For<Person>()
+                    .CreateCriteria<Person>(p => p.Father, () => fatherAlias);
+
+            Assert.AreEqual("fatherAlias", criteria.GetCriteriaByPath<Person>(p => p.Father).Alias);
+        }
+
+        [Test]
+        public void TestGetCriteriaByPathUsingAlias()
+        {
+            Person personAlias = null;
+            Person fatherAlias = null;
+            DetachedCriteria criteria =
+                DetachedCriteria<Person>.Create(() => personAlias)
+                    .CreateCriteria(() => personAlias.Father, () => fatherAlias);
+
+            Assert.AreEqual("fatherAlias", criteria.GetCriteriaByPath(() => personAlias.Father).Alias);
+        }
+
     }
 
 }
