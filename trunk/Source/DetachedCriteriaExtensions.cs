@@ -319,6 +319,49 @@ namespace NHibernate.LambdaExtensions
             return default(T);
         }
 
+        /// <summary>
+		/// Alows to get a sub criteria by alias.
+		/// Will return null if the criteria does not exists
+        /// </summary>
+        /// <param name="criteria">criteria instance</param>
+        /// <param name="alias">Lambda expression returning alias reference</param>
+        /// <returns>The "sub criteria"</returns>
+        public static DetachedCriteria GetCriteriaByAlias(  this DetachedCriteria       criteria,
+                                                            Expression<Func<object>>    alias)
+        {
+            string aliasContainer = ExpressionProcessor.FindMemberExpression(alias.Body);
+            return criteria.GetCriteriaByAlias(aliasContainer);
+        }
+
+        /// <summary>
+        /// Allows to get a sub criteria by path.  Will return null if the criteria does
+        /// not exists.
+        /// </summary>
+        /// <typeparam name="T">Type (same as criteria type)</typeparam>
+        /// <param name="criteria">criteria instance</param>
+        /// <param name="expression">Lambda expression returning association path</param>
+        /// <returns>The "sub criteria"</returns>
+        public static DetachedCriteria GetCriteriaByPath<T>(this DetachedCriteria       criteria,
+                                                            Expression<Func<T, object>> expression)
+        {
+            string path = ExpressionProcessor.FindMemberExpression(expression.Body);
+            return criteria.GetCriteriaByPath(path);
+        }
+
+        /// <summary>
+        /// Allows to get a sub criteria by path.  Will return null if the criteria does
+        /// not exists.
+        /// </summary>
+        /// <param name="criteria">criteria instance</param>
+        /// <param name="expression">Lambda expression returning association path</param>
+        /// <returns>The "sub criteria"</returns>
+        public static DetachedCriteria GetCriteriaByPath(   this DetachedCriteria       criteria,
+                                                            Expression<Func<object>>    expression)
+        {
+            string path = ExpressionProcessor.FindMemberExpression(expression.Body);
+            return criteria.GetCriteriaByPath(path);
+        }
+
     }
 
 }
