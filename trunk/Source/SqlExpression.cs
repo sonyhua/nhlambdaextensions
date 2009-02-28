@@ -105,6 +105,64 @@ namespace NHibernate.LambdaExtensions
         }
         
         /// <summary>
+        /// A case-insensitive "like", similar to Postgres "ilike" operator
+        /// </summary>
+        /// <typeparam name="T">generic type</typeparam>
+        /// <param name="expression">lambda expression returning type's property</param>
+        /// <param name="value">The value for the Property.</param>
+        /// <returns>A NHibernate.Criterion.LikeExpression.</returns>
+        public static ICriterion InsensitiveLike<T>(Expression<Func<T, object>> expression,
+                                                    object                      value)
+        {
+            string property = ExpressionProcessor.FindMemberExpression(expression.Body);
+            return Restrictions.InsensitiveLike(property, value);
+        }
+        
+        /// <summary>
+        /// A case-insensitive "like", similar to Postgres "ilike" operator
+        /// </summary>
+        /// <typeparam name="T">generic type</typeparam>
+        /// <param name="expression">lambda expression returning type's property</param>
+        /// <param name="value">The value for the Property.</param>
+        /// <param name="matchMode">The matching mode</param>
+        /// <returns>A NHibernate.Criterion.LikeExpression.</returns>
+        public static ICriterion InsensitiveLike<T>(Expression<Func<T, object>> expression,
+                                                    string                      value,
+                                                    MatchMode                   matchMode)
+        {
+            string property = ExpressionProcessor.FindMemberExpression(expression.Body);
+            return Restrictions.InsensitiveLike(property, value, matchMode);
+        }
+        
+        /// <summary>
+        /// A case-insensitive "like", similar to Postgres "ilike" operator
+        /// </summary>
+        /// <param name="expression">lambda expression returning type's property</param>
+        /// <param name="value">The value for the Property.</param>
+        /// <returns>A NHibernate.Criterion.LikeExpression.</returns>
+        public static ICriterion InsensitiveLike(   Expression<Func<object>>    expression,
+                                                    object                      value)
+        {
+            string property = ExpressionProcessor.FindMemberExpression(expression.Body);
+            return Restrictions.InsensitiveLike(property, value);
+        }
+        
+        /// <summary>
+        /// A case-insensitive "like", similar to Postgres "ilike" operator
+        /// </summary>
+        /// <param name="expression">lambda expression returning type's property</param>
+        /// <param name="value">The value for the Property.</param>
+        /// <param name="matchMode">The matching mode</param>
+        /// <returns>A NHibernate.Criterion.LikeExpression.</returns>
+        public static ICriterion InsensitiveLike(   Expression<Func<object>>    expression,
+                                                    string                      value,
+                                                    MatchMode                   matchMode)
+        {
+            string property = ExpressionProcessor.FindMemberExpression(expression.Body);
+            return Restrictions.InsensitiveLike(property, value, matchMode);
+        }
+        
+        /// <summary>
         /// Apply an "is null" constraint to the named property
         /// </summary>
         /// <param name="expression">lambda expression returning type's property</param>
