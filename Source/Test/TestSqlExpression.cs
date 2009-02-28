@@ -416,6 +416,27 @@ namespace NHibernate.LambdaExtensions.Test
             AssertCriteriaAreEqual(expected, actual);
         }
 
+        [Test]
+        public void TestInsensitiveLike()
+        {
+            DetachedCriteria expected =
+                DetachedCriteria.For<Person>("personAlias")
+                    .Add(Restrictions.InsensitiveLike("Name", "test"))
+                    .Add(Restrictions.InsensitiveLike("Name", "tEsT", MatchMode.Anywhere))
+                    .Add(Restrictions.InsensitiveLike("personAlias.Name", "test"))
+                    .Add(Restrictions.InsensitiveLike("personAlias.Name", "tEsT", MatchMode.Anywhere));
+
+            Person personAlias = null;
+            DetachedCriteria actual =
+                DetachedCriteria<Person>.Create(() => personAlias)
+                    .Add(SqlExpression.InsensitiveLike<Person>(p => p.Name, "test"))
+                    .Add(SqlExpression.InsensitiveLike<Person>(p => p.Name, "tEsT", MatchMode.Anywhere))
+                    .Add(SqlExpression.InsensitiveLike(() => personAlias.Name, "test"))
+                    .Add(SqlExpression.InsensitiveLike(() => personAlias.Name, "tEsT", MatchMode.Anywhere));
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
     }
 
 }
