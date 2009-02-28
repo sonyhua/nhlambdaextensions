@@ -1,7 +1,8 @@
 
-Build 1.0.3.0 (tbd)
+Build 1.0.3.0 (28-Feb-2009)
 ===================
 
+Issue 3 fix - Added methods for InsensitiveLike.
 Issue 2 fix - Added extensions for GetCriteriaByAlias and GetCriteriaByPath.
 
 
