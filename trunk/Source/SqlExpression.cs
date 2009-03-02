@@ -96,12 +96,76 @@ namespace NHibernate.LambdaExtensions
         /// </summary>
         /// <param name="expression">lambda expression returning type's property</param>
         /// <param name="value">The value for the Property.</param>
+        /// <param name="matchMode">The MatchMode.</param>
+        /// <returns>A NHibernate.Criterion.LikeExpression.</returns>
+        public static ICriterion Like<T>(   Expression<Func<T, object>> expression,
+                                            string                      value,
+                                            MatchMode                   matchMode)
+        {
+            string property = ExpressionProcessor.FindMemberExpression(expression.Body);
+            return Restrictions.Like(property, value, matchMode);
+        }
+        
+        /// <summary>
+        /// Apply a "like" constraint to the named property
+        /// </summary>
+        /// <param name="expression">lambda expression returning type's property</param>
+        /// <param name="value">The value for the Property.</param>
+        /// <param name="matchMode">The MatchMode.</param>
+        /// <param name="escapeChar">The escape character.</param>
+        /// <returns>A NHibernate.Criterion.LikeExpression.</returns>
+        public static ICriterion Like<T>(   Expression<Func<T, object>> expression,
+                                            string                      value,
+                                            MatchMode                   matchMode,
+                                            char?                       escapeChar)
+        {
+            string property = ExpressionProcessor.FindMemberExpression(expression.Body);
+            return Restrictions.Like(property, value, matchMode, escapeChar);
+        }
+        
+        /// <summary>
+        /// Apply a "like" constraint to the named property
+        /// </summary>
+        /// <param name="expression">lambda expression returning type's property</param>
+        /// <param name="value">The value for the Property.</param>
         /// <returns>A NHibernate.Criterion.LikeExpression.</returns>
         public static ICriterion Like(  Expression<Func<object>>    expression,
                                         object                      value)
         {
             string property = ExpressionProcessor.FindMemberExpression(expression.Body);
             return Restrictions.Like(property, value);
+        }
+        
+        /// <summary>
+        /// Apply a "like" constraint to the named property
+        /// </summary>
+        /// <param name="expression">lambda expression returning type's property</param>
+        /// <param name="value">The value for the Property.</param>
+        /// <param name="matchMode">The MatchMode.</param>
+        /// <returns>A NHibernate.Criterion.LikeExpression.</returns>
+        public static ICriterion Like(  Expression<Func<object>>    expression,
+                                        string                      value,
+                                        MatchMode                   matchMode)
+        {
+            string property = ExpressionProcessor.FindMemberExpression(expression.Body);
+            return Restrictions.Like(property, value, matchMode);
+        }
+        
+        /// <summary>
+        /// Apply a "like" constraint to the named property
+        /// </summary>
+        /// <param name="expression">lambda expression returning type's property</param>
+        /// <param name="value">The value for the Property.</param>
+        /// <param name="matchMode">The MatchMode.</param>
+        /// <param name="escapeChar">The escape character.</param>
+        /// <returns>A NHibernate.Criterion.LikeExpression.</returns>
+        public static ICriterion Like(  Expression<Func<object>>    expression,
+                                        string                      value,
+                                        MatchMode                   matchMode,
+                                        char?                       escapeChar)
+        {
+            string property = ExpressionProcessor.FindMemberExpression(expression.Body);
+            return Restrictions.Like(property, value, matchMode, escapeChar);
         }
         
         /// <summary>

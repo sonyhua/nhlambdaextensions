@@ -48,11 +48,15 @@ namespace NHibernate.LambdaExtensions.Test
         {
             DetachedCriteria expected =
                 DetachedCriteria.For<Person>()
-                    .Add(Restrictions.Like("Name", "%test%"));
+                    .Add(Restrictions.Like("Name", "%test%"))
+                    .Add(Restrictions.Like("Name", "test", MatchMode.Anywhere))
+                    .Add(Restrictions.Like("Name", "test", MatchMode.Anywhere, '?'));
 
             DetachedCriteria actual =
                 DetachedCriteria.For<Person>()
-                    .Add(SqlExpression.Like<Person>(p => p.Name, "%test%"));
+                    .Add(SqlExpression.Like<Person>(p => p.Name, "%test%"))
+                    .Add(SqlExpression.Like<Person>(p => p.Name, "test", MatchMode.Anywhere))
+                    .Add(SqlExpression.Like<Person>(p => p.Name, "test", MatchMode.Anywhere, '?'));
 
             AssertCriteriaAreEqual(expected, actual);
         }
@@ -62,12 +66,16 @@ namespace NHibernate.LambdaExtensions.Test
         {
             DetachedCriteria expected =
                 DetachedCriteria.For<Person>("personAlias")
-                    .Add(Restrictions.Like("personAlias.Name", "%test%"));
+                    .Add(Restrictions.Like("personAlias.Name", "%test%"))
+                    .Add(Restrictions.Like("personAlias.Name", "test", MatchMode.Anywhere))
+                    .Add(Restrictions.Like("personAlias.Name", "test", MatchMode.Anywhere, '?'));
 
             Person personAlias = null;
             DetachedCriteria actual =
                 DetachedCriteria<Person>.Create(() => personAlias)
-                    .Add(SqlExpression.Like(() => personAlias.Name, "%test%"));
+                    .Add(SqlExpression.Like(() => personAlias.Name, "%test%"))
+                    .Add(SqlExpression.Like(() => personAlias.Name, "test", MatchMode.Anywhere))
+                    .Add(SqlExpression.Like(() => personAlias.Name, "test", MatchMode.Anywhere, '?'));
 
             AssertCriteriaAreEqual(expected, actual);
         }
