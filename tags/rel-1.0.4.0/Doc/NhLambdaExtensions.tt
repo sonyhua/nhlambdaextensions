@@ -1,0 +1,397 @@
+<#@ template language="C#" hostspecific="True" #>
+<#@ include file="Utility.tt" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Text.RegularExpressions" #>
+<#
+  Init();
+#>
+<html>
+    <head>
+        <title>NHibernate Lambda Extensions (V<#=_version#>) - Documentation</title>
+        <style>
+            body {
+            	margin:0px;
+            	padding:0px;
+            	color:black;
+            	}
+
+            .content {
+            	margin:0px 100px 50px;
+            	padding:20px;
+            	color:black;
+            	background-color:#eee;
+            	border:1px solid black;
+            	}
+            p {
+            	font-size:11px;
+            	line-height:20px;
+            	font-family:verdana, arial, helvetica, sans-serif;
+            	margin:0px 0px 12px 0px;
+            	}
+            li {
+            	font-size:10px;
+            	line-height:20px;
+            	font-family:verdana, arial, helvetica, sans-serif;
+            	margin:0px 0px 3px 0px;
+            	}
+            #Content>p {margin:0px;}
+            #Content>p+p {text-indent:30px;}
+
+            a {
+            	color:#09C;
+            	font-size:11px;
+            	font-weight:600;
+            	font-family:verdana, arial, helvetica, sans-serif;
+            	}
+            h1 {
+            	color:#333;
+            	font:20px/20px verdana, arial, helvetica, sans-serif;
+            	font-weight:900;
+            	}
+            h2 {
+            	color:#333;
+            	font:12px verdana, arial, helvetica, sans-serif;
+            	font-weight:700;
+            	margin:18px 0px 3px 0px;
+            	}
+            h3 {
+            	color:#666;
+            	font-size:11px;
+            	font-weight:800;
+            	margin:6px 0px 3px 0px;
+            	}
+            table {
+            	font-size:11px;
+            	line-height:20px;
+            	font-family:verdana, arial, helvetica, sans-serif;
+            	margin:0px 0px 12px 0px;
+                }
+            th {
+                font-style:italic;
+                }
+            pre {
+            	background-color:#ddd;
+                padding-top: 0px;
+                border-top: 0px;
+                margin-top: 0px;
+                }
+            code {
+            	background-color:#ddd;
+                }
+        </style>
+    </head>
+    
+    <body>
+        <br/>
+        <div class="content">
+        
+            <h1>NHibernate Lambda Extensions (V<#=_version#>) - Documentation</h1>
+            
+            <h2>1. Introduction</h2>
+
+            <p>
+                The .Net framework introduced
+                <a target="_blank" href="http://en.wikipedia.org/wiki/Language_Integrated_Query">LINQ</a>,
+                <a target="_blank" href="http://weblogs.asp.net/scottgu/archive/2007/04/08/new-orcas-language-feature-lambda-expressions.aspx">Lambda Expressions</a>,
+                and <a target="_blank" href="http://weblogs.asp.net/scottgu/archive/2007/03/13/new-orcas-language-feature-extension-methods.aspx">Extension Methods</a>.
+                In addition, an ORM (like NHibernate) can implement the IQueryable interface to allow transparent querying
+                of a datasource using LINQ.
+            </p>
+            <p>
+                However, sometimes you want the expressiveness of a query language that is closer to the persistence
+                implementation (i.e., a relational database) like
+                NHibernate's
+                <a target="_blank" href="http://martinfowler.com/eaaCatalog/queryObject.html">Query Object</a>
+                the
+                <a target="_blank" href="http://www.nhforge.org/doc/nh/en/index.html#querycriteria">ICriteria</a>
+                interface.
+                The trouble with the ICriteria interface is the use of 'magic strings' for property names
+                which can hinder the use of some refactoring tools.
+            </p>
+            <p>
+                This project supplies Extension Methods and uses Lambda Expressions to provide some extra
+                syntax to remove the 'magic strings' from your ICriteria queries.
+            </p>
+            <p>
+                So, for example:</p>
+<pre><code>.Add(Expression.Eq("Name", "Smith"))
+</code></pre>
+                <p>becomes:</p>
+<pre><code>.Add&lt;Person&gt;(p =&gt; p.Name == "Smith")
+</code></pre>
+            <p>
+                With this kind of syntax there are no 'magic strings', and refactoring tools like
+                'Find All References', and 'Refactor-&gt;Rename' work perfectly.
+            </p>
+            <p>
+                It is worth mentioning that this project is intended to remove the references to 'magic strings'
+                from the ICriteria API while maintaining it's opaqueness.  It is <u><b>not</b></u> a LINQ provider for NHibernate.  There are
+                seperate projects already in place to handle this (considerably more complex) problem.
+            </p>
+            
+            <h2>2. Getting started</h2>
+            <p>
+                Assuming you're already using NHibernate:
+            </p>
+            <ol>
+                <li>Download and extract NhLambdaExtensions from
+                    <a target="_blank" href="http://code.google.com/p/nhlambdaextensions/downloads/list">here</a>;</li>
+                <li>Put the NHibernate.LambdaExtensions.dll next to your NHibernate.dll;</li>
+                <li>Add a reference to NHibernate.LambdaExtensions;</li>
+                <li>Add a <code>using NHibernate.LambdaExtensions;</code> statement.</li>
+            </ol>
+            <p>
+                That's it.
+            </p>
+            
+            <h2>3. Simple expressions</h2>
+            <p>
+                Simple expressions (&lt;, &lt;=, ==, !=, &gt; &amp; &gt;=) can be added using an Extension
+                Method on the ICriteria interface that takes an appropriate Lambda Expression.  e.g.,:
+            </p>
+<pre><code>.Add&lt;Person&gt;(p =&gt; p.Name == "Smith")
+</code></pre>
+            <p>
+                C# allows another syntax that semantically identical to the above:
+            </p>
+<pre><code>.Add((Person p) =&gt; p.Name == "Smith")
+</code></pre>
+            <p>
+                Note that the Lambda Expression is converted to a plain ICriterion at runtime.
+                The Lambda Expression is not stored in the resulting ICriteria, so the only difference
+                between:
+            </p>
+<pre><code>.Add(Expression.Eq("Name", "Smith"))</code></pre>
+                <p>and:</p>
+<pre><code>.Add&lt;Person&gt;(p =&gt; p.Name == "Smith")</code></pre>
+            <p>
+                is the compile time checking.  At runtime this calls
+                <code>.Add(Expression.Eq("Name", "Smith"))</code>
+                in both cases.
+            </p>
+            <p>
+                All of the extensions on the ICriteria interface have corresponding extensions on the
+                DetachedCriteria class.  So you can write:
+            </p>
+<pre><code>mySession
+    .CreateCriteria(typeof(Person))
+        .Add&lt;Person&gt;(p =&gt; p.Name == "Smith");
+</code></pre>
+            <p>
+                and also:
+            </p>
+<pre><code>    DetachedCriteria.For&lt;Person&gt;()
+        .Add&lt;Person&gt;(p =&gt; p.Name == "Smith");
+</code></pre>
+            
+            <h2>4. SQL specific functions</h2>
+            <p>
+                Some SQL operators/functions do not have a direct equivalent in C#.
+                (e.g., the SQL <code>where name like '%anna%'</code>).
+            </p>
+            <p>
+                Some LINQ providers might try to make a transparent mapping from the C#
+                <code>Name.StartsWith("anna")</code> to the SQL <code>where name like 'anna%'</code>.
+            </p>
+            <p>
+                The aim of this project is to provide a typesafe interface to ICriteria while
+                maintaining the opaqueness that makes it clearer to the developer what query
+                will be executed on the database.  Instead of mapping the <code>StartsWith</code>
+                function, there is a corresponding SqlExpression class that allows strongly-typed
+                expressions to be created.  So:
+            </p>
+<pre><code>.Add(Expression.Like("Name", "%anna%"))</code></pre>
+                <p>becomes:</p>
+<pre><code>.Add(SqlExpression.Like&lt;Person&gt;(p => p.Name, "%anna%"))</code></pre>
+            <p>
+                There is also a factory method <code>SqlExpression.CriterionFor</code>
+                to allow you to create arbitrary ICriterion for simple
+                expressions.  This allows you to use simple expressions anywhere that an ICriterion
+                can be used (e.g., <code>Expression.And</code>).  So:
+            </p>
+<pre><code>.Add&lt;Person&gt;(p =&gt; p.Name == "Smith")</code></pre>
+            <p>can also be written as:</p>
+<pre><code>.Add(SqlExpression.CriterionFor&lt;Person&gt;(p =&gt; p.Name == "Smith"))</code></pre>
+            <p>allowing expressions like:</p>
+<pre><code>.Add(Expression.Or(
+    SqlExpression.CriterionFor&lt;Person&gt;(p =&gt; p.Name == "test"),
+    SqlExpression.CriterionFor&lt;Person&gt;(p =&gt; p.Age &gt; 5)));
+</code></pre>
+            
+            <h2>5. Aliases</h2>
+            <p>
+                In the traditional ICriteria interface aliases are assigned using 'magic strings', however their value
+                does not correspond to a name in the object domain.  For example, when an alias is assigned using
+                <code>.CreateAlias("Father", "fatherAlias")</code>, the string "fatherAlias" does not correspond
+                to a property or class in the domain.
+            </p>
+            <p>
+                In NHibernate Lambda Extensions, aliases are assigned using an empty variable.
+                The variable can be declared anywhere (but should
+                be empty/default at runtime).  The compiler can then check the syntax against the variable is
+                used correctly, but at runtime the variable is not evaluated (it's just used as a placeholder for
+                the alias).
+            </p>
+            <p>
+                Aliases can be assigned using both the <code>CreateCriteria</code> and the
+                <code>CreateAlias</code> extensions:
+            </p>
+<pre><code>Person fatherAlias = null;
+mySession
+    .CreateCriteria(typeof(Person))
+        .CreateAlias&lt;Person>(p =&gt; p.Father, () =&gt; fatherAlias)
+        .Add&lt;Person&gt;(p =&gt; p.Name == fatherAlias.Name);
+</code></pre>
+            <p>
+                To create an alias on the root of DetachedCriteria use:
+            </p>
+<pre><code>Person personAlias = null;
+DetachedCriteria&lt;Person&gt;.Create(() => personAlias)</code></pre>
+            <p>
+                See below for more <a href="#examples">examples</a>.
+            </p>
+            
+            <h2>6. Projections</h2>
+            <p>
+                Projections are made typesafe through the <code>LambdaProjection</code> class,
+                with the <code>Property</code> method returning an IProjection.  In addition, the
+                SimpleProjection class has an extension to allow you to alias the projections.  So:
+            </p>
+<pre><code>.SetProjection(Projections.Property("Age").As("ageAlias"))</code></pre>
+            <p>can be written as:</p>
+<pre><code>.SetProjection(LambdaProjection.Property&lt;Person>(p =&gt; p.Age).As(() =&gt; ageAlias))</code></pre>
+            <p>
+                There are additional factory methods to create other projections (e.g., Max, Min, Avg, etc.)
+                See below for more <a href="#examples">examples</a>.
+            </p>
+            
+            <h2>7. Subqueries</h2>
+            <p>
+                Subqueries are put together using the <code>LambdaSubquery</code> class.  Each of the
+                original NHibernate factory methods has an equivalent on LambdaSubquery, so:
+            </p>
+<pre><code>.Add(Subqueries.PropertyIn("Name", myDetachedCriteriaSubquery))</code></pre>
+            <p>
+                becomes:
+            </p>
+<pre><code>.Add(LambdaSubquery.Property&lt;Person&gt;(p =&gt; p.Name).In(myDetachedCriteriaSubquery))</code></pre>
+            
+            <p>
+                In addition to these factory methods are the methods <code>Where</code>, <code>WhereAll</code>,
+                and <code>WhereSome</code> along with an Extension Method on the <code>DetachedCriteria</code>
+                class, which allows the use of Lambda Expressions to describe simple comparisons.  So:
+            </p>
+<pre><code>.Add(Subqueries.PropertyGt("Age", myDetachedCriteriaSubquery))</code></pre>
+            <p>
+                becomes:
+            </p>
+<pre><code>.Add(LambdaSubquery.Where&lt;Person&gt;(p =&gt; p.Age &gt; myDetachedCriteriaSubquery.As&lt;int&gt;()))</code></pre>
+            
+            <a name="#examples"></a>
+            <h2>8. Examples</h2>
+            <p>
+                Below are some examples of how to write ICriteria using the 'old' style,
+                and then rewritten using NHibernate Lambda Extensions.
+            </p>
+<#
+  IList<string> examplesNames = new List<string>();
+  IDictionary<string, IList<string>> tests = new Dictionary<string, IList<string>>();
+  IDictionary<string, string> beforeContent = new Dictionary<string, string>();
+  IDictionary<string, string> afterContent = new Dictionary<string, string>();
+  
+  foreach (string testFile in _testFiles)
+  {
+    string examplesName = testFile.Substring(4, testFile.Length - 7);
+    examplesNames.Add(examplesName);
+    tests[examplesName] = new List<string>();
+    string fileContent = File.ReadAllText(Path.Combine(_testFolder, testFile));
+    Regex testFinder = new Regex(@"Test_[\s\S]*?{[\s\S]*?Assert[\s\S]*?}");
+    foreach (Match test in testFinder.Matches(fileContent))
+    {
+      string testContent = test.Value;
+      Regex testNameFinder = new Regex(@"Test_([\s\S]*?)\(\)");
+      string testName = testNameFinder.Match(testContent).Groups[1].ToString();
+      tests[examplesName].Add(testName);
+      
+      Regex testContentFinder = new Regex(@"{[\s]*\n([\s\S]*)}");
+      testContent = testContentFinder.Match(testContent).Groups[1].ToString();
+      Regex beforeFinder = new Regex(@"([\s\S]*?)\n[\s]*\n");
+      Regex afterFinder = new Regex(@"\n[\s]*\n([\s\S]*?)\n[\s]*\n");
+      string before = beforeFinder.Match(testContent).Groups[1].ToString();
+      string after = afterFinder.Match(testContent).Groups[1].ToString();
+      beforeContent[examplesName+testName] = before;
+      afterContent[examplesName+testName] = after;
+    }
+  }
+  foreach (string examplesName in examplesNames)
+  {
+    #>
+    <h2 style="margin-left:20px;"><a href="#examples_<#=examplesName#>"/><#=examplesName#> Examples</a></h2>
+    <#
+    foreach (string testName in tests[examplesName])
+    {
+      #>
+        <h3 style="margin-left:50px;"><a href="#examples_<#=examplesName#>_<#=testName#>"><#=AddSpacesBetweenCapitals(testName)#></a></h3>
+      <#
+    }
+  }
+  foreach (string examplesName in examplesNames)
+  {
+    #>
+    <a name="#examples_<#=examplesName#>"></a>
+    <h2 style="font-size:13pt;"><#=examplesName#> Examples</h2>
+    <#
+    foreach (string testName in tests[examplesName])
+    {
+      #>
+        <a name="#examples_<#=examplesName#>_<#=testName#>"></a>
+        <h2><#=AddSpacesBetweenCapitals(testName)#></h2>
+        <p>Using original ICriteria API:<p>
+<pre style="width:100%;overflow-x:auto;"><code>
+<#=FormatCode(beforeContent[examplesName+testName])#>
+</code></pre>
+        <p>Using NHibernate Lambda Extensions:<p>
+<pre style="width:100%;overflow-x:auto;"><code>
+<#=FormatCode(afterContent[examplesName+testName])#>
+</code></pre>
+        <p>&nbsp;</p>
+      <#
+    }
+  }
+#>
+
+        </div>
+    </body>
+</html>
+
+<#+
+  private string _version;
+  private string[] _testFiles;
+  private string _testFolder;
+
+  private void Init()
+  {
+    _version = GetCommandLineProperty("version");
+    
+    _testFolder = GetCommandLineProperty("testFolder");
+    string testFilesString = GetCommandLineProperty("testFiles");
+    _testFiles = testFilesString.Split(';');
+  }
+  
+  private string AddSpacesBetweenCapitals(string input)
+  {
+    Regex capitalFinder = new Regex(@"([ABCDEFGHIJKLMNOPQRSTUVWXYZ])");
+    string output = capitalFinder.Replace(input, " $1");
+    return output.TrimStart(' ');
+  }
+  
+  private string FormatCode(string input)
+  {
+    input = input.Replace("\t", "    ");
+    Regex leadingTabFinder = new Regex(@"            ([\S])");
+    string output = leadingTabFinder.Replace(input, "$1");
+    output = output.Replace("<", "&lt;").Replace(">", "&gt;");
+    output = output.Replace("expected =", "before =").Replace("actual =", "after =");
+    return output;
+  }
+#>
