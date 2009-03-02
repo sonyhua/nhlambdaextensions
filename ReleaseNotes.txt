@@ -1,6 +1,12 @@
 
+Build 1.0.4.0 (02-Mar-2009)
+===========================
+
+Issue 4 fix - Added overloads for Like with MatchMode.
+
+
 Build 1.0.3.0 (28-Feb-2009)
-===================
+===========================
 
 Issue 3 fix - Added methods for InsensitiveLike.
 Issue 2 fix - Added extensions for GetCriteriaByAlias and GetCriteriaByPath.
