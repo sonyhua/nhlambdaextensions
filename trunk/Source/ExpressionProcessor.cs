@@ -7,6 +7,8 @@ using System.Reflection;
 
 using NHibernate.Criterion;
 
+using Expression = System.Linq.Expressions.Expression;
+
 namespace NHibernate.LambdaExtensions
 {
 
@@ -118,7 +120,7 @@ namespace NHibernate.LambdaExtensions
         /// <param name="expression">An expression tree that can contain either a member, or a conversion from a member.
         /// If the member is referenced from a null valued object, then the container is treated as an alias.</param>
         /// <returns>The name of the member property</returns>
-        public static string FindMemberExpression(System.Linq.Expressions.Expression expression)
+        public static string FindMemberExpression(Expression expression)
         {
             MemberExpression me = null;
             if (expression is MemberExpression)
@@ -153,26 +155,26 @@ namespace NHibernate.LambdaExtensions
         /// </summary>
         /// <param name="expression">Expresson for detached criteria using .As&lt;>() extension"/></param>
         /// <returns>Evaluated detached criteria</returns>
-        public static DetachedCriteria FindDetachedCriteria(System.Linq.Expressions.Expression expression)
+        public static DetachedCriteria FindDetachedCriteria(Expression expression)
         {
             MethodCallExpression methodCallExpression = expression as MethodCallExpression;
 
             if (methodCallExpression == null)
                 throw new Exception("right operand should be detachedCriteriaInstance.As<T>() - " + expression.ToString());
 
-            var criteriaExpression = System.Linq.Expressions.Expression.Lambda(methodCallExpression.Arguments[0]).Compile();
+            var criteriaExpression = Expression.Lambda(methodCallExpression.Arguments[0]).Compile();
             object detachedCriteria = criteriaExpression.DynamicInvoke();
             return (DetachedCriteria)detachedCriteria;
         }
 
-        private static bool EvaluatesToNull(System.Linq.Expressions.Expression expression)
+        private static bool EvaluatesToNull(Expression expression)
         {
-            var valueExpression = System.Linq.Expressions.Expression.Lambda(expression).Compile();
+            var valueExpression = Expression.Lambda(expression).Compile();
             object value = valueExpression.DynamicInvoke();
             return (value == null);
         }
 
-        private static System.Type FindMemberType(System.Linq.Expressions.Expression expression)
+        private static System.Type FindMemberType(Expression expression)
         {
             MemberExpression me = null;
             if (expression is MemberExpression)
@@ -194,7 +196,7 @@ namespace NHibernate.LambdaExtensions
             return me.Type;
         }
 
-        private static bool IsMemberExpression(System.Linq.Expressions.Expression expression)
+        private static bool IsMemberExpression(Expression expression)
         {
             MemberExpression me = null;
 
@@ -245,7 +247,7 @@ namespace NHibernate.LambdaExtensions
             string property = FindMemberExpression(be.Left);
             System.Type propertyType = FindMemberType(be.Left);
 
-            var valueExpression = System.Linq.Expressions.Expression.Lambda(be.Right).Compile();
+            var valueExpression = Expression.Lambda(be.Right).Compile();
             object value = valueExpression.DynamicInvoke();
             value = ConvertType(value, propertyType);
 
@@ -270,6 +272,44 @@ namespace NHibernate.LambdaExtensions
             return criterion;
         }
 
+        private static ICriterion ProcessBinaryExpression(BinaryExpression expression)
+        {
+            if (IsMemberExpression(expression.Right))
+                return ProcessMemberExpression(expression);
+            else
+                return ProcessSimpleExpression(expression);
+        }
+
+        private static ICriterion ProcessBooleanExpression(Expression expression)
+        {
+            if (expression is MemberExpression)
+            {
+                return Restrictions.Eq(FindMemberExpression(expression), true);
+            }
+
+            if (expression is UnaryExpression)
+            {
+                UnaryExpression unaryExpression = (UnaryExpression)expression;
+
+                if (unaryExpression.NodeType != ExpressionType.Not)
+                    throw new Exception("Cannot interpret member from " + expression.ToString());
+
+                return Restrictions.Eq(FindMemberExpression(unaryExpression.Operand), false);
+            }
+
+            throw new Exception("Could not determine member type from " + expression.ToString());
+        }
+
+        private static ICriterion ProcessLambdaExpression(LambdaExpression expression)
+        {
+            var body = expression.Body;
+
+            if (body is BinaryExpression)
+                return ProcessBinaryExpression((BinaryExpression)body);
+            else
+                return ProcessBooleanExpression((Expression)body);
+        }
+
         /// <summary>
         /// Convert a lambda expression to NHibernate ICriterion
         /// </summary>
@@ -278,12 +318,7 @@ namespace NHibernate.LambdaExtensions
         /// <returns>NHibernate ICriterion</returns>
         public static ICriterion ProcessExpression<T>(Expression<Func<T, bool>> expression)
         {
-            BinaryExpression be = (BinaryExpression)expression.Body;
-
-            if (IsMemberExpression(be.Right))
-                return ProcessMemberExpression(be);
-            else
-                return ProcessSimpleExpression(be);
+            return ProcessLambdaExpression(expression);
         }
 
         /// <summary>
@@ -293,12 +328,7 @@ namespace NHibernate.LambdaExtensions
         /// <returns>NHibernate ICriterion</returns>
         public static ICriterion ProcessExpression(Expression<Func<bool>> expression)
         {
-            BinaryExpression be = (BinaryExpression)expression.Body;
-
-            if (IsMemberExpression(be.Right))
-                return ProcessMemberExpression(be);
-            else
-                return ProcessSimpleExpression(be);
+            return ProcessLambdaExpression(expression);
         }
 
         /// <summary>

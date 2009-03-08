@@ -67,6 +67,21 @@ namespace NHibernate.LambdaExtensions.Test
             Assert.AreEqual("testName", simpleExpression.Value);
         }
 
+        [Test]
+        public void TestEvaluateBooleanMemberExpression()
+        {
+            {
+                ICriterion before = Restrictions.Eq("IsParent", true);
+                ICriterion after = ExpressionProcessor.ProcessExpression<Person>(p => p.IsParent);
+                Assert.AreEqual(before.ToString(), after.ToString());
+            }
+            {
+                ICriterion before = Restrictions.Eq("IsParent", false);
+                ICriterion after = ExpressionProcessor.ProcessExpression<Person>(p => !p.IsParent);
+                Assert.AreEqual(before.ToString(), after.ToString());
+            }
+        }
+
     }
 
 }

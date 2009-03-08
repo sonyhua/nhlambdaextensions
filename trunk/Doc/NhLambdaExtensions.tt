@@ -157,6 +157,12 @@
 <pre><code>.Add((Person p) =&gt; p.Name == "Smith")
 </code></pre>
             <p>
+                Boolean comparisons can be made directly instead of comparing to true/false:
+            </p>
+<pre><code>.Add&lt;Person&gt;(p =&gt; p.IsParent)
+.Add&lt;Person&gt;(p =&gt; !p.IsRetired)
+</code></pre>
+            <p>
                 Note that the Lambda Expression is converted to a plain ICriterion at runtime.
                 The Lambda Expression is not stored in the resulting ICriteria, so the only difference
                 between:
