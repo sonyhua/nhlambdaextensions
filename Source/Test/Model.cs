@@ -18,6 +18,7 @@ namespace NHibernate.LambdaExtensions.Test
         public Person Father { get; set; }
         public PersonGender Gender { get; set; }
         public IList<Child> Children { get; set; }
+        public bool IsParent { get; set; }
     }
 
     public class Child
