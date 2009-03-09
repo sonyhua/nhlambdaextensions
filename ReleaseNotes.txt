@@ -1,4 +1,11 @@
 
+Build 1.0.5.0 (09-Mar-2009)
+===========================
+
+Issue 6 - added support for .class meta-property;
+Issue 7 - added support for boolean expressions (without needing a comparison).
+
+
 Build 1.0.4.0 (02-Mar-2009)
 ===========================
 
