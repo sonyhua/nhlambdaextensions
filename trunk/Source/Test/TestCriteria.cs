@@ -71,6 +71,21 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
+        public void Test_EqUsingMetaProperty()
+        {
+            ICriteria expected = CreateSession()
+                .CreateCriteria(typeof(Person), "personAlias")
+                    .Add(Restrictions.Eq("personAlias.class", typeof(Person)));
+
+            Person personAlias = null;
+            ICriteria actual = CreateSession()
+                .CreateCriteria(typeof(Person), () => personAlias)
+                    .Add(() => personAlias.GetType() == typeof(Person));
+
+            AssertCriteriaAreEqual(expected, actual);
+        }
+
+        [Test]
         public void TestExpressionCombinations()
         {
             ICriteria expected = CreateSession()

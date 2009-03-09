@@ -122,9 +122,15 @@ namespace NHibernate.LambdaExtensions
         /// <returns>The name of the member property</returns>
         public static string FindMemberExpression(Expression expression)
         {
-            MemberExpression me = null;
             if (expression is MemberExpression)
-                me = (MemberExpression)expression;
+            {
+                MemberExpression memberExpression = (MemberExpression)expression;
+
+                if (memberExpression.Expression.NodeType == ExpressionType.MemberAccess)
+                    return FindMemberExpression(memberExpression.Expression) + "." + memberExpression.Member.Name;
+                else
+                    return memberExpression.Member.Name;
+            }
 
             if (expression is UnaryExpression)
             {
@@ -133,21 +139,20 @@ namespace NHibernate.LambdaExtensions
                 if (unaryExpression.NodeType != ExpressionType.Convert)
                     throw new Exception("Cannot interpret member from " + expression.ToString());
 
-                me = (MemberExpression)unaryExpression.Operand;
+                return FindMemberExpression(unaryExpression.Operand);
             }
 
-            if (me == null)
-                throw new Exception("Could not determine member from " + expression.ToString());
-
-            string member = me.Member.Name;
-
-            while (me.Expression.NodeType == ExpressionType.MemberAccess)
+            if (expression is MethodCallExpression)
             {
-                me = (MemberExpression)me.Expression;
-                member = me.Member.Name + "." + member;
+                MethodCallExpression methodCallExpression = (MethodCallExpression)expression;
+
+                if (methodCallExpression.Method.Name == "GetType")
+                    return FindMemberExpression(methodCallExpression.Object) + ".class";
+
+                throw new Exception("Unrecognised method call in epression " + expression.ToString());
             }
 
-            return member;
+            throw new Exception("Could not determine member from " + expression.ToString());
         }
 
         /// <summary>
@@ -176,9 +181,12 @@ namespace NHibernate.LambdaExtensions
 
         private static System.Type FindMemberType(Expression expression)
         {
-            MemberExpression me = null;
             if (expression is MemberExpression)
-                me = (MemberExpression)expression;
+            {
+                MemberExpression memberExpression = (MemberExpression)expression;
+
+                return memberExpression.Type;
+            }
 
             if (expression is UnaryExpression)
             {
@@ -187,22 +195,32 @@ namespace NHibernate.LambdaExtensions
                 if (unaryExpression.NodeType != ExpressionType.Convert)
                     throw new Exception("Cannot interpret member from " + expression.ToString());
 
-                me = (MemberExpression)unaryExpression.Operand;
+                return FindMemberType(unaryExpression.Operand);
             }
 
-            if (me == null)
-                throw new Exception("Could not determine member type from " + expression.ToString());
+            if (expression is MethodCallExpression)
+            {
+                return typeof(System.Type);
+            }
 
-            return me.Type;
+            throw new Exception("Could not determine member type from " + expression.ToString());
         }
 
         private static bool IsMemberExpression(Expression expression)
         {
-            MemberExpression me = null;
-
             if (expression is MemberExpression)
             {
-                me = (MemberExpression)expression;
+                MemberExpression memberExpression = (MemberExpression)expression;
+
+                if (memberExpression.Expression.NodeType == ExpressionType.Parameter)
+                    return true;
+
+                if (memberExpression.Expression.NodeType == ExpressionType.MemberAccess)
+                {
+                    // if the member has a null value, it was an alias
+                    if (EvaluatesToNull(memberExpression.Expression))
+                        return true;
+                }
             }
 
             if (expression is UnaryExpression)
@@ -212,20 +230,7 @@ namespace NHibernate.LambdaExtensions
                 if (unaryExpression.NodeType != ExpressionType.Convert)
                     throw new Exception("Cannot interpret member from " + expression.ToString());
 
-                me = (MemberExpression)unaryExpression.Operand;
-            }
-
-            if (me == null)
-                return false;
-
-            if (me.Expression.NodeType == ExpressionType.Parameter)
-                return true;
-
-            if (me.Expression.NodeType == ExpressionType.MemberAccess)
-            {
-                // if the member has a null value, it was an alias
-                if (EvaluatesToNull(me.Expression))
-                    return true;
+                return IsMemberExpression(unaryExpression.Operand);
             }
 
             return false;
