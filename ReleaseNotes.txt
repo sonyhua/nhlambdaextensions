@@ -1,4 +1,11 @@
 
+Build 1.0.6.0 (20-Apr-2009)
+===========================
+
+Fix - added handling of value 'null' when passed to expression processor;
+Fix - added handling of static member when passed to expression processor.
+
+
 Build 1.0.5.0 (09-Mar-2009)
 ===========================
 
