@@ -50,6 +50,15 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
+        public void TestEvaluateStaticPropertyExpression()
+        {
+            Person.StaticName = "test name";
+            ICriterion criterion = ExpressionProcessor.ProcessExpression<Person>(p => p.Name == Person.StaticName);
+            SimpleExpression simpleExpression = (SimpleExpression)criterion;
+            Assert.AreEqual("test name", simpleExpression.Value);
+        }
+
+        [Test]
         public void TestEvaluateEnumeration()
         {
             ICriterion before = Restrictions.Eq("Gender", PersonGender.Female);

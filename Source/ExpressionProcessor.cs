@@ -212,6 +212,9 @@ namespace NHibernate.LambdaExtensions
             {
                 MemberExpression memberExpression = (MemberExpression)expression;
 
+                if (memberExpression.Expression == null)
+                    return false;  // it's a member of a static class
+
                 if (memberExpression.Expression.NodeType == ExpressionType.Parameter)
                     return true;
 
