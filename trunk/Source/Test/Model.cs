@@ -13,6 +13,7 @@ namespace NHibernate.LambdaExtensions.Test
 
     public class Person
     {
+        public static string StaticName;
         public string Name { get; set; }
         public int Age { get; set; }
         public Person Father { get; set; }
