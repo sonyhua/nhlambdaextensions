@@ -41,6 +41,15 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
+        public void TestEvaluateNullPropertyExpression()
+        {
+            Person person = new Person() { Name = null };
+            ICriterion criterion = ExpressionProcessor.ProcessExpression<Person>(p => p.Name == person.Name);
+            SimpleExpression simpleExpression = (SimpleExpression)criterion;
+            Assert.AreEqual(null, simpleExpression.Value);
+        }
+
+        [Test]
         public void TestEvaluateEnumeration()
         {
             ICriterion before = Restrictions.Eq("Gender", PersonGender.Female);

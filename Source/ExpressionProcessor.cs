@@ -238,6 +238,9 @@ namespace NHibernate.LambdaExtensions
 
         private static object ConvertType(object value, System.Type type)
         {
+            if (value == null)
+                return null;
+
             if (type.IsAssignableFrom(value.GetType()))
                 return value;
 
