@@ -18,7 +18,7 @@
       c = bug fixes
       d = documentation updated
   -->
-  <property name="project.version" value="1.0.7.0" overwrite="false" />
+  <property name="project.version" value="1.0.8.0" overwrite="false" />
   <property name="project.dir" value="${project::get-base-directory()}" />
 
   <target name="debug" description="Setup a 'debug' build">
