@@ -1,0 +1,183 @@
+<?xml version="1.0"?>
+<project    name="NhLambdaExtensions"
+            default="build"
+            xsi:schemaLocation="http://nant.sf.net/nightly/2008-08-18-0.86/nant.xsd SDKs\nant-0.86\schema\nant.xsd"
+            xmlns="http://nant.sf.net/nightly/2008-08-18-0.86/nant.xsd"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <property name="nant.settings.currentframework" value="net-3.5" />
+  <echo message="Using '${nant.settings.currentframework}' framework on '${platform::get-name()}' platform." />
+
+  <!-- debug build by default -->
+  <call target="debug" />
+
+  <!--
+    Version number: a.b.c.d
+      a = major revision (major functionality)
+      b = minor revision (minor functionality or collective bug fixes)
+      c = bug fixes
+      d = documentation updated
+  -->
+  <property name="project.version" value="1.0.8.0" overwrite="false" />
+  <property name="project.dir" value="${project::get-base-directory()}" />
+
+  <target name="debug" description="Setup a 'debug' build">
+    <property name="optimize" value="false" />
+    <property name="project.config" value="debug" />
+    <property name="build.debug" value="true" />
+    <property name="build.dir" value="${project::get-base-directory()}/build/${project.config}" />
+  </target>
+
+  <target name="release" description="Setup a 'release' build">
+    <property name="optimize" value="true" />
+    <property name="project.config" value="release" />
+    <property name="build.debug" value="false" />
+    <property name="build.dir" value="${project::get-base-directory()}/build/${project.config}" />
+  </target>
+
+  <target name="build">
+
+    <mkdir dir="${build.dir}\bin"/>
+    <copy file="lgpl.txt" tofile="${build.dir}\bin\NHibernate.LambdaExtensions.license.txt" />
+    <copy file="ReleaseNotes.txt" todir="${build.dir}" />
+    <copy todir="${build.dir}\bin">
+      <fileset basedir="SDKs\NHibernate\bin\net-2.0">
+        <include name="*.*" />
+      </fileset>
+    </copy>
+    <copy todir="${build.dir}\bin">
+      <fileset basedir="SDKs\nant-0.86\bin\lib\common\2.0\">
+        <include name="nunit.framework.dll" />
+      </fileset>
+    </copy>
+    <copy todir="${build.dir}\bin">
+      <fileset basedir="SDKs\RhinoMocks">
+        <include name="Rhino.Mocks.*" />
+      </fileset>
+    </copy>
+
+    <asminfo output="Source/AssemblyInfo.cs" language="CSharp">
+      <imports>
+        <import namespace="System.Reflection" />
+      </imports>
+      <attributes>
+        <attribute type="AssemblyTitleAttribute" value="NHibernate Lambda Extensions" />
+        <attribute type="AssemblyDescriptionAttribute" value="NHibernate Lambda Extensions" />
+        <attribute type="AssemblyConfigurationAttribute" value="" />
+        <attribute type="AssemblyCompanyAttribute" value="broloco" />
+        <attribute type="AssemblyProductAttribute" value="broloco" />
+        <attribute type="AssemblyCopyrightAttribute" value="" />
+        <attribute type="AssemblyTrademarkAttribute" value="" />
+        <attribute type="AssemblyVersionAttribute" value="${project.version}" />
+        <attribute type="AssemblyDelaySignAttribute" value="false" />
+      </attributes>
+    </asminfo>
+
+    <csc target="library"
+         debug="${build.debug}"
+         optimize="${optimize}"
+         output="${build.dir}\bin\NHibernate.LambdaExtensions.dll"
+         doc="${build.dir}\bin\NHibernate.LambdaExtensions.xml"
+         keyfile="NhLambdaExtensions.snk"
+         warnaserror="true">
+
+      <references>
+        <include name="${build.dir}\bin\nhibernate.dll" />
+      </references>
+      <sources>
+        <include name="Source\*.cs" />
+      </sources>
+    </csc>
+
+    <csc target="library"
+         debug="${build.debug}"
+         optimize="${optimize}"
+         output="${build.dir}\bin\NHibernate.LambdaExtensions.Test.dll"
+         warnaserror="true">
+
+      <references>
+        <include name="${build.dir}\bin\nhibernate.dll" />
+        <include name="${build.dir}\bin\NHibernate.LambdaExtensions.dll" />
+        <include name="${build.dir}\bin\nunit.framework.dll" />
+        <include name="${build.dir}\bin\Rhino.Mocks.dll" />
+      </references>
+
+      <sources>
+        <include name="Source\AssemblyInfo.cs" />
+        <include name="Source\Test\*.cs" />
+      </sources>
+
+    </csc>
+
+    <nunit2>
+      <formatter type="Plain"/>
+      <formatter type="Xml" usefile="true" extension=".xml"/>
+      <test>
+        <assemblies>
+          <include name="${build.dir}\bin\NHibernate.LambdaExtensions.Test.dll"/>
+        </assemblies>
+      </test>
+    </nunit2>
+
+    <setenv name="PATH" value="${nant::get-base-directory()}/../../t4;%PATH%"/>
+    <mkdir dir="${build.dir}\doc"/>
+
+    <property name="testFiles" value="TestCriteria.cs"/>
+    <property name="testFiles" value="${testFiles};TestDetachedCriteria.cs"/>
+    <property name="testFiles" value="${testFiles};TestSqlExpression.cs"/>
+    <property name="testFiles" value="${testFiles};TestLambdaProjection.cs"/>
+    <property name="testFiles" value="${testFiles};TestLambdaSubquery.cs"/>
+
+    <exec program="TextTransform">
+      <arg line="-a version!${project.version}" />
+      <arg line="-a testFiles!${testFiles}" />
+      <arg line="-a testFolder!${project.dir}\Source\Test" />
+      <arg line="-out ${build.dir}\doc\NhLambdaExtensions.html" />
+      <arg line="Doc/NhLambdaExtensions.tt" />
+    </exec>
+
+  </target>
+
+  <target name="package">
+
+    <delete>
+      <fileset><include name="*.zip"/></fileset>
+    </delete>
+
+    <call target="debug" />
+    <call target="clean" />
+
+    <call target="release" />
+    <call target="clean" />
+
+    <call target="release" />
+    <call target="build" />
+    
+    <property name="nhVersion" value="${assemblyname::get-version(assemblyname::get-assembly-name(build.dir + '\bin\NHibernate.dll'))}"/>
+
+    <zip zipfile="NhLambdaExtensions-${project.version}-ForNH-${nhVersion}.zip">
+      <fileset basedir="${build.dir}">
+        <include name="*" />
+        <include name="doc/**" />
+        <include name="bin/NHibernate.LambdaExtensions.dll" />
+        <include name="bin/NHibernate.LambdaExtensions.xml" />
+        <include name="bin/NHibernate.LambdaExtensions.license.txt" />
+      </fileset>
+    </zip>
+
+  </target>
+
+  <target name="exportResults">
+    <copy todir="build">
+      <fileset basedir="${build.dir}\bin">
+        <include name="*-results.xml" />
+      </fileset>
+    </copy>
+  </target>
+
+  <target name="clean">
+    <delete file="Source/AssemblyInfo.cs" />
+    <delete dir="${build.dir}" />
+  </target>
+
+</project>
