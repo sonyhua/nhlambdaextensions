@@ -293,7 +293,7 @@ DetachedCriteria&lt;Person&gt;.Create(() => personAlias)</code></pre>
             </p>
 <pre><code>.Add(LambdaSubquery.Where&lt;Person&gt;(p =&gt; p.Age &gt; myDetachedCriteriaSubquery.As&lt;int&gt;()))</code></pre>
             
-            <a name="#examples"></a>
+            <a name="examples"></a>
             <h2>8. Examples</h2>
             <p>
                 Below are some examples of how to write ICriteria using the 'old' style,
@@ -344,13 +344,13 @@ DetachedCriteria&lt;Person&gt;.Create(() => personAlias)</code></pre>
   foreach (string examplesName in examplesNames)
   {
     #>
-    <a name="#examples_<#=examplesName#>"></a>
+    <a name="examples_<#=examplesName#>"></a>
     <h2 style="font-size:13pt;"><#=examplesName#> Examples</h2>
     <#
     foreach (string testName in tests[examplesName])
     {
       #>
-        <a name="#examples_<#=examplesName#>_<#=testName#>"></a>
+        <a name="examples_<#=examplesName#>_<#=testName#>"></a>
         <h2><#=AddSpacesBetweenCapitals(testName)#></h2>
         <p>Using original ICriteria API:<p>
 <pre style="width:100%;overflow-x:auto;"><code>
