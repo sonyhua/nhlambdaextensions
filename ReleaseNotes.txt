@@ -1,4 +1,11 @@
 
+Build 1.0.8.0 (06-Aug-2009)
+===========================
+
+Issue 10 - Fixed anchors in documentation
+Issue 11 - Added collection members syntax
+
+
 Build 1.0.7.0 (03-May-2009)
 ===========================
 
