@@ -129,6 +129,14 @@ namespace NHibernate.LambdaExtensions
                 if (memberExpression.Expression.NodeType == ExpressionType.MemberAccess
                     || memberExpression.Expression.NodeType == ExpressionType.Call)
                 {
+                    if (memberExpression.Member.DeclaringType.IsGenericType
+                        && memberExpression.Member.DeclaringType.GetGenericTypeDefinition().Equals(typeof(Nullable<>)))
+                    {
+                        // it's a Nullable<T>, so ignore any .Value
+                        if (memberExpression.Member.Name == "Value")
+                            return FindMemberExpression(memberExpression.Expression);
+                    }
+
                     return FindMemberExpression(memberExpression.Expression) + "." + memberExpression.Member.Name;
                 }
                 else
@@ -257,6 +265,9 @@ namespace NHibernate.LambdaExtensions
 
             if (type.IsAssignableFrom(value.GetType()))
                 return value;
+
+            if (type.IsGenericType && type.GetGenericTypeDefinition().Equals(typeof(Nullable<>)))
+                type = Nullable.GetUnderlyingType(type);
 
             if (type.IsEnum)
                 return Enum.ToObject(type, value);
