@@ -1,4 +1,10 @@
 
+Build 1.0.9.0 (18-Nov-2009)
+===========================
+
+Issue 12 - Added extra support for nullable types
+
+
 Build 1.0.8.0 (06-Aug-2009)
 ===========================
 
