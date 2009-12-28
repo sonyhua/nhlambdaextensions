@@ -24,6 +24,7 @@ namespace NHibernate.LambdaExtensions.Test
         public int? NullableAge { get; set; }
         public PersonGender? NullableGender { get; set; }
         public bool? NullableIsParent { get; set; }
+        public byte NumberOfFingers { get; set; }
     }
 
     public class Child

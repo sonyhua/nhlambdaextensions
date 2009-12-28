@@ -84,6 +84,14 @@ namespace NHibernate.LambdaExtensions.Test
         }
 
         [Test]
+        public void TestEvaluatePrimitive()
+        {
+            ICriterion before = Restrictions.Eq("NumberOfFingers", 10);
+            ICriterion after = ExpressionProcessor.ProcessExpression<Person>(p => p.NumberOfFingers == 10);
+            Assert.AreEqual(before.ToString(), after.ToString());
+        }
+
+        [Test]
         public void TestEvaluateSubclass()
         {
             Person person = new CustomPerson();
