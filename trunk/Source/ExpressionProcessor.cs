@@ -272,6 +272,9 @@ namespace NHibernate.LambdaExtensions
             if (type.IsEnum)
                 return Enum.ToObject(type, value);
 
+            if (type.IsPrimitive)
+                return Convert.ChangeType(value, type);
+
             throw new Exception("Cannot convert '" + value.ToString() + "' to " + type.ToString());
         }
 
